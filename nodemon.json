@@ -1,0 +1,7 @@
+{
+  "ext": "ts",
+  "ignore": ["*.d.ts"],
+  "execMap": {
+    "ts": "node_modules/.bin/ts-node"
+  }
+}
