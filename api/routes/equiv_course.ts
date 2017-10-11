@@ -5,8 +5,21 @@ var db = new Database();
 var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
-    db.all(`SELECT * FROM EquivCourse`)
-    .then(result => res.json(result));
+    db.all('SELECT * FROM EquivCourse')
+    //.then(result => res.json(result));
+	.then(result => {
+		//res.send(JSON.stringify(result).replace(/\[/g, '[<br>').replace(/\},\{/g, '},<br>{').replace(/\]/g, '<br>]'));
+		//console.log(result);
+		
+		res.writeHead(200, {'Content-Type': 'text/html'});
+		res.write("EquivID\tLocalCourseID\tForeignCourseID\tStatus<br>");
+		result.forEach((row) => {
+			//console.log(row);
+			//console.log(row['EquivID']);
+			res.write(row['EquivID']+"\t\t"+row['LocalCourseID']+"\t\t"+row['ForeignCourseID']+"\t\t"+row['Status']+"<br>");
+		});
+		return res.end();
+	});
   })
   .post((req, res) => {
     db.run(`INSERT INTO EquivCourse

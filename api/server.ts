@@ -2,6 +2,8 @@ import * as express from 'express';
 import * as bodyparser from 'body-parser';
 
 import { EquivCourseRouter } from './routes/equiv_course';
+import { LocalCourseRouter } from './routes/student_local_courses';
+import { FileServerRouter } from './routes/file_server_test';
 
 var app = express();
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -14,6 +16,8 @@ app.use((req, res, next) => {
 
 app.use('/equiv_course', EquivCourseRouter);
 //Add more routes here
+app.use('/student_local_courses', LocalCourseRouter);
+app.use('/file_server_test', FileServerRouter);
 
 app.use('*', (req, res, next) => {
   next({ err: 'Unknown route' });
