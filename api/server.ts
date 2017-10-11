@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as bodyparser from 'body-parser';
 
-import { EquivalentClassesRouter } from './routes/equivalent_classes';
+import { EquivCourseRouter } from './routes/equiv_course';
 
 var app = express();
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -12,7 +12,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/equivalent_classes', EquivalentClassesRouter);
+app.use('/equiv_course', EquivCourseRouter);
 //Add more routes here
 
 app.use('*', (req, res, next) => {

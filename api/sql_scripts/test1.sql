@@ -1,0 +1,1 @@
+insert into EquivCourse (LocalCourseID, ForeignCourseID, Status) VALUES (1010, 100, 'tes12t');
