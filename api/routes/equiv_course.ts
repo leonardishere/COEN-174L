@@ -5,20 +5,11 @@ var db = new Database();
 var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
-    db.all('SELECT * FROM EquivCourse')
+    //db.all('SELECT * FROM EquivCourse')
+	db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseId, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from LocalCourse join EquivCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) join ForeignCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) join School on (School.SchoolID=ForeignCourse.SchoolID) order by LocalCourseName asc")
     //.then(result => res.json(result));
 	.then(result => {
-		//res.send(JSON.stringify(result).replace(/\[/g, '[<br>').replace(/\},\{/g, '},<br>{').replace(/\]/g, '<br>]'));
-		//console.log(result);
-		
-		res.writeHead(200, {'Content-Type': 'text/html'});
-		res.write("EquivID\tLocalCourseID\tForeignCourseID\tStatus<br>");
-		result.forEach((row) => {
-			//console.log(row);
-			//console.log(row['EquivID']);
-			res.write(row['EquivID']+"\t\t"+row['LocalCourseID']+"\t\t"+row['ForeignCourseID']+"\t\t"+row['Status']+"<br>");
-		});
-		return res.end();
+		return sendResults(res, result);
 	});
   })
   .post((req, res) => {
@@ -44,5 +35,28 @@ router.route('/:SCUClassID')
     db.run(`DELETE FROM EquivCourse WHERE SCUClassID=?`, req.params.SCUClassID)
     .then(result => res.json({ status: 'OK' }));
   });
+  
+function sendResults(res, result){
+	var columnNames = ["SCU Course", "Foreign Course", "School", "Status"];
+	var columns = ["LocalCourseName", "ForeignCourseName", "SchoolName", "Status"];
+	
+	res.writeHead(200, {'Content-Type': 'text/html'});
+	
+	res.write("<table>");
+	res.write("<tr>");
+	columnNames.forEach((entry) => {
+		res.write("<th>"+entry+"</th>");
+	});
+	res.write("</tr>");
+	result.forEach((row) => {
+		res.write("<tr>");
+		columns.forEach((entry) => {
+			res.write("<td>"+row[entry]+"</td>");
+		});
+		res.write("</tr>");
+	});
+	res.write("</table>");
+	return res.end();
+}
 
 export var EquivCourseRouter = router;
