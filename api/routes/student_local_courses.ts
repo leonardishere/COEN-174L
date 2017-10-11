@@ -5,9 +5,10 @@ var db = new Database();
 var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
-    db.all(`SELECT * FROM EquivCourse`)
+    db.all(`SELECT * FROM LocalCourse`)
     .then(result => res.json(result));
   })
+  /*
   .post((req, res) => {
     db.run(`INSERT INTO EquivCourse
       (SCUClassID, OtherClassID, Status)
@@ -15,6 +16,7 @@ router.route('/')
       [req.body.SCUClassID, req.body.OtherClassID, req.body.Status])
     .then(result => res.json({ row: result.stmt.lastID }));
   });
+  */
 router.route('/:SCUClassID')
   .get((req, res) => {
     db.all(`SELECT * FROM EquivCourse WHERE SCUClassID=?`, req.params.SCUClassID)
