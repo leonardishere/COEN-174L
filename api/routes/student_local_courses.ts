@@ -35,4 +35,4 @@ router.route('/:SCUClassID')
 		.then(result => res.json({ status: 'OK' }));
 });
 
-export var LocalCourseRouter = router;
+export var StudentLocalCourseRouter = router;
