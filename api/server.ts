@@ -6,6 +6,7 @@ import { StudentLocalCourseRouter } from './routes/student_local_courses';
 import { FileServerRouter } from './routes/file_server_test';
 import { LocalCourseRouter } from './routes/local_courses';
 import { RecommenderRouter } from './routes/recommender';
+import { UsersRouter } from './routes/users';
 
 var app = express();
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -22,6 +23,7 @@ app.use('/student_local_courses', StudentLocalCourseRouter);
 app.use('/file_server_test', FileServerRouter);
 app.use('/local_courses', LocalCourseRouter);
 app.use('/recommender', RecommenderRouter);
+app.use('/users', UsersRouter);
 app.use('/favicon.ico', (req, res, next) => {
 	console.log("look who it is, another damn favicon.ico warning");
 });
