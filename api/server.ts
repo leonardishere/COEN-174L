@@ -22,6 +22,9 @@ app.use('/student_local_courses', StudentLocalCourseRouter);
 app.use('/file_server_test', FileServerRouter);
 app.use('/local_courses', LocalCourseRouter);
 app.use('/recommender', RecommenderRouter);
+app.use('/favicon.ico', (req, res, next) => {
+	console.log("look who it is, another damn favicon.ico warning");
+});
 
 app.use('*', (req, res, next) => {
   next({ err: 'Unknown route' });
