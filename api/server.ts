@@ -7,6 +7,8 @@ import { FileServerRouter } from './routes/file_server_test';
 import { LocalCourseRouter } from './routes/local_courses';
 import { RecommenderRouter } from './routes/recommender';
 import { UsersRouter } from './routes/users';
+import { SchoolsRouter } from './routes/schools';
+import { ForeignCourseRouter } from './routes/foreign_courses';
 
 var app = express();
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -24,6 +26,8 @@ app.use('/file_server_test', FileServerRouter);
 app.use('/local_courses', LocalCourseRouter);
 app.use('/recommender', RecommenderRouter);
 app.use('/users', UsersRouter);
+app.use('/schools', SchoolsRouter);
+app.use('/foreign_courses', ForeignCourseRouter);
 app.use('/favicon.ico', (req, res, next) => {
 	console.log("look who it is, another damn favicon.ico warning");
 });
