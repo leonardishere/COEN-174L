@@ -11,7 +11,8 @@ router.route('/')
 	db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from LocalCourse left join EquivCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) left join ForeignCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join School on (School.SchoolID=ForeignCourse.SchoolID) order by LocalCourseName asc")
     //.then(result => res.json(result));
 	.then(result => {
-		return sendResults(res, result);
+		//return sendResults(res, result);
+		return sendResults2(res, result);
 	});
   });
   
@@ -34,6 +35,12 @@ function sendResults(res, result){
 	var data1 = fs.readFileSync(filename1, "utf8");
 	res.write(data1);
 	res.write("</script>");
+	
+	res.write("<style>");
+	var filename2 = "accordionStyle.css";
+	var data2 = fs.readFileSync(filename2, "utf8");
+	res.write(data2);
+	res.write("</style>");
 	
 	res.write("<p>table is sortable if you click on the header name</p>\n");
 	res.write("<p>warning! this table doesnt behave like it should on sort</p>");
@@ -108,6 +115,119 @@ function sendResults(res, result){
 	}
 	//console.log("close main table");
 	res.write("</table>\n");
+	
+	var filename4 = "accordionTest.html";
+	var data4 = fs.readFileSync(filename4, "utf8");
+	res.write(data4);
+	
+	res.write("<script>");
+	var filename3 = "accordionScript.js";
+	var data3 = fs.readFileSync(filename3, "utf8");
+	res.write(data3);
+	res.write("</script>");
+	
+	
+	return res.end();
+}
+
+function sendResults2(res, result){
+	var tableID1 = "mainTable";
+	var columnNames1 = ["SCU Course", "Equivalencies"];
+	var columnNames2 = ["Foreign Course", "School", "Status"];
+	var columns2 = ["ForeignCourseName", "SchoolName", "Status"];
+	
+	res.writeHead(200, {'Content-Type': 'text/html'});
+	
+	res.write("<style>");
+	var filename0 = "tableStyle.css";
+	var data0 = fs.readFileSync(filename0, "utf8");
+	res.write(data0);
+	res.write("</style>");
+	
+	res.write("<script>");
+	var filename1 = "tableSortScript.js";
+	var data1 = fs.readFileSync(filename1, "utf8");
+	res.write(data1);
+	res.write("</script>");
+	
+	res.write("<style>");
+	var filename2 = "accordionStyle.css";
+	var data2 = fs.readFileSync(filename2, "utf8");
+	res.write(data2);
+	res.write("</style>");
+	
+	res.write("<p>table is sortable if you click on the header name</p>\n");
+	res.write("<p>most of these accordions are empty, but check COEN 210 for an example of what should be in there</p>");
+	
+	res.write("<div class=\"panel-group\" id=\"catalogList\" role=\"tablist\" aria-multiselectable=\"true\">");
+	//console.log("begin table parsing");
+	var courseID=-1, start=true, innerTableOpen=false;
+	result.forEach((row) => {
+		//console.log("equality check: " + start || courseID != row['LocalCourseID']);
+		//console.log("" + courseID + ", " + row['LocalCourseID']);
+		if(start || courseID != row['LocalCourseID']){
+			if(innerTableOpen){
+				//console.log("close inner table");
+				res.write("</table>");
+				res.write("</div>");
+				innerTableOpen = false;
+			}
+			//console.log("\nbegin new row in main table: " + row['LocalCourseName']);
+			courseID = row['LocalCourseID'];
+			res.write("<button class=\"accordion\">"+row['LocalCourseName']+"</button>");
+			res.write("<div class=\"panel\">");
+			if(row['ForeignCourseID'] === null){
+				//console.log("no equivalencies were found");
+				res.write("<p>No equivalencies found</p></div>");
+				innerTableOpen = false;
+			}else{
+				//console.log("equivalencies were found. create inner table");
+				var tableID2 = "table"+courseID;
+				res.write("<table id=\""+tableID2+"\">");
+				res.write("<tr>");
+				var i = 0;
+				columnNames2.forEach((entry) => {
+					res.write("<th onclick=\"sortTable('"+tableID2+"',"+i+")\">"+entry+"</th>");
+					++i;
+				});
+				res.write("</tr>");
+				res.write("<tr>");
+				//console.log("add to inner table: " + row['ForeignCourseName']);
+				columns2.forEach((entry) => {
+					res.write("<td>"+row[entry]+"</td>");
+				});
+				res.write("</tr>");
+				innerTableOpen = true;
+			}
+		}else{
+			//console.log("add to inner table: " + row['ForeignCourseName']);
+			res.write("<tr>");
+			columns2.forEach((entry) => {
+				res.write("<td>"+row[entry]+"</td>");
+			});
+			res.write("</tr>");
+			innerTableOpen = true;
+		}
+		start = false;
+	});
+	//console.log("end table parsing");
+	if(innerTableOpen){
+		//console.log("close inner table");
+		res.write("</table>");
+		res.write("</div>");
+	}
+	res.write("</div>");
+	/*
+	var filename4 = "accordionTest.html";
+	var data4 = fs.readFileSync(filename4, "utf8");
+	res.write(data4);
+	*/
+	res.write("<script>");
+	var filename3 = "accordionScript.js";
+	var data3 = fs.readFileSync(filename3, "utf8");
+	res.write(data3);
+	res.write("</script>");
+	
 	
 	return res.end();
 }
