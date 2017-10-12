@@ -20,10 +20,16 @@ function sendResults(res, result){
 	
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	
+	res.write("<style>");
+	var filename0 = "tableStyle.css";
+	var data0 = fs.readFileSync(filename0, "utf8");
+	res.write(data0);
+	res.write("</style>");
+	
 	res.write("<script>");
-	var filename = "tableSortScript.js";
-	var data = fs.readFileSync(filename, "utf8");
-	res.write(data);
+	var filename1 = "tableSortScript.js";
+	var data1 = fs.readFileSync(filename1, "utf8");
+	res.write(data1);
 	res.write("</script>");
 	
 	res.write("<script>");

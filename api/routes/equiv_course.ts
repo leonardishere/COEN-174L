@@ -45,6 +45,18 @@ function sendResults(res, result){
 	
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	
+	res.write("<style>");
+	var filename0 = "tableStyle.css";
+	var data0 = fs.readFileSync(filename0, "utf8");
+	res.write(data0);
+	res.write("</style>");
+	
+	res.write("<script>");
+	var filename1 = "tableSortScript.js";
+	var data1 = fs.readFileSync(filename1, "utf8");
+	res.write(data1);
+	res.write("</script>");
+	
 	res.write("<p>table is sortable if you click on the header name</p>");
 	res.write("<table id=\""+tableID+"\">");
 	res.write("<tr>");
@@ -62,12 +74,6 @@ function sendResults(res, result){
 		res.write("</tr>");
 	});
 	res.write("</table>");
-	
-	res.write("<script>");
-	var filename = "tableSortScript.js";
-	var data = fs.readFileSync(filename, "utf8");
-	res.write(data);
-	res.write("</script>");
 	
 	return res.end();
 }
