@@ -21,21 +21,15 @@ function sendResults(res, result){
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	
 	res.write("<style>");
-	var filename0 = "tableStyle.css";
-	var data0 = fs.readFileSync(filename0, "utf8");
-	res.write(data0);
+	writeFile(res, "resources/tableStyle.css");
 	res.write("</style>");
 	
 	res.write("<script>");
-	var filename1 = "tableSortScript.js";
-	var data1 = fs.readFileSync(filename1, "utf8");
-	res.write(data1);
+	writeFile(res, "resources/tableSortScript.js");
 	res.write("</script>");
 	
 	res.write("<script>");
-	var filename2 = "recommenderAddValueScript.js";
-	var data2 = fs.readFileSync(filename2, "utf8");
-	res.write(data2);
+	writeFile(res, "resources/recommenderAddValueScript.js");
 	res.write("</script>");
 	
 	res.write("<p>table is sortable if you click on the header name</p>");
@@ -156,6 +150,11 @@ function smartSplit(string){
 		}
 	}
 	return tokens2;
+}
+
+function writeFile(res, filename){
+	var data = fs.readFileSync(filename, "utf8");
+	res.write(data);
 }
 
 export var RecommenderRouter = router;

@@ -25,21 +25,15 @@ function sendResults(res, result){
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	
 	res.write("<style>");
-	var filename0 = "tableStyle.css";
-	var data0 = fs.readFileSync(filename0, "utf8");
-	res.write(data0);
+	writeFile(res, "tableStyle.css");
 	res.write("</style>");
 	
 	res.write("<script>");
-	var filename1 = "tableSortScript.js";
-	var data1 = fs.readFileSync(filename1, "utf8");
-	res.write(data1);
+	writeFile(res, "tableSortScript.js");
 	res.write("</script>");
 	
 	res.write("<style>");
-	var filename2 = "accordionStyle.css";
-	var data2 = fs.readFileSync(filename2, "utf8");
-	res.write(data2);
+	writeFile(res, "accordionStyle.css");
 	res.write("</style>");
 	
 	res.write("<p>table is sortable if you click on the header name</p>\n");
@@ -116,14 +110,10 @@ function sendResults(res, result){
 	//console.log("close main table");
 	res.write("</table>\n");
 	
-	var filename4 = "accordionTest.html";
-	var data4 = fs.readFileSync(filename4, "utf8");
-	res.write(data4);
+	writeFile(res, "accordionTest.html");
 	
 	res.write("<script>");
-	var filename3 = "accordionScript.js";
-	var data3 = fs.readFileSync(filename3, "utf8");
-	res.write(data3);
+	writeFile(res, "accordionScript.js");
 	res.write("</script>");
 	
 	
@@ -139,27 +129,21 @@ function sendResults2(res, result){
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	
 	res.write("<style>");
-	var filename0 = "tableStyle.css";
-	var data0 = fs.readFileSync(filename0, "utf8");
-	res.write(data0);
+	writeFile(res, "resources/tableStyle.css");
 	res.write("</style>");
 	
 	res.write("<script>");
-	var filename1 = "tableSortScript.js";
-	var data1 = fs.readFileSync(filename1, "utf8");
-	res.write(data1);
+	writeFile(res, "resources/tableSortScript.js");
 	res.write("</script>");
 	
 	res.write("<style>");
-	var filename2 = "accordionStyle.css";
-	var data2 = fs.readFileSync(filename2, "utf8");
-	res.write(data2);
+	writeFile(res, "resources/accordionStyle.css");
 	res.write("</style>");
 	
 	res.write("<p>table is sortable if you click on the header name</p>\n");
 	res.write("<p>most of these accordions are empty, but check COEN 210 for an example of what should be in there</p>");
 	
-	res.write("<div class=\"panel-group\" id=\"catalogList\" role=\"tablist\" aria-multiselectable=\"true\">");
+	res.write("<div>"); //wrapper
 	//console.log("begin table parsing");
 	var courseID=-1, start=true, innerTableOpen=false;
 	result.forEach((row) => {
@@ -223,13 +207,16 @@ function sendResults2(res, result){
 	res.write(data4);
 	*/
 	res.write("<script>");
-	var filename3 = "accordionScript.js";
-	var data3 = fs.readFileSync(filename3, "utf8");
-	res.write(data3);
+	writeFile(res, "resources/accordionScript.js");
 	res.write("</script>");
 	
 	
 	return res.end();
+}
+
+function writeFile(res, filename){
+	var data = fs.readFileSync(filename, "utf8");
+	res.write(data);
 }
 
 export var LocalCourseRouter = router;
