@@ -9,6 +9,7 @@ import { RecommenderRouter } from './routes/recommender';
 import { UsersRouter } from './routes/users';
 import { SchoolsRouter } from './routes/schools';
 import { ForeignCourseRouter } from './routes/foreign_courses';
+import { EverythingRouter } from './routes/index';
 
 var app = express();
 app.use(bodyparser.urlencoded({ extended: true }));
@@ -28,9 +29,8 @@ app.use('/recommender', RecommenderRouter);
 app.use('/users', UsersRouter);
 app.use('/schools', SchoolsRouter);
 app.use('/foreign_courses', ForeignCourseRouter);
-app.use('/favicon.ico', (req, res, next) => {
-	console.log("look who it is, another damn favicon.ico warning");
-});
+app.use('/favicon.ico', (req, res, next) => { console.log("look who it is, another damn favicon.ico warning"); });
+app.use('/', EverythingRouter);
 
 app.use('*', (req, res, next) => {
   next({ err: 'Unknown route' });

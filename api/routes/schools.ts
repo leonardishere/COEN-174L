@@ -40,6 +40,7 @@ function sendResults(res, result){
 	res.write("</script>");
 	
 	res.write("<p>table is sortable if you click on the header name</p>");
+	res.write("<p>click View Courses under San Jose State University or San Francisco State University</p>");
 	res.write("<table id=\""+tableID+"\">");
 	res.write("<tr>");
 	var i = 0;

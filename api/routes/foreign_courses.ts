@@ -14,7 +14,9 @@ router.route('/')
   });
 router.route('/:SchoolName')
 	.get((req, res) => {
-		db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from ForeignCourse join School on (School.SchoolID=ForeignCourse.SchoolID) left join EquivCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join LocalCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) where " + req.params.SchoolName + " order by ForeignCourseName asc")
+		//db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from ForeignCourse join School on (School.SchoolID=ForeignCourse.SchoolID) left join EquivCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join LocalCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) where " + req.params.SchoolName + " order by ForeignCourseName asc")
+		//speed up?
+		db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from ForeignCourse join School on (School.SchoolID=ForeignCourse.SchoolID) left join EquivCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join LocalCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) where School.SchoolID in (select SchoolID from School where " + req.params.SchoolName + ") order by ForeignCourseName asc")
 		.then(result => {
 			return sendResults(res, result, req.params.SchoolName);
 		});
@@ -24,7 +26,7 @@ function sendResults(res, result, schoolName){
 	var tableID1 = "mainTable";
 	var columnNames1 = ["Foreign Course", "Equivalencies"];
 	var columnNames2 = ["SCU Course", "Status"];
-	var columns2 = ["ForeignCourseName", "Status"];
+	var columns2 = ["LocalCourseName", "Status"];
 	
 	res.writeHead(200, {'Content-Type': 'text/html'});
 	
