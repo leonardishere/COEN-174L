@@ -1,0 +1,26 @@
+<form>
+  Local Course:<br>
+  <input id="LocalCourseNameBox" type="text" name="LocalCourseName" value="COEN 210 - Computer Architecture">
+  <br>
+  School Name:<br>
+  <input id="SchoolNameBox" type="text" name="SchoolName" value="San Jose State University">
+  <br>
+  Foreign Course:<br>
+  <input id="ForeignCourseNameBox" type="text" name="ForeignCourseName" value="CMPE 200 - Computer Architecture">
+  <br><br>
+</form>
+<button onClick="submit()">Submit</button>
+<br>
+
+<script>
+	function submit(){
+		var localCourse = "'"+document.getElementById("LocalCourseNameBox").value+"'";
+		var school = "'"+document.getElementById("SchoolNameBox").value+"'";
+		var foreignCourse = "'"+document.getElementById("ForeignCourseNameBox").value+"'";
+		console.log(localCourse);
+		console.log(school);
+		console.log(foreignCourse);
+		window.location.href = "/equiv_course/"+localCourse+"/"+school+"/"+foreignCourse;
+	}
+</script>
+<br>

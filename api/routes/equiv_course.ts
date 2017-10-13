@@ -7,7 +7,6 @@ var db = new Database();
 var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
-    //db.all('SELECT * FROM EquivCourse')
 	db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from LocalCourse join EquivCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) join ForeignCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) join School on (School.SchoolID=ForeignCourse.SchoolID) order by LocalCourseName asc")
     //.then(result => res.json(result));
 	.then(result => {
@@ -37,10 +36,44 @@ router.route('/:SCUClassID')
     db.run(`DELETE FROM EquivCourse WHERE SCUClassID=?`, req.params.SCUClassID)
     .then(result => res.json({ status: 'OK' }));
   });
+router.route('/:LocalCourseName/:SchoolName/:ForeignCourseName')
+	.get((req, res) => {
+		console.log("get(*)");
+		console.log(req.params);
+		var cols = ["LocalCourseName", "SchoolName", "ForeignCourseName"];
+		var vals = ["", "", ""];
+		var set = [true, true, true];
+		for(var i = 0; i < cols.length; ++i){
+			vals[i] = req.params[cols[i]];
+			set[i] = (vals[i] !== 'null' && vals[i] !== "''");
+			if(vals[i].charAt(0) !== '\'') vals[i] = "'" + vals[i] + "'";
+		}
+		var where = "";
+		if(set[0]){
+			where = "where " + cols[0] + "=" + vals[0];
+			if(set[2]){
+				where += " and " + cols[2] + "=" + vals[2];
+			}else if(set[1]){
+				where += " and " + cols[1] + "=" + vals[1];
+			}
+		}else{
+			if(set[2]){
+				where += "where " + cols[2] + "=" + vals[2];
+			}else if(set[1]){
+				where += "where " + cols[1] + "=" + vals[1];
+			}
+		}
+		console.log("where: " + where);
+		
+		db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from LocalCourse join EquivCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) join ForeignCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) join School on (School.SchoolID=ForeignCourse.SchoolID) " + where + " order by LocalCourseName asc")
+		.then(result => {
+			return sendResults(res, result);
+		});
+	});
   
 function sendResults(res, result){
 	var tableID = "justAnotherTable";
-	var columnNames = ["SCU Course", "Foreign Course", "School", "Status"];
+	var columnNames = ["SCU Course", "Foreign Course", "School", "Status", "Actions"];
 	var columns = ["LocalCourseName", "ForeignCourseName", "SchoolName", "Status"];
 	
 	res.writeHead(200, {'Content-Type': 'text/html'});
@@ -53,7 +86,14 @@ function sendResults(res, result){
 	writeFile(res, "resources/tableSortScript.js");
 	res.write("</script>");
 	
+	res.write("<script>");
+	writeFile(res, "resources/equiv_course.js");
+	res.write("</script>");
+	
 	res.write("<p>table is sortable if you click on the header name</p>");
+	res.write("<p>autocomplete/autopopulate not yet implemented on form, so type it fully or leave blank</p>");
+	res.write("<p>the form involves another call to the server. it would be better if we loaded all the data first, then the form redoes everything from within the page</p>");
+	writeFile(res, "resources/equiv_course_form.html");
 	res.write("<table id=\""+tableID+"\">");
 	res.write("<tr>");
 	var i = 0;
@@ -67,6 +107,10 @@ function sendResults(res, result){
 		columns.forEach((entry) => {
 			res.write("<td>"+row[entry]+"</td>");
 		});
+		//actions
+		res.write("<td>");
+		res.write("<button onclick=\"viewThisEquiv('"+row['LocalCourseName']+"','"+row['SchoolName']+"','"+row['ForeignCourseName']+"')\">View This Course</button>");
+		res.write("</td>");
 		res.write("</tr>");
 	});
 	res.write("</table>");
