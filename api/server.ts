@@ -9,6 +9,7 @@ import { RecommenderRouter } from './routes/recommender';
 import { UsersRouter } from './routes/users';
 import { SchoolsRouter } from './routes/schools';
 import { ForeignCourseRouter } from './routes/foreign_courses';
+import { ChangesRouter } from './routes/changes';
 import { EverythingRouter } from './routes/index';
 
 var app = express();
@@ -29,6 +30,7 @@ app.use('/recommender', RecommenderRouter);
 app.use('/users', UsersRouter);
 app.use('/schools', SchoolsRouter);
 app.use('/foreign_courses', ForeignCourseRouter);
+app.use('/changes', ChangesRouter);
 app.use('/favicon.ico', (req, res, next) => { console.log("look who it is, another damn favicon.ico warning"); });
 app.use('/', EverythingRouter);
 
