@@ -1,0 +1,210 @@
+<!doctype HTML>
+<HTML>
+<header>
+	<title>Equiv Courses Test Build</title>
+	<style>
+		input {
+			width: 500px;
+		}
+	</style>
+</header>
+<body data-gr-c-s-loaded="true">
+  <app-root _nghost-c0="" ng-version="4.4.5">
+	<div _ngcontent-c0="" style="text-align:center">
+		<h1 _ngcontent-c0="">Welcome to Equiv Courses test build!</h1>
+	</div>
+
+<router-outlet _ngcontent-c0=""></router-outlet><equiv-courses _nghost-c1="">
+	
+	<h1 _ngcontent-c1="">Equivalent Courses</h1>
+	<p _ngcontent-c1="">This is basically how I want the forms to work, plus autofill I guess. Can someone port this to angular in such a way that it doesn't screw up with the scripts? Thanks</p>
+	<br _ngcontent-c1="">
+	<form _ngcontent-c1="">
+		Local Course:<br _ngcontent-c1="">
+		<input _ngcontent-c1="" id="LocalCourseNameBox" name="LocalCourseName" oninput="formChange();" type="text" placeholder="COEN 210 - Computer Architecture">
+		<br _ngcontent-c1="">
+		School Name:<br _ngcontent-c1="">
+		<input _ngcontent-c1="" id="SchoolNameBox" name="SchoolName" oninput="formChange();" ="text" placeholder="San Jose State University">
+		<br _ngcontent-c1="">
+		Foreign Course:<br _ngcontent-c1="">
+		<input _ngcontent-c1="" id="ForeignCourseNameBox" name="ForeignCourseName" oninput="formChange();" type="text" placeholder="CMPE 200 - Computer Architecture">
+		<br _ngcontent-c1=""><br _ngcontent-c1="">
+	</form>
+	<table _ngcontent-c1="">
+		<tbody _ngcontent-c1=""><tr _ngcontent-c1="">
+			<th _ngcontent-c1="">Local Course Name</th>
+			<th _ngcontent-c1="">Foreign Course Name</th>
+			<th _ngcontent-c1="">School</th>
+			<th _ngcontent-c1="">Status</th>
+		</tr>
+		<!--bindings={
+  "ng-reflect-ng-for-of": "[object Object],[object Object"
+}--><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 210 - Computer Architecture</td>
+			<td _ngcontent-c1="">CMPE 200 - Computer Architecture</td>
+			<td _ngcontent-c1="">San Jose State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr>
+		<tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 210 - Computer Architecture</td>
+			<td _ngcontent-c1="">CSC 856 - Advanced Computer Architecture</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 233 - Computer Networks</td>
+			<td _ngcontent-c1="">CSC 745 - Computer Networks</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 240 - Machine Learning</td>
+			<td _ngcontent-c1="">CMPE 257 - Machine Learning</td>
+			<td _ngcontent-c1="">San Jose State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 268 - Mobile Application Development</td>
+			<td _ngcontent-c1="">CMPE 236 - Mobile Web Application Systems</td>
+			<td _ngcontent-c1="">San Jose State University</td>
+			<td _ngcontent-c1="">rejected</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 279 - Design &amp; Analysis of Algorithms</td>
+			<td _ngcontent-c1="">CSC 810 - Analysis of Algorithms II</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 279 - Design &amp; Analysis of Algorithms</td>
+			<td _ngcontent-c1="">CS 255 - Design and Analysis of Algorithms</td>
+			<td _ngcontent-c1="">San Jose State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 280 - Database Systems</td>
+			<td _ngcontent-c1="">CSC 730 - Advanced Database Systems</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 280 - Database Systems</td>
+			<td _ngcontent-c1="">CMPE 226 - Database Systems</td>
+			<td _ngcontent-c1="">San Jose State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 283 - Operating Systems</td>
+			<td _ngcontent-c1="">CSC 720 - Advanced Operating Systems</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 285 - Software Engineering</td>
+			<td _ngcontent-c1="">CSC 848 - Software Engineering</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 286 - Software Quality Assurance and Testing</td>
+			<td _ngcontent-c1="">CMPE 287 - Software Quality Assurance and Testing</td>
+			<td _ngcontent-c1="">San Jose State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 313 - Advanced Computer Architecture</td>
+			<td _ngcontent-c1="">CS 247 - Advanced Computer Architecture</td>
+			<td _ngcontent-c1="">San Jose State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 313 - Advanced Computer Architecture</td>
+			<td _ngcontent-c1="">CSC 856 - Advanced Computer Architecture</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 317 - Distributed Systems</td>
+			<td _ngcontent-c1="">CMPE 227 - Distributed Systems</td>
+			<td _ngcontent-c1="">San Jose State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 317 - Distributed Systems</td>
+			<td _ngcontent-c1="">CSC 835 - Distributed Systems</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 350 - Network Security</td>
+			<td _ngcontent-c1="">CMPE 209 - Network Security</td>
+			<td _ngcontent-c1="">San Jose State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 379 - Advanced Design and Analysis of Algorithms</td>
+			<td _ngcontent-c1="">CSC 810 - Analysis of Algorithms II</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">rejected</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 380 - Advanced Database Systems</td>
+			<td _ngcontent-c1="">CSC 730 - Advanced Database Systems</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 383 - Advanced Operating Systems</td>
+			<td _ngcontent-c1="">CSC 720 - Advanced Operating Systems</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">accepted</td>
+		</tr><tr _ngcontent-c1="">
+			<td _ngcontent-c1="">COEN 499 - Independent Study</td>
+			<td _ngcontent-c1="">CSC 899 - Independent Study</td>
+			<td _ngcontent-c1="">San Francisco State University</td>
+			<td _ngcontent-c1="">rejected</td>
+		</tr>
+	</tbody></table>
+	
+  </equiv-courses>
+</app-root>
+
+</body>
+<footer>
+	<script>
+		function formChange(){
+			var localCourse = document.getElementById("LocalCourseNameBox").value;
+			var school = document.getElementById("SchoolNameBox").value;
+			var foreignCourse = document.getElementById("ForeignCourseNameBox").value;
+			var values = [localCourse, foreignCourse, school];
+			//console.log(document.getElementById("LocalCourseNameBox").innerHTML);
+			
+			var listings = document.getElementsByTagName("tr");
+			for(var i = 1; i < listings.length; ++i){
+				var tds = listings[i].getElementsByTagName("td");
+				var show = true;
+				for(var j = 0; j < values.length; ++j){
+					var td = tds[j].innerHTML.toLowerCase();
+					//console.log("td    : " + td);
+					td = td.replace(/<strong>/g, '');
+					td = td.replace(/<\/strong>/g, '');
+					var search = values[j].toLowerCase()
+					//console.log("td    : " + td);
+					//console.log("value : " + search);
+					if(td.indexOf(search) === -1){
+						show = false;
+						//console.log("inequal");
+					}else{
+						//console.log("index : " + td.indexOf(search));
+					}
+				}
+				if(show){
+					//console.log("show " + i);
+					listings[i].style.display = "table-row";
+					for(var j = 0; j < values.length; ++j){
+						var td = tds[j].innerHTML;
+						td = td.replace(/<strong>/g, '');
+						td = td.replace(/<\/strong>/g, '');
+						var search = values[j];
+						index = td.toLowerCase().indexOf(search.toLowerCase());
+						var before = td.substring(0, index);
+						var during = "<strong>"+td.substring(index, index+search.length)+"</strong>";
+						if(search.length === 0) during = "";
+						var after = td.substring(index+search.length);
+						var text = before + during + after;
+						//console.log(text);
+						tds[j].innerHTML = text;
+					}
+				}
+				else{
+					//console.log("hide " + i);
+					listings[i].style.display = "none";
+				}
+				//console.log("");
+			}
+		}
+	</script>
+</footer>
+</HTML>
