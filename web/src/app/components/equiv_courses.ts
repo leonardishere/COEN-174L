@@ -1,36 +1,38 @@
-import { Component, OnInit } from '@angular/core';
-import { EquivCourseJoined } from './../models/equiv_course_joined';
+import { Component } from '@angular/core';
+import { Subject } from 'rxjs/Subject';
+import { EquivCourseJoined } from '../models/equiv_course_joined';
 import { EquivCourseService } from './../services/equiv_courses';
+import { subscribeChanges, contains } from '../utils';
 
 @Component({
 selector: 'equiv-courses',
   template: `
-	<style>
-		input {
-			width: 500px;
-		}
-	</style>
-	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
-	<script>
-		function formChangeLocalCourse(){
-			var str = document.getElementById("LocalCourseNameBox").value;
-			console.log(str);
-		}
-	</script>
-	
 	<h1>Equivalent Courses</h1>
 	<p>I have some a script set up that detects changes to the form. Angular keeps trimming all my scripts out. How we do we get around that?</p>
 	<p>Refer to web/test/test2.html to see how the scripts should work.</p>
 	<br>
 	<form>
 		Local Course:<br>
-		<input id="LocalCourseNameBox" type="text" name="LocalCourseName" placeholder="COEN 210 - Computer Architecture" oninput="formChangeLocalCourse();">
+    <input #LocalCourse
+      type="text"
+      name="LocalCourseName"
+      placeholder="{{placeholders.LocalCourseName}}"
+      (input)="changes.LocalCourseName.next(LocalCourse.value)">
 		<br>
 		School Name:<br>
-		<input id="SchoolNameBox" type="text" name="SchoolName" placeholder="San Jose State University">
+    <input #School
+      type="text"
+      name="SchoolName"
+      placeholder="{{placeholders.SchoolName}}"
+      (input)="changes.SchoolName.next(School.value)">
 		<br>
 		Foreign Course:<br>
-		<input id="ForeignCourseNameBox" type="text" name="ForeignCourseName" placeholder="CMPE 200 - Computer Architecture">
+    <input #ForeignCourse
+      id="ForeignCourseNameBox"
+      type="text"
+      name="ForeignCourseName"
+      placeholder="{{placeholders.ForeignCourseName}}"
+      (input)="changes.ForeignCourseName.next(ForeignCourse.value)">
 		<br><br>
 	</form>
 	<table>
@@ -48,37 +50,66 @@ selector: 'equiv-courses',
 			<td>{{course.Status}}</td>
 		</tr>
 	</table>
-	<script>
-		console.log($("LocalCouseNameBox").value);
-		console.log("cmon man give me a sign");
-		//document.getElementById("LocalCourseNameBox")
-		$("LocalCouseNameBox")
-			.change(function () {
-				var str = document.getElementById("LocalCourseNameBox").value;
-				//$( "div" ).text( str );
-				console.log(str);
-				console.log("change detected");
-			})
-			//.change();
-	</script>
   `,
-  styles: [``]
+  styles: [`
+    input {
+      width: 500px;
+    }
+  `]
 })
-export class EquivCoursesComponent implements OnInit {
+export class EquivCoursesComponent {
   courses: EquivCourseJoined[];
+  all_courses: EquivCourseJoined[];
+  placeholders = {
+    LocalCourseName: "COEN 210 - Computer Architecture",
+    SchoolName: "San Jose State University",
+    ForeignCourseName: "CMPE 200 - Computer Architecture"
+  };
+  search = {
+    LocalCourseName: '',
+    SchoolName: '',
+    ForeignCourseName: ''
+  };
+  changes = {
+    LocalCourseName: new Subject<string>(),
+    SchoolName: new Subject<string>(),
+    ForeignCourseName: new Subject<string>()
+  };
 
   constructor(private equivCourseService: EquivCourseService) { }
 
   ngOnInit(): void {
-    this.equivCourseService.getEquivCourses().then(courses =>
-      this.courses = courses
+	  this.equivCourseService.getEquivCourses().then(courses => {
+	    this.all_courses = courses;
+	    this.courses = courses;
+    });
+
+    subscribeChanges(this.changes.LocalCourseName, (search) => {
+      this.search.LocalCourseName = search;
+      this.filterCourses();
+    });
+    subscribeChanges(this.changes.SchoolName, (search) => {
+      this.search.SchoolName = search
+      this.filterCourses();
+    });
+    subscribeChanges(this.changes.ForeignCourseName, (search) => {
+      this.search.ForeignCourseName = search
+      this.filterCourses();
+    });
+  }
+
+  filterCourses(): void {
+    this.courses = this.all_courses.filter(course =>
+      contains(course.LocalCourseName, this.search.LocalCourseName) &&
+      contains(course.SchoolName, this.search.SchoolName) &&
+      contains(course.ForeignCourseName, this.search.ForeignCourseName)
     );
   }
-  
-	ngAfterViewInit() {
-	}
 
   onSelect(course: EquivCourseJoined): void {
     console.log('Selected', course);
   }
+
+
+  // Utils  
 }

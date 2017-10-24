@@ -1,6 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
+import { FormsModule }   from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { CourseService } from './services/course.service';
@@ -34,7 +35,8 @@ import { ForeignCourseComponent } from './components/foreign_courses';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpModule
+    HttpModule,
+    FormsModule
   ],
   providers: [CourseService, EquivCourseService, LocalCourseService, UserService, ChangeService, SchoolService, ForeignCourseService],
   bootstrap: [AppComponent]
