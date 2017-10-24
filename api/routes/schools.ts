@@ -8,9 +8,8 @@ var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
 	db.all("select Name from school order by Name asc")
-	.then(result => {
-		return sendResults(res, result);
-	});
+	//.then(result => res.json(result));
+	.then(result => {return sendResults(res, result);});
   })
   router.route('/:Name')
 	.get((req, res) => {

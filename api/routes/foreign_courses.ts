@@ -8,9 +8,8 @@ var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
 	db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from ForeignCourse join School on (School.SchoolID=ForeignCourse.SchoolID) left join EquivCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join LocalCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) order by ForeignCourseName asc")
-	.then(result => {
-		return sendResults(res, result, "All Schools");
-	});
+	//.then(result => res.json(result));
+	.then(result => {return sendResults(res, result, "All Schools");});
   });
 router.route('/:SchoolName')
 	.get((req, res) => {
