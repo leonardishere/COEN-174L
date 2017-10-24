@@ -5,6 +5,11 @@ import { EquivCourseService } from './../services/equiv_courses';
 @Component({
 selector: 'equiv-courses',
   template: `
+	<style>
+		input {
+			width: 500px;
+		}
+	</style>
 	<script src="https://code.jquery.com/jquery-1.10.2.js"></script>
 	<script>
 		function formChangeLocalCourse(){
@@ -19,13 +24,13 @@ selector: 'equiv-courses',
 	<br>
 	<form>
 		Local Course:<br>
-		<input id="LocalCourseNameBox" type="text" name="LocalCourseName" value="COEN 210 - Computer Architecture" oninput="formChangeLocalCourse();">
+		<input id="LocalCourseNameBox" type="text" name="LocalCourseName" placeholder="COEN 210 - Computer Architecture" oninput="formChangeLocalCourse();">
 		<br>
 		School Name:<br>
-		<input id="SchoolNameBox" type="text" name="SchoolName" value="San Jose State University" ng-model="schoolName">
+		<input id="SchoolNameBox" type="text" name="SchoolName" placeholder="San Jose State University">
 		<br>
 		Foreign Course:<br>
-		<input id="ForeignCourseNameBox" type="text" name="ForeignCourseName" value="CMPE 200 - Computer Architecture">
+		<input id="ForeignCourseNameBox" type="text" name="ForeignCourseName" placeholder="CMPE 200 - Computer Architecture">
 		<br><br>
 	</form>
 	<table>
