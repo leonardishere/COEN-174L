@@ -7,8 +7,9 @@ selector: 'local-courses',
   template: `
   <h1>Courses </h1>
   <p>unneeded page, use Local Courses</p>
-  <ul>
+  <ul class="list-group">
     <li *ngFor="let course of courses"
+      class="list-group-item"
       (click)="onSelect(course)">
       <span>{{course.LocalCourseName}}</span> / 
       <span>{{course.ForeignCourseName}}</span>
