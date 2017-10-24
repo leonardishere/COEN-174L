@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { FormsModule }   from '@angular/forms';
+import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { AppRoutingModule } from './app-routing.module';
 import { CourseService } from './services/course.service';
@@ -25,18 +26,19 @@ import { ForeignCourseComponent } from './components/foreign_courses';
   declarations: [
     AppComponent,
     CoursesComponent,
-	EquivCoursesComponent,
-	LocalCoursesComponent,
-	UserComponent,
-	ChangeComponent,
-	SchoolComponent,
-	ForeignCourseComponent
+    EquivCoursesComponent,
+    LocalCoursesComponent,
+    UserComponent,
+    ChangeComponent,
+    SchoolComponent,
+    ForeignCourseComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     HttpModule,
-    FormsModule
+    FormsModule,
+    Ng2SmartTableModule
   ],
   providers: [CourseService, EquivCourseService, LocalCourseService, UserService, ChangeService, SchoolService, ForeignCourseService],
   bootstrap: [AppComponent]
