@@ -10,9 +10,8 @@ selector: 'local-courses',
   <ul>
     <li *ngFor="let course of courses"
       (click)="onSelect(course)">
-      <span>{{course.Department}}</span>
-      <span>{{course.CourseNum}}</span>:
-      <span>{{course.Title}}</span>
+      <span>{{course.LocalCourseName}}</span> / 
+      <span>{{course.ForeignCourseName}}</span>
     </li>
   </ul>
   `,

@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as bodyparser from 'body-parser';
+import * as cors from 'cors';
 
 import { EquivCourseRouter } from './routes/equiv_course';
 import { StudentLocalCourseRouter } from './routes/student_local_courses';
@@ -15,6 +16,7 @@ import { EverythingRouter } from './routes/index';
 var app = express();
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
+app.use(cors());
 
 app.use((req, res, next) => {
   console.log(req.method, req.url);

@@ -1,10 +1,16 @@
 import { Injectable } from '@angular/core';
-import { LocalCourse } from './../models/local_course';
-import { LOCAL_COURSES } from './../mock-db/local_courses';
+import { Http } from '@angular/http';
+import { LocalCourse } from '../models/local_course';
+import { environment } from '../../environments/environment'
+
+import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class CourseService {
-  getLocalCourses(): Promise<LocalCourse[]> {
-    return Promise.resolve(LOCAL_COURSES); //TODO: Use HTTP GET to api server
+  constructor(private http: Http) {}
+
+  getLocalCourses(): Promise<any[]> {
+    return this.http.get(environment.api + 'local_courses').toPromise()
+    .then(response => response.json())
   }
 }

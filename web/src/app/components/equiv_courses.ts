@@ -76,12 +76,6 @@ export class EquivCoursesComponent implements OnInit {
   }
   
 	ngAfterViewInit() {
-		var s = document.createElement("script");
-		s.type = "text/javascript";
-		s.innerHTML="console.log('done');"; //inline script
-		s.src = '../../web/node-modules/andrews-custom-scripts/formChangeLocalCourse.ts';
-		console.log('loaded');
-		document.body.appendChild(s);
 	}
 
   onSelect(course: EquivCourseJoined): void {
