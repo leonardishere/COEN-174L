@@ -3,7 +3,7 @@ import { ChangeJoined } from './../models/change_joined';
 import { ChangeService } from './../services/changes';
 
 @Component({
-	selector: 'change',
+	selector: 'changes',
 	template: `
 		<h1>Changes</h1>
 		<table>

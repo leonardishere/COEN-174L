@@ -2,12 +2,24 @@
   <h1>Welcome to {{title}}!</h1>
 </div>
 <ul>
-  <a routerLink="/">Dashboard</a>
-  <a routerLink="/courses">Courses</a>
-  <a routerLink="/equiv_courses">Equivalent Courses</a>
-  <a routerLink="/local_courses">Local Courses</a>
-  <a routerLink="/users">Users</a>
-  <a routerLink="/changes">Changes</a>
+	<p>Don't need: </p>
+	<a routerLink="/">Dashboard</a>
+	<a routerLink="/courses">Courses</a>
+	
+	<p>Student site: </p>
+	<a routerLink="/equiv_courses">Equivalent Courses</a>
+	
+	<p>Admin suite: </p>
+	<a routerLink="/local_courses">Local Courses</a>
+	<a routerLink="/schools">Schools</a>
+	<a routerLink="/users">Users</a>
+	<a routerLink="/changes">Changes</a>
+	<a routerLink="/foreign_courses">ForeignCourses</a>
 </ul>
-
+<style>
+	p {
+		margin-left: 20px;
+		display: inline-block;
+	}
+</style>
 <router-outlet></router-outlet>
