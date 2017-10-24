@@ -1,9 +1,18 @@
 import { Component, OnInit } from '@angular/core';
+
 import { LocalCourse } from './models/local_course';
 import { EquivCourseJoined } from './models/equiv_course_joined';
+import { LocalCourseJoined } from './models/local_course_joined';
+import { User } from './models/users';
+import { ChangeJoined } from './models/change_joined';
+
 import { CourseService } from './course.service';
 import { EquivCourseService } from './course.service';
+import { LocalCourseService } from './course.service';
+import { UserService } from './course.service';
+import { ChangeService } from './course.service';
 
+/* CoursesComponent */
 @Component({
 selector: 'local-courses',
   template: `
@@ -35,6 +44,7 @@ export class CoursesComponent implements OnInit {
   }
 }
 
+/* LocalCoursesComponent */
 @Component({
 selector: 'equiv-courses',
   template: `
@@ -113,5 +123,120 @@ export class EquivCoursesComponent implements OnInit {
 
   onSelect(course: EquivCourseJoined): void {
     console.log('Selected', course);
+  }
+}
+
+/* LocalCoursesComponent */
+@Component({
+	selector: 'local-courses',
+	template: `
+		<h1>Local Courses</h1>
+		<p>if someone could redo this template to make it look like http://localhost:3000/local_courses but better that would be sweet</p>
+		<table>
+			<tr>
+				<th>Local Course Name</th>
+				<th>Foreign Course Name</th>
+				<th>School</th>
+				<th>Status</th>
+			</tr>
+			<tr *ngFor="let course of courses" (click)="onSelect(course)">
+				<td>{{course.LocalCourseName}}</td>
+				<td>{{course.ForeignCourseName}}</td>
+				<td>{{course.SchoolName}}</td>
+				<td>{{course.Status}}</td>
+	`,
+	styles: [``]
+})
+export class LocalCoursesComponent implements OnInit {
+  courses: LocalCourseJoined[];
+
+  constructor(private localCourseService: LocalCourseService) { }
+
+  ngOnInit(): void {
+    this.localCourseService.getLocalCourses().then(courses =>
+      this.courses = courses
+    );
+  }
+
+  onSelect(course: LocalCourseJoined): void {
+    console.log('Selected', course);
+  }
+}
+
+/* UsersComponent */
+@Component({
+	selector: 'users',
+	template: `
+		<h1>Users</h1>
+		<table>
+			<tr>
+				<th>User Name</th>
+				<th>Email</th>
+				<th>Position</th>
+			</tr>
+			<tr *ngFor="let user of users" (click)="onSelect(user)">
+				<td>{{user.Name}}</td>
+				<td>{{user.Email}}</td>
+				<td>{{user.Position}}</td>
+	`,
+	styles: [``]
+})
+export class UserComponent implements OnInit {
+  users: User[];
+
+  constructor(private userService: UserService) { }
+
+  ngOnInit(): void {
+    this.userService.getUsers().then(users =>
+      this.users = users
+    );
+  }
+
+  onSelect(user: User): void {
+    console.log('Selected', user);
+  }
+}
+
+/* ChangeComponent */
+@Component({
+	selector: 'change',
+	template: `
+		<h1>Changes</h1>
+		<table>
+			<tr>
+				<th>Local Course</th>
+				<th>Foreign Course</th>
+				<th>School</th>
+				<th>Status</th>
+				<th>Notes</th>
+				<th>Date</th>
+				<th>User Name</th>
+				<th>User Email</th>
+			</tr>
+			<tr *ngFor="let change of changes" (click)="onSelect(change)">
+				<td>{{change.LocalCourseName}}</td>
+				<td>{{change.ForeignCourseName}}</td>
+				<td>{{change.SchoolName}}</td>
+				<td>{{change.NewStatus}}</td>
+				<td>{{change.Notes}}</td>
+				<td>{{change.Date}}</td>
+				<td>{{change.UserName}}</td>
+				<td>{{change.UserEmail}}</td>
+	`,
+	styles: [``]
+})
+export class ChangeComponent implements OnInit {
+  changes: ChangeJoined[];
+
+  constructor(private changeService: ChangeService) { }
+
+  ngOnInit(): void {
+    this.changeService.getChanges().then(changes =>
+      this.changes = changes
+    );
+  }
+
+  onSelect(change: ChangeJoined): void {
+    console.log('Selected', change);
   }
 }
