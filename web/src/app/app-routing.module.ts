@@ -1,11 +1,11 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
-import { CoursesComponent } from './courses.component';
-import { EquivCoursesComponent } from './courses.component';
-import { LocalCoursesComponent } from './courses.component';
-import { UserComponent } from './courses.component';
-import { ChangeComponent } from './courses.component';
+import { CoursesComponent } from './components/courses.component';
+import { EquivCoursesComponent } from './components/equiv_courses';
+import { LocalCoursesComponent } from './components/local_courses';
+import { UserComponent } from './components/users';
+import { ChangeComponent } from './components/changes';
 
 const routes: Routes = [
   { path: '', redirectTo: '/', pathMatch: 'full' },

@@ -2,18 +2,18 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
 import { AppRoutingModule } from './app-routing.module';
-import { CourseService } from './course.service';
-import { EquivCourseService } from './course.service';
-import { LocalCourseService } from './course.service';
-import { UserService } from './course.service';
-import { ChangeService } from './course.service';
+import { CourseService } from './services/course.service';
+import { EquivCourseService } from './services/equiv_courses';
+import { LocalCourseService } from './services/local_courses';
+import { UserService } from './services/users';
+import { ChangeService } from './services/changes';
 
 import { AppComponent } from './app.component';
-import { CoursesComponent } from './courses.component';
-import { EquivCoursesComponent } from './courses.component';
-import { LocalCoursesComponent } from './courses.component';
-import { UserComponent } from './courses.component';
-import { ChangeComponent } from './courses.component';
+import { CoursesComponent } from './components/courses.component';
+import { EquivCoursesComponent } from './components/equiv_courses';
+import { LocalCoursesComponent } from './components/local_courses';
+import { UserComponent } from './components/users';
+import { ChangeComponent } from './components/changes';
 
 @NgModule({
   declarations: [
