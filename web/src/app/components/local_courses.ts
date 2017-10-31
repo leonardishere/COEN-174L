@@ -40,7 +40,6 @@ export class LocalCoursesComponent implements OnInit {
   ngOnInit(): void {
     this.localCourseService.getLocalCourses().then(courses => {
       this.courses = courses;
-			this.source = new LocalDataSource(this.courses);
     });
   }
 

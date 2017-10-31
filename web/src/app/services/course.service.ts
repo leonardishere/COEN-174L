@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { LocalCourse } from '../models/local_course';
-import { environment } from '../../environments/environment'
 
+import { Http } from '@angular/http';
+import { environment } from '../../environments/environment'
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
