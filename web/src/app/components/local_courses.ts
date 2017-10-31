@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { LocalCourse2 } from './../models/local_course2';
+import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { LocalCourseService } from './../services/local_courses';
 
 @Component({
@@ -37,9 +38,10 @@ export class LocalCoursesComponent implements OnInit {
   constructor(private localCourseService: LocalCourseService) { }
 
   ngOnInit(): void {
-    this.localCourseService.getLocalCourses().then(courses =>
-      this.courses = courses
-    );
+    this.localCourseService.getLocalCourses().then(courses => {
+      this.courses = courses;
+			this.source = new LocalDataSource(this.courses);
+    });
   }
 
   onSelect(course: LocalCourse2): void {

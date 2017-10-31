@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Subject } from 'rxjs/Subject';
+import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { EquivCourseJoined } from '../models/equiv_course_joined';
 import { EquivCourseService } from './../services/equiv_courses';
 import { subscribeChanges, contains } from '../utils';
@@ -32,21 +33,10 @@ selector: 'equiv-courses',
       (input)="changes.ForeignCourseName.next(ForeignCourse.value)">
 		<br><br>
 	</form>
-	<table>
-		<tr>
-			<th>Local Course Name</th>
-			<th>Foreign Course Name</th>
-			<th>School</th>
-			<th>Status</th>
-		</tr>
-		<tr *ngFor="let course of courses"
-			(click)="onSelect(course)" >
-			<td>{{course.LocalCourseName}}</td>
-			<td>{{course.ForeignCourseName}}</td>
-			<td>{{course.SchoolName}}</td>
-			<td>{{course.Status}}</td>
-		</tr>
-	</table>
+  <ng2-smart-table
+    [settings]="settings"
+    [source]="source">
+  </ng2-smart-table>
   `,
   styles: [`
     input {
@@ -56,51 +46,52 @@ selector: 'equiv-courses',
 })
 export class EquivCoursesComponent {
   courses: EquivCourseJoined[];
-  all_courses: EquivCourseJoined[];
+  source: LocalDataSource;
   placeholders = {
     LocalCourseName: "COEN 210 - Computer Architecture",
     SchoolName: "San Jose State University",
     ForeignCourseName: "CMPE 200 - Computer Architecture"
-  };
-  search = {
-    LocalCourseName: '',
-    SchoolName: '',
-    ForeignCourseName: ''
   };
   changes = {
     LocalCourseName: new Subject<string>(),
     SchoolName: new Subject<string>(),
     ForeignCourseName: new Subject<string>()
   };
+  settings = {
+    columns: {
+      LocalCourseName: { title: 'Local Course' },
+      ForeignCourseName: { title: 'Foreign Course' },
+      SchoolName: { title: 'School' },
+      Status: { title: 'Status'}
+    },
+    pager: {
+			perPage: 100
+		},
+    actions: {
+      add: false,
+      delete: false,
+      edit: false
+    },
+    hideSubHeader: true
+  };
 
   constructor(private equivCourseService: EquivCourseService) { }
 
   ngOnInit(): void {
 	  this.equivCourseService.getEquivCourses().then(courses => {
-	    this.all_courses = courses;
 	    this.courses = courses;
+      this.source = new LocalDataSource(this.courses);
     });
 
     subscribeChanges(this.changes.LocalCourseName, (search) => {
-      this.search.LocalCourseName = search;
-      this.filterCourses();
+      this.source.addFilter({field: 'LocalCourseName', search: search});
     });
     subscribeChanges(this.changes.SchoolName, (search) => {
-      this.search.SchoolName = search
-      this.filterCourses();
+      this.source.addFilter({field: 'SchoolName', search: search});
     });
     subscribeChanges(this.changes.ForeignCourseName, (search) => {
-      this.search.ForeignCourseName = search
-      this.filterCourses();
+      this.source.addFilter({field: 'ForeignCourseName', search: search});
     });
-  }
-
-  filterCourses(): void {
-    this.courses = this.all_courses.filter(course =>
-      contains(course.LocalCourseName, this.search.LocalCourseName) &&
-      contains(course.SchoolName, this.search.SchoolName) &&
-      contains(course.ForeignCourseName, this.search.ForeignCourseName)
-    );
   }
 
   onSelect(course: EquivCourseJoined): void {
