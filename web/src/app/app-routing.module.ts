@@ -10,8 +10,7 @@ import { SchoolComponent } from './components/schools';
 import { ForeignCourseComponent } from './components/foreign_courses';
 
 const routes: Routes = [
-  { path: '', redirectTo: '/', pathMatch: 'full' },
-  { path: 'courses', component: CoursesComponent },
+  { path: '', redirectTo: '/equiv_courses', pathMatch: 'full' },
   { path: 'equiv_courses', component: EquivCoursesComponent },
   { path: 'local_courses', component: LocalCoursesComponent },
   { path: 'users', component: UserComponent},
