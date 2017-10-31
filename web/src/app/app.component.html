@@ -1,21 +1,45 @@
 <div style="text-align:center">
   <h1>Welcome to {{title}}!</h1>
 </div>
-<ul>
-	<p>Student site: </p>
-	<a routerLink="/equiv_courses">Equivalent Courses</a>
-	
-	<p>Admin suite: </p>
-	<a routerLink="/local_courses">Local Courses</a>
-	<a routerLink="/foreign_courses">Foreign Courses</a>
-	<a routerLink="/schools">Schools</a>
-	<a routerLink="/users">Users</a>
-	<a routerLink="/changes">Changes</a>
+
+<!-- comment -->
+
+<nav class="navbar navbar-inverse">
+<div class="container-fluid">
+
+<ul class="nav justify-content-left">
+  <li class="nav-item">
+	   <a class="nav-link" routerLink="/equiv_courses">Equivalent Courses</a>
+  </li>
 </ul>
+
+<ul class="nav justify-content-right">
+  <li class="nav-item">
+	   <a class="nav-link" routerLink="/local_courses">Local Courses</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" routerLink="/foreign_courses">Foreign Courses</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" routerLink="/schools">Schools</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" routerLink="/users">Users</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" routerLink="/changes">Changes</a>
+  </li>
+</ul>
+
+
+</div>
+</nav>
+
+
 <style>
 	p {
 		margin-left: 20px;
-		display: inline-block;
+		display: inline;
 	}
 </style>
 <router-outlet></router-outlet>
