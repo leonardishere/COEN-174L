@@ -9,7 +9,8 @@ import { UserService } from './../services/users';
     <h1>Users</h1>
     <ng2-smart-table
       [settings]="settings"
-      [source]="source">
+      [source]="source"
+      (createConfirm)="add($event)">
     </ng2-smart-table>
 	`,
   styles: [``]
@@ -25,7 +26,11 @@ export class UserComponent implements OnInit {
     },
     pager: {
 			perPage: 100
-		}
+    },
+    mode: 'inline',
+    add: {
+      confirmCreate: true
+    }
   };
 
   constructor(private userService: UserService) { }
@@ -39,5 +44,11 @@ export class UserComponent implements OnInit {
 
   onSelect(user: User): void {
     console.log('Selected', user);
+  }
+
+  add(e: any) {
+    console.log('Add', e);
+    this.userService.addUser(e.newData)
+      .then(() => e.confirm.resolve(e.newData));
   }
 }

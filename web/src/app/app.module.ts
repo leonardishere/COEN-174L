@@ -15,6 +15,7 @@ import { SchoolService } from './services/schools';
 import { ForeignCourseService } from './services/foreign_courses';
 
 import { AppComponent } from './app.component';
+import { LoginComponent } from './components/login.component';
 import { CoursesComponent } from './components/courses.component';
 import { EquivCoursesComponent } from './components/equiv_courses';
 import { LocalCoursesComponent } from './components/local_courses';
@@ -26,6 +27,7 @@ import { ForeignCourseComponent } from './components/foreign_courses';
 @NgModule({
   declarations: [
     AppComponent,
+    LoginComponent,
     CoursesComponent,
     EquivCoursesComponent,
     LocalCoursesComponent,

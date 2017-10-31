@@ -14,4 +14,8 @@ export class UserService {
 		return this.http.get(environment.api + 'users').toPromise()
 		.then(response => response.json())
 	}  
+
+  addUser(user): Promise<any> {
+    return this.http.post(environment.api + 'auth/add', user).toPromise();
+  }
 }

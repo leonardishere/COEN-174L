@@ -1,7 +1,9 @@
 import * as express from 'express';
+import * as passport from 'passport';
 import * as bodyparser from 'body-parser';
 import * as cors from 'cors';
 
+import { AuthRouter } from './routes/auth';
 import { EquivCourseRouter } from './routes/equiv_course';
 import { StudentLocalCourseRouter } from './routes/student_local_courses';
 import { FileServerRouter } from './routes/file_server_test';
@@ -14,8 +16,11 @@ import { ChangesRouter } from './routes/changes';
 import { EverythingRouter } from './routes/index';
 
 var app = express();
+//app.use(express.session({ secret: 'keyboard cat' }));
 app.use(bodyparser.urlencoded({ extended: true }));
 app.use(bodyparser.json());
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(cors());
 
 app.use((req, res, next) => {
@@ -23,6 +28,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use('/auth', AuthRouter);
 app.use('/equiv_course', EquivCourseRouter);
 //Add more routes here
 app.use('/student_local_courses', StudentLocalCourseRouter);
