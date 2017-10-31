@@ -8,9 +8,6 @@ import { subscribeChanges, contains } from '../utils';
 selector: 'equiv-courses',
   template: `
 	<h1>Equivalent Courses</h1>
-	<p>I have some a script set up that detects changes to the form. Angular keeps trimming all my scripts out. How we do we get around that?</p>
-	<p>Refer to web/test/test2.html to see how the scripts should work.</p>
-	<br>
 	<form>
 		Local Course:<br>
     <input #LocalCourse
@@ -109,7 +106,4 @@ export class EquivCoursesComponent {
   onSelect(course: EquivCourseJoined): void {
     console.log('Selected', course);
   }
-
-
-  // Utils  
 }
