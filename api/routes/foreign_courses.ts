@@ -8,8 +8,9 @@ var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
 	db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from ForeignCourse join School on (School.SchoolID=ForeignCourse.SchoolID) left join EquivCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join LocalCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) order by ForeignCourseName asc")
-	.then(result => res.json(result));
+	//.then(result => res.json(result));
 	//.then(result => {return sendResults(res, result, "All Schools");});
+	.then(result => {return sendResults3(res, result);});
   });
 router.route('/:SchoolName')
 	.get((req, res) => {
@@ -113,6 +114,79 @@ function sendResults(res, result, schoolName){
 	res.write("</script>");
 	
 	
+	return res.end();
+}
+
+interface LocalCourse{
+	LocalCourseName: string;
+	Status: string;
+}
+
+interface ForeignCourse{
+	ForeignCourseName: string;
+	SchoolName: string;
+	LocalCourses: Array<LocalCourse>;
+}
+
+function sendResults3(res, result){
+	var columnNames1 = ["SCU Course", "Equivalencies"];
+	var columnNames2 = ["Foreign Course", "School", "Status"];
+	var columns2 = ["ForeignCourseName", "SchoolName", "Status"];
+	
+	var array1 = new Array<ForeignCourse>();
+	var array2 = new Array<LocalCourse>();
+	var obj1: ForeignCourse = {ForeignCourseName:'',SchoolName:'',LocalCourses: new Array<LocalCourse>()};
+	
+	//console.log("begin table parsing");
+	var courseID=-1, start=true, innerTableOpen=false;
+	result.forEach((row) => {
+		//console.log("equality check: " + start || courseID != row['LocalCourseID']);
+		//console.log("" + courseID + ", " + row['LocalCourseID']);
+		if(start || courseID != row['LocalCourseID']){
+			//console.log('LocalCourseName: ' + row['LocalCourseName']);
+			if(innerTableOpen){
+				//console.log("\tclose inner table");
+				obj1['LocalCourses'] = array2;
+				array1.push(obj1);
+				obj1 = {ForeignCourseName:'',SchoolName:'',LocalCourses: new Array<LocalCourse>()};
+				array2 = new Array<LocalCourse>();
+			}
+			//console.log("\nbegin new row in main table: " + row['LocalCourseName']);
+			obj1['ForeignCourseName'] = row['ForeignCourseName'];
+			obj1['SchoolName'] = row['SchoolName'];
+			if(row['LocalCourseID'] === null){
+				//console.log("no equivalencies were found");
+				obj1['LocalCourses'] = new Array<LocalCourse>();
+				array1.push(obj1);
+				obj1 = {ForeignCourseName:'',SchoolName:'',LocalCourses: new Array<LocalCourse>()};
+				innerTableOpen = false;
+			}else{
+				//console.log("equivalencies were found. create inner table");
+				//console.log("add to inner table: " + row['ForeignCourseName']);
+				var obj2: LocalCourse = {LocalCourseName:'',Status:''};
+				obj2['LocalCourseName'] = row['LocalCourseName'];
+				obj2['Status'] = row['Status'];
+				array2.push(obj2);
+				innerTableOpen = true;
+			}
+		}else{
+			//console.log("add to inner table: " + row['ForeignCourseName']);
+			var obj2: LocalCourse = {LocalCourseName:'',Status:''};
+			obj2['LocalCourseName'] = row['LocalCourseName'];
+			obj2['Status'] = row['Status'];
+			array2.push(obj2);
+			innerTableOpen = true;
+		}
+		start = false;
+		courseID = row['ForeignCourseID'];
+	});
+	//console.log("end table parsing");
+	if(innerTableOpen){
+		//console.log("close inner table");
+		array1.push(obj1);
+	}
+	
+	res.json(array1);
 	return res.end();
 }
 
