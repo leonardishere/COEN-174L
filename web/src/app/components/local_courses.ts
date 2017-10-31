@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { LocalCourseJoined } from './../models/local_course_joined';
 import { LocalCourseService } from './../services/local_courses';
 
@@ -6,31 +7,34 @@ import { LocalCourseService } from './../services/local_courses';
 	selector: 'local-courses',
 	template: `
 		<h1>Local Courses</h1>
-		<p>if someone could redo this template to make it look like http://localhost:3000/local_courses but better that would be sweet</p>
-		<table>
-			<tr>
-				<th>Local Course Name</th>
-				<th>Foreign Course Name</th>
-				<th>School</th>
-				<th>Status</th>
-			</tr>
-			<tr *ngFor="let course of courses" (click)="onSelect(course)">
-				<td>{{course.LocalCourseName}}</td>
-				<td>{{course.ForeignCourseName}}</td>
-				<td>{{course.SchoolName}}</td>
-				<td>{{course.Status}}</td>
+		<ng2-smart-table
+			[settings]="settings"
+			[source]="source">
+		</ng2-smart-table>
 	`,
 	styles: [``]
 })
 export class LocalCoursesComponent implements OnInit {
   courses: LocalCourseJoined[];
-
+	source: LocalDataSource;
+  settings = {
+    columns: {
+      LocalCourseName: { title: 'Local Course' },
+      ForeignCourseName: { title: 'Foreign Course' },
+      SchoolName: { title: 'School' },
+			Status: { title: 'Status' }
+    },
+		pager: {
+			perPage: 100
+		}
+  };
   constructor(private localCourseService: LocalCourseService) { }
 
   ngOnInit(): void {
-    this.localCourseService.getLocalCourses().then(courses =>
-      this.courses = courses
-    );
+    this.localCourseService.getLocalCourses().then(courses => {
+      this.courses = courses;
+			this.source = new LocalDataSource(this.courses);
+    });
   }
 
   onSelect(course: LocalCourseJoined): void {

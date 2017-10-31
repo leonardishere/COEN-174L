@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { ChangeJoined } from './../models/change_joined';
 import { ChangeService } from './../services/changes';
 
@@ -6,38 +7,39 @@ import { ChangeService } from './../services/changes';
 	selector: 'changes',
 	template: `
 		<h1>Changes</h1>
-		<table>
-			<tr>
-				<th>Local Course</th>
-				<th>Foreign Course</th>
-				<th>School</th>
-				<th>Status</th>
-				<th>Notes</th>
-				<th>Date</th>
-				<th>User Name</th>
-				<th>User Email</th>
-			</tr>
-			<tr *ngFor="let change of changes" (click)="onSelect(change)">
-				<td>{{change.LocalCourseName}}</td>
-				<td>{{change.ForeignCourseName}}</td>
-				<td>{{change.SchoolName}}</td>
-				<td>{{change.NewStatus}}</td>
-				<td>{{change.Notes}}</td>
-				<td>{{change.Date}}</td>
-				<td>{{change.UserName}}</td>
-				<td>{{change.UserEmail}}</td>
+		<ng2-smart-table
+      [settings]="settings"
+      [source]="source">
+    </ng2-smart-table>
 	`,
 	styles: [``]
 })
 export class ChangeComponent implements OnInit {
   changes: ChangeJoined[];
+	source: LocalDataSource;
+	settings = {
+    columns: {
+      LocalCourseName: { title: 'Local Course' },
+      ForeignCourseName: { title: 'Foreign Course' },
+      SchoolName: { title: 'School' },
+			NewStatus: { title: 'Status' },
+			Notes: { title: 'Notes' },
+			Date: { title: 'Date' },
+			UserName: { title: 'User name'},
+			UserEmail: { title: 'User email'}
+    },
+    pager: {
+			perPage: 100
+		}
+  };
 
   constructor(private changeService: ChangeService) { }
 
   ngOnInit(): void {
-    this.changeService.getChanges().then(changes =>
-      this.changes = changes
-    );
+    this.changeService.getChanges().then(changes => {
+      this.changes = changes;
+			this.source = new LocalDataSource(this.changes);
+    });
   }
 
   onSelect(change: ChangeJoined): void {

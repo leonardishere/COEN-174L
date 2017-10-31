@@ -22,7 +22,10 @@ export class UserComponent implements OnInit {
       Name: { title: 'User Name' },
       Email: { title: 'Email' },
       Position: { title: 'Position' }
-    }
+    },
+    pager: {
+			perPage: 100
+		}
   };
 
   constructor(private userService: UserService) { }
