@@ -2,6 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { FormsModule }   from '@angular/forms';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -38,6 +39,7 @@ import { ForeignCourseComponent } from './components/foreign_courses';
     AppRoutingModule,
     HttpModule,
     FormsModule,
+    NgbModule.forRoot(),
     Ng2SmartTableModule
   ],
   providers: [CourseService, EquivCourseService, LocalCourseService, UserService, ChangeService, SchoolService, ForeignCourseService],
