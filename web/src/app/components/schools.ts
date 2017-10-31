@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { School } from './../models/school';
 import { SchoolService } from './../services/schools';
 
@@ -6,26 +7,33 @@ import { SchoolService } from './../services/schools';
 	selector: 'schools',
 	template: `
 		<h1>Schools</h1>
-		<p>Each link should connect to foreign_courses/schoolName, how to?</p>
-		<table>
-			<tr>
-				<th>Name</th>
-			</tr>
-			<tr *ngFor="let school of schools" (click)="onSelect(school)">
-				<td>{{school.Name}} <a routerLink="../foreign_courses/{{school.Name}}">Courses</a></td>
-			</tr>
+		<ng2-smart-table
+		[settings]="settings"
+		[source]="source">
+		</ng2-smart-table>
 	`,
 	styles: [``]
 })
 export class SchoolComponent implements OnInit {
   schools: School[];
-
+  source: LocalDataSource;
+  
+  settings = {
+    columns: {
+		Name: { title: 'Name' }
+    },
+    pager: {
+		perPage: 100
+    }
+  };
   constructor(private schoolService: SchoolService) { }
 
   ngOnInit(): void {
-    this.schoolService.getSchools().then(schools =>
-      this.schools = schools
-    );
+    this.schoolService.getSchools().then(schools => {
+      this.schools = schools;
+	  console.log(this.schools);
+	  this.source = new LocalDataSource(this.schools);
+    });
   }
 
   onSelect(school: School): void {
