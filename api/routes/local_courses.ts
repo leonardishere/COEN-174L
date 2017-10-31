@@ -233,12 +233,15 @@ function sendResults2(res, result){
 }
 
 interface ForeignCourse{
+	EquivID: number;
+	ForeignCourseID: number;
 	ForeignCourseName: string;
 	SchoolName: string;
 	Status: string;
 }
 
 interface LocalCourse{
+	LocalCourseID: number;
 	LocalCourseName: string;
 	ForeignCourses: Array<ForeignCourse>;
 }
@@ -250,7 +253,7 @@ function sendResults3(res, result){
 	
 	var array1 = new Array<LocalCourse>();
 	var array2 = new Array<ForeignCourse>();
-	var obj1: LocalCourse = {LocalCourseName:'',ForeignCourses: new Array<ForeignCourse>()};
+	var obj1: LocalCourse = {LocalCourseID: 0, LocalCourseName:'',ForeignCourses: new Array<ForeignCourse>()};
 	
 	//console.log("begin table parsing");
 	var courseID=-1, start=true, innerTableOpen=false;
@@ -263,21 +266,24 @@ function sendResults3(res, result){
 				//console.log("\tclose inner table");
 				obj1['ForeignCourses'] = array2;
 				array1.push(obj1);
-				obj1 = {LocalCourseName:'',ForeignCourses: new Array<ForeignCourse>()};
+				obj1 = {LocalCourseID: 0, LocalCourseName:'',ForeignCourses: new Array<ForeignCourse>()};
 				array2 = new Array<ForeignCourse>();
 			}
 			//console.log("\nbegin new row in main table: " + row['LocalCourseName']);
+			obj1['LocalCourseID'] = row['LocalCourseID'];
 			obj1['LocalCourseName'] = row['LocalCourseName'];
 			if(row['ForeignCourseID'] === null){
 				//console.log("no equivalencies were found");
 				obj1['ForeignCourses'] = new Array<ForeignCourse>();
 				array1.push(obj1);
-				obj1 = {LocalCourseName:'',ForeignCourses: new Array<ForeignCourse>()};
+				obj1 = {LocalCourseID: 0, LocalCourseName:'',ForeignCourses: new Array<ForeignCourse>()};
 				innerTableOpen = false;
 			}else{
 				//console.log("equivalencies were found. create inner table");
 				//console.log("add to inner table: " + row['ForeignCourseName']);
-				var obj2: ForeignCourse = {ForeignCourseName:'',SchoolName:'',Status:''};
+				var obj2: ForeignCourse = {EquivID: 0, ForeignCourseID: 0, ForeignCourseName:'',SchoolName:'',Status:''};
+				obj2['EquivID'] = row['EquivID'];
+				obj2['ForeignCourseID'] = row['ForeignCourseID'];
 				obj2['ForeignCourseName'] = row['ForeignCourseName'];
 				obj2['SchoolName'] = row['SchoolName'];
 				obj2['Status'] = row['Status'];
@@ -286,7 +292,9 @@ function sendResults3(res, result){
 			}
 		}else{
 			//console.log("add to inner table: " + row['ForeignCourseName']);
-			var obj2: ForeignCourse = {ForeignCourseName:'',SchoolName:'',Status:''};
+			var obj2: ForeignCourse = {EquivID: 0, ForeignCourseID: 0, ForeignCourseName:'',SchoolName:'',Status:''};
+			obj2['EquivID'] = row['EquivID'];
+			obj2['ForeignCourseID'] = row['ForeignCourseID'];
 			obj2['ForeignCourseName'] = row['ForeignCourseName'];
 			obj2['SchoolName'] = row['SchoolName'];
 			obj2['Status'] = row['Status'];

@@ -116,7 +116,10 @@ export class LocalCoursesComponent implements OnInit {
     this.dialogCourse = course;
     this.modalService.open(content).result.then((result) => {
       course.ForeignCourses.push(result);
+      console.log(course);
+      result.LocalCourseID = course.LocalCourseID;
       console.log(result);
+      this.localCourseService.addEquivCourse(result);
     });
   }
 
@@ -127,15 +130,17 @@ export class LocalCoursesComponent implements OnInit {
     this.modalService.open(content).result.then((result) => {
       let i = course.ForeignCourses.find(fc => fc.ForeignCourseName === foreignCourse.ForeignCourseName);
       course.ForeignCourses[i] = result;
+      result.LocalCourseID = course.LocalCourseID;
       console.log(result);
+      this.localCourseService.editEquivCourse(result);
     });
   }
 
   delete(course, foreignCourse) {
-    this.dialogCourse = course;
-    this.dialogInputs = foreignCourse;
     course.ForeignCourses = course.ForeignCourses.filter(fc =>
 	    fc.ForeignCourseName !== foreignCourse.ForeignCourseName
     );
+    foreignCourse.LocalCourseID = course.LocalCourseID;
+    this.localCourseService.deleteEquivCourse(foreignCourse);
   }
 }

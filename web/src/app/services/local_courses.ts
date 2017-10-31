@@ -14,4 +14,16 @@ export class LocalCourseService {
 		return this.http.get(environment.api + 'local_courses').toPromise()
 		.then(response => response.json())
 	}
+
+  addEquivCourse(course): Promise<any> {
+	  return this.http.post(environment.api + 'equiv_course', course).toPromise();
+  }
+
+  deleteEquivCourse(course): Promise<any> {
+	  return this.http.delete(environment.api + 'equiv_course/'+course.EquivID).toPromise();
+  }
+
+  editEquivCourse(course): Promise<any> {
+	  return this.http.put(environment.api + 'equiv_course/'+course.EquivID, course).toPromise();
+  }
 }
