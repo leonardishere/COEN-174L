@@ -9,8 +9,8 @@ router.route('/')
   .get((req, res) => {
 	//db.all("select * from Change join User on UserID=AdminID")
 	db.all("select LocalCourse.Dept||\" \"||LocalCourse.CourseNum||\" - \"||LocalCourse.Title as LocalCourseName, ForeignCourse.Dept||\" \"||ForeignCourse.CourseNum||\" - \"||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName, NewStatus, Notes, Date, User.Name as UserName, User.Email as UserEmail from LocalCourse join EquivCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) join ForeignCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) join School on (School.SchoolID=ForeignCourse.SchoolID) join Change on (EquivCourse.EquivID=Change.EquivID) join User on (Change.AdminID=User.UserID) order by Date desc")
-	//.then(result => res.json(result));
-	.then(result => {return sendResults(res, result);});
+	.then(result => res.json(result));
+	//.then(result => {return sendResults(res, result);});
   });
 	
 function sendResults(res, result){
