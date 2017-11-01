@@ -10,15 +10,6 @@ router.route('/')
 	db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from ForeignCourse join School on (School.SchoolID=ForeignCourse.SchoolID) left join EquivCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join LocalCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) order by ForeignCourseName asc")
 	.then(result => {return reformatResults(res, result);});
   });
-router.route('/:SchoolName')
-	.get((req, res) => {
-		//db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from ForeignCourse join School on (School.SchoolID=ForeignCourse.SchoolID) left join EquivCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join LocalCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) where " + req.params.SchoolName + " order by ForeignCourseName asc")
-		//speed up?
-		db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from ForeignCourse join School on (School.SchoolID=ForeignCourse.SchoolID) left join EquivCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join LocalCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) where School.SchoolID in (select SchoolID from School where " + req.params.SchoolName + ") order by ForeignCourseName asc")
-		.then(result => {
-			return sendResults(res, result, req.params.SchoolName);
-		});
-	});
   
 interface LocalCourse{
 	EquivID: number;
@@ -37,7 +28,7 @@ interface ForeignCourse{
 function reformatResults(res, result){
 	var array1 = new Array<ForeignCourse>();
 	var array2 = new Array<LocalCourse>();
-	var obj1: ForeignCourse = {ForeignCourseName:'',SchoolName:'',LocalCourses: new Array<LocalCourse>()};
+	var obj1: ForeignCourse = {ForeignCourseID:0,ForeignCourseName:'',SchoolName:'',LocalCourses: new Array<LocalCourse>()};
 	
 	var courseID=-1, start=true, innerTableOpen=false;
 	result.forEach((row) => {
@@ -53,17 +44,19 @@ function reformatResults(res, result){
 			if(row['LocalCourseID'] === null){
 				obj1['LocalCourses'] = new Array<LocalCourse>();
 				array1.push(obj1);
-				obj1 = {ForeignCourseName:'',SchoolName:'',LocalCourses: new Array<LocalCourse>()};
+				obj1 = {ForeignCourseID:0,ForeignCourseName:'',SchoolName:'',LocalCourses: new Array<LocalCourse>()};
 				innerTableOpen = false;
 			}else{
-				var obj2: LocalCourse = {LocalCourseName:'',Status:''};
+				var obj2: LocalCourse = {EquivID:0,LocalCourseID:0,LocalCourseName:'',Status:''};
+				obj2['LocalCourseID'] = row['LocalCourseID'];
 				obj2['LocalCourseName'] = row['LocalCourseName'];
 				obj2['Status'] = row['Status'];
 				array2.push(obj2);
 				innerTableOpen = true;
 			}
 		}else{
-			var obj2: LocalCourse = {LocalCourseName:'',Status:''};
+			var obj2: LocalCourse = {EquivID:0,LocalCourseID:0,LocalCourseName:'',Status:''};
+			obj2['LocalCourseID'] = row['LocalCourseID'];
 			obj2['LocalCourseName'] = row['LocalCourseName'];
 			obj2['Status'] = row['Status'];
 			array2.push(obj2);
