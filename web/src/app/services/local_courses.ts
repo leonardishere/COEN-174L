@@ -26,4 +26,8 @@ export class LocalCourseService {
   editEquivCourse(course): Promise<any> {
 	  return this.http.put(environment.api + 'equiv_course/'+course.EquivID, course).toPromise();
   }
+  
+  addLocalCourse(course): Promise<any>{
+	  return this.http.post(environment.api + 'local_courses', course).toPromise();
+  }
 }

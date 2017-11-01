@@ -10,6 +10,24 @@ router.route('/')
 	console.log('Get local courses');
 	db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from LocalCourse left join EquivCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) left join ForeignCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join School on (School.SchoolID=ForeignCourse.SchoolID) order by LocalCourseName asc")
 	.then(result => {return reformatResults(res, result);});
+  })
+  .post((req, res) => {
+	  /*
+	  db.run(`INSERT INTO School (Name) VALUES (?)`, [req.body.SchoolName])
+	  .then(result => result.stmt.lastID)
+	  .then(SchoolID =>
+	    db.run(`INSERT INTO ForeignCourse (Dept, CourseNum, Title, SchoolID) VALUES (?,?,?,?)`, 
+	    ['CMPE', '123', req.body.ForeignCourseName, SchoolID]))
+	  .then(result => result.stmt.lastID)
+	  .then(ForeignCourseID =>
+	    db.run(`INSERT INTO EquivCourse
+	      (LocalCourseID, ForeignCourseID, Status)
+	      VALUES (?,?,?)`,
+	      [req.body.LocalCourseID, ForeignCourseID, req.body.Status]))
+	  .then(result => res.json({ row: result.stmt.lastID }));
+	  */
+	  db.run(`INSERT INTO LocalCourse (Dept, CourseNum, Title) VALUES (?,?,?)`, [req.body.Dept, req.body.CourseNum, req.body.CourseTitle])
+	  .then(result => res.json(result));
   });
 
 interface ForeignCourse{
