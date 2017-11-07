@@ -30,4 +30,12 @@ export class LocalCourseService {
   addLocalCourse(course): Promise<any>{
 	  return this.http.post(environment.api + 'local_courses', course).toPromise();
   }
+  
+  deleteLocalCourse(course): Promise<any> {
+	  return this.http.delete(environment.api + 'local_course/'+course.LocalCourseID).toPromise();
+  }
+
+  editLocalCourse(course): Promise<any> {
+	  return this.http.put(environment.api + 'local_course/'+course.LocalCourseID, course).toPromise();
+  }
 }

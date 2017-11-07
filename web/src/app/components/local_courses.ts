@@ -10,54 +10,54 @@ import { subscribeChanges, contains } from '../utils';
   selector: 'local-courses',
   template: `
     <h1>Local Courses</h1>
-	<button type="button" class="btn btn-success" (click)="openNewCourse(content2)">Add Course</button>
-	<br>
-	<p>This adds the course, but doesn't display it. Should we force a refresh or what?</p>
-	<form>
-		Course Name:
-		<input #LocalCourse 
-			type="text" 
-			name="LocalCourseName" 
-			placeholder="{{placeholders.LocalCourseName}}" (input)="changes.LocalCourseName.next(LocalCourse.value)"/>
-	</form>
-	<br>
-	<p>This should filter courses. I tried to do it like you did in equiv_courses, but I realized the accordion doesnt use a LocalDataSource that you can filter.</p>
+    <button type="button" class="btn btn-success" (click)="openNewCourse(content2)">Add Course</button>
+    <br>
+    <p>This adds the course, but doesn't display it. Should we force a refresh or what?</p>
+    <form>
+      Course Name:
+      <input #LocalCourse 
+        type="text" 
+        name="LocalCourseName" 
+        placeholder="{{placeholders.LocalCourseName}}" (input)="changes.LocalCourseName.next(LocalCourse.value)"/>
+    </form>
+    <br>
+    <p>This should filter courses. I tried to do it like you did in equiv_courses, but I realized the accordion doesnt use a LocalDataSource that you can filter.</p>
 	
 	
-	<!-- Equivalency Modal -->
+    <!-- Equivalency Modal -->
     <ng-template #content let-c="close" let-d="dismiss">
       <div class="modal-header">
-		<h4 class="modal-title">{{dialogInputs.Mode}} Equivalency</h4>
-			<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-		SCU Course: {{dialogCourse.LocalCourseName}}<br/>
-		<br/>
-		Foreign Course:
-		<hr/>
-		<form>
-		<div class="form-group">
-			<label for="school">School:</label>
-			<input id="school" name="school" type="text" [(ngModel)]="dialogInputs.SchoolName"/>
-		</div>
-		<div class="form-group">
-			<label for="course">Course Title:</label>
-			<input id="course" name="course" type="text" [(ngModel)]="dialogInputs.ForeignCourseName"/>
-		</div>
-		<div class="form-group">
-			<label for="status">Status:</label>
-			<input id="status" name="status" type="text" [(ngModel)]="dialogInputs.Status"/>
-		</div>
-		<div class="form-group">
-			<label for="notes">Notes:</label>
-			<textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
-		</div>
-		</form>
-		  </div>
-		  <div class="modal-footer">
-		  <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">{{dialogInputs.Mode}}</button>
+        <h4 class="modal-title">{{dialogInputs.Mode}} Equivalency</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        SCU Course: {{dialogCourse.LocalCourseName}}<br/>
+        <br/>
+        Foreign Course:
+        <hr/>
+        <form>
+        <div class="form-group">
+          <label for="school">School:</label>
+          <input id="school" name="school" type="text" [(ngModel)]="dialogInputs.SchoolName"/>
+        </div>
+        <div class="form-group">
+          <label for="course">Course Title:</label>
+          <input id="course" name="course" type="text" [(ngModel)]="dialogInputs.ForeignCourseName"/>
+        </div>
+        <div class="form-group">
+          <label for="status">Status:</label>
+          <input id="status" name="status" type="text" [(ngModel)]="dialogInputs.Status"/>
+        </div>
+        <div class="form-group">
+          <label for="notes">Notes:</label>
+          <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
+        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">{{dialogInputs.Mode}}</button>
 			  <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
 		  </div>
     </ng-template>
@@ -222,12 +222,24 @@ export class LocalCoursesComponent implements OnInit {
 	  this.modalService.open(content2).result.then((result) => {
 		  //console.log("New Course");
 		  //console.log(result);
-		  console.log(result.Dept + " " + result.CourseNum + " - " + result.CourseTitle);
-		  if(result.Dept == null || result.CourseNum == null || result.courseTitle == null){
-			  console.log("null check, don't add");
-		  }else{
-			this.localCourseService.addLocalCourse(result);
-		  }
+      if(result === "Close"){
+        console.log("Closed, don't add");
+      }else{
+        console.log(result.Dept + " " + result.CourseNum + " - " + result.CourseTitle);
+        if(result.Dept == null || result.CourseNum == null || result.CourseTitle == null){
+          console.log("null check, don't add");
+        }else{
+          result.Dept = result.Dept.trim();
+          result.CourseNum = result.CourseNum.trim();
+          result.CourseTitle = result.CourseTitle.trim();
+          console.log(result.Dept + " " + result.CourseNum + " - " + result.CourseTitle);
+          if(result.Dept === "" || result.CourseNum === "" || result.CourseTitle === ""){
+            console.log("empty check, don't add");
+          }else{
+            this.localCourseService.addLocalCourse(result);
+          }
+        }
+      }
 	  });
   }
 }
