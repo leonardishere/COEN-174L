@@ -39,11 +39,14 @@ export class LocalCourseService {
 	  return this.http.put(environment.api + 'local_course/'+course.LocalCourseID, course).toPromise();
   }
   
-  //shouldnt have here but whatever
-  
+  //these shouldnt be here but whatever
   getSchools(): Promise<any[]> {
-    return this.http.get(environment.api + 'schools',).toPromise()
+    return this.http.get(environment.api + 'schools').toPromise()
     .then(response => response.json())
   }
   
+  getForeignCourses(): Promise<any> {
+    return this.http.get(environment.api + 'foreign_courses').toPromise()
+    .then(response => response.json())
+  }
 }

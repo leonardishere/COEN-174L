@@ -13,18 +13,6 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { School } from './../models/school';
 
-/*
-const states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado',
-  'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia',
-  'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine',
-  'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana',
-  'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
-  'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island',
-  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia',
-  'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
-*/
-//const schools = ['California State University, Bakersfield', 'California State University, Channel Islands', 'California State University, Chico', 'California State University, Dominguez Hills', 'California State University, East Bay', 'California State University, Fresno', 'California State University, Fullerton', 'Humboldt State University', 'California State University, Long Beach','California State University, Los Angeles','California State University Maritime Academy','California State University, Monterey Bay','California State University, Northridge','California State Polytechnic University, Pomona','California State University, Sacramento','California State University, San Bernardino','San Diego State University','San Francisco State University','San Jose State University','California Polytechnic State University, San Luis Obispo','California State University, San Marcos','Sonoma State University','California State University, Stanislaus'];
-
 @Component({
   selector: 'local-courses',
   template: `
@@ -60,15 +48,18 @@ const states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'C
         <div class="form-group">
           <label for="school">School:</label>
           <!--<input id="school" name="school" type="text" [(ngModel)]="dialogInputs.SchoolName"/>-->
-          <input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"/>
+          <input id="typeahead-basic1" type="text" class="form-control" [(ngModel)]="model1" [ngbTypeahead]="search1" [ngModelOptions]="{standalone: true}"/>
         </div>
         <div class="form-group">
           <label for="course">Course Title:</label>
-          <input id="course" name="course" type="text" [(ngModel)]="dialogInputs.ForeignCourseName"/>
+          <!--<input id="course" name="course" type="text"
+          [(ngModel)]="dialogInputs.ForeignCourseName"/>-->
+          <input id="typeahead-basic2" type="text" class="form-control" [(ngModel)]="model2" [ngbTypeahead]="search2" [ngModelOptions]="{standalone: true}"/>
         </div>
         <div class="form-group">
           <label for="status">Status:</label>
-          <input id="status" name="status" type="text" [(ngModel)]="dialogInputs.Status"/>
+          <!--<input id="status" name="status" type="text" [(ngModel)]="dialogInputs.Status"/>-->
+          <input id="typeahead-basic3" type="text" class="form-control" [(ngModel)]="model3" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}"/>
         </div>
         <div class="form-group">
           <label for="notes">Notes:</label>
@@ -152,10 +143,11 @@ const states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'C
   `]
 })
 export class LocalCoursesComponent implements OnInit {
-  model: any;
-  //schools: any[] = ['California State University, Bakersfield', 'California State University, Channel Islands', 'California State University, Chico', 'California State University, Dominguez Hills', 'California State University, East Bay', 'California State University, Fresno', 'California State University, Fullerton', 'Humboldt State University', 'California State University, Long Beach','California State University, Los Angeles','California State University Maritime Academy','California State University, Monterey Bay','California State University, Northridge','California State Polytechnic University, Pomona','California State University, Sacramento','California State University, San Bernardino','San Diego State University','San Francisco State University','San Jose State University','California Polytechnic State University, San Luis Obispo','California State University, San Marcos','Sonoma State University','California State University, Stanislaus'];
-  //schools: School[];
-  schools: string[];
+  model1: any;
+  model2: any;
+  schools: string[]; //should be school[]
+  foreignCourses: string[]; //should be foreignCourse[]
+  statuses: string[];
   
   courses: LocalCourse2[];
   source: LocalDataSource;
@@ -212,6 +204,18 @@ export class LocalCoursesComponent implements OnInit {
       });
       console.log(schools);
     });
+    
+    this.foreignCourses = new Array<string>();
+    this.localCourseService.getForeignCourses().then(foreignCourses => {
+      foreignCourses.forEach(foreignCourse => {
+        this.foreignCourses.push(foreignCourse.ForeignCourseName);
+      });
+      console.log(this.foreignCourses);
+    });
+    
+    this.statuses = new Array<string>();
+    this.statuses.push("Accepted");
+    this.statuses.push("Rejected");
   }
 
   onSelect(course: LocalCourse2): void {
@@ -219,12 +223,26 @@ export class LocalCoursesComponent implements OnInit {
   }
   
   //equivalency typeahead
-  search = (text$: Observable<string>) =>
+  search1 = (text$: Observable<string>) =>
     text$
       .debounceTime(100)
       .distinctUntilChanged()
       .map(term => term.length < 1 ? []
         : this.schools.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
+        
+  search2 = (text$: Observable<string>) =>
+    text$
+      .debounceTime(100)
+      .distinctUntilChanged()
+      .map(term => term.length < 1 ? []
+        : this.foreignCourses.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
+        
+  search3 = (text$: Observable<string>) =>
+    text$
+      .debounceTime(100)
+      .distinctUntilChanged()
+      .map(term => term.length < 0 ? []
+        : this.statuses.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
 
   open(content, course) {
     this.dialogInputs.Mode = "Add";
