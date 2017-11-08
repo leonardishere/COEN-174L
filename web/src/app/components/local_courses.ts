@@ -6,6 +6,25 @@ import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { LocalCourseService } from './../services/local_courses';
 import { subscribeChanges, contains } from '../utils';
 
+//import {Component} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
+import 'rxjs/add/operator/debounceTime';
+import 'rxjs/add/operator/distinctUntilChanged';
+import { School } from './../models/school';
+
+/*
+const states = ['Alabama', 'Alaska', 'American Samoa', 'Arizona', 'Arkansas', 'California', 'Colorado',
+  'Connecticut', 'Delaware', 'District Of Columbia', 'Federated States Of Micronesia', 'Florida', 'Georgia',
+  'Guam', 'Hawaii', 'Idaho', 'Illinois', 'Indiana', 'Iowa', 'Kansas', 'Kentucky', 'Louisiana', 'Maine',
+  'Marshall Islands', 'Maryland', 'Massachusetts', 'Michigan', 'Minnesota', 'Mississippi', 'Missouri', 'Montana',
+  'Nebraska', 'Nevada', 'New Hampshire', 'New Jersey', 'New Mexico', 'New York', 'North Carolina', 'North Dakota',
+  'Northern Mariana Islands', 'Ohio', 'Oklahoma', 'Oregon', 'Palau', 'Pennsylvania', 'Puerto Rico', 'Rhode Island',
+  'South Carolina', 'South Dakota', 'Tennessee', 'Texas', 'Utah', 'Vermont', 'Virgin Islands', 'Virginia',
+  'Washington', 'West Virginia', 'Wisconsin', 'Wyoming'];
+*/
+//const schools = ['California State University, Bakersfield', 'California State University, Channel Islands', 'California State University, Chico', 'California State University, Dominguez Hills', 'California State University, East Bay', 'California State University, Fresno', 'California State University, Fullerton', 'Humboldt State University', 'California State University, Long Beach','California State University, Los Angeles','California State University Maritime Academy','California State University, Monterey Bay','California State University, Northridge','California State Polytechnic University, Pomona','California State University, Sacramento','California State University, San Bernardino','San Diego State University','San Francisco State University','San Jose State University','California Polytechnic State University, San Luis Obispo','California State University, San Marcos','Sonoma State University','California State University, Stanislaus'];
+
 @Component({
   selector: 'local-courses',
   template: `
@@ -40,7 +59,8 @@ import { subscribeChanges, contains } from '../utils';
         <form>
         <div class="form-group">
           <label for="school">School:</label>
-          <input id="school" name="school" type="text" [(ngModel)]="dialogInputs.SchoolName"/>
+          <!--<input id="school" name="school" type="text" [(ngModel)]="dialogInputs.SchoolName"/>-->
+          <input id="typeahead-basic" type="text" class="form-control" [(ngModel)]="model" [ngbTypeahead]="search"/>
         </div>
         <div class="form-group">
           <label for="course">Course Title:</label>
@@ -132,6 +152,11 @@ import { subscribeChanges, contains } from '../utils';
   `]
 })
 export class LocalCoursesComponent implements OnInit {
+  model: any;
+  //schools: any[] = ['California State University, Bakersfield', 'California State University, Channel Islands', 'California State University, Chico', 'California State University, Dominguez Hills', 'California State University, East Bay', 'California State University, Fresno', 'California State University, Fullerton', 'Humboldt State University', 'California State University, Long Beach','California State University, Los Angeles','California State University Maritime Academy','California State University, Monterey Bay','California State University, Northridge','California State Polytechnic University, Pomona','California State University, Sacramento','California State University, San Bernardino','San Diego State University','San Francisco State University','San Jose State University','California Polytechnic State University, San Luis Obispo','California State University, San Marcos','Sonoma State University','California State University, Stanislaus'];
+  //schools: School[];
+  schools: string[];
+  
   courses: LocalCourse2[];
   source: LocalDataSource;
   placeholders = {
@@ -172,17 +197,34 @@ export class LocalCoursesComponent implements OnInit {
   ngOnInit(): void {
     this.localCourseService.getLocalCourses().then(courses => {
       this.courses = courses;
-	  this.source = new LocalDataSource(this.courses);
+      this.source = new LocalDataSource(this.courses);
     });
   
-  subscribeChanges(this.changes.LocalCourseName, (search) => {
+    subscribeChanges(this.changes.LocalCourseName, (search) => {
       this.source.addFilter({field: 'LocalCourseName', search: search});
+    });
+    
+    this.schools = new Array<string>();
+    this.localCourseService.getSchools().then(schools => {
+      //this.schools = schools;
+      schools.forEach(school => {
+        this.schools.push(school.Name);
+      });
+      console.log(schools);
     });
   }
 
   onSelect(course: LocalCourse2): void {
     console.log('Selected', course);
   }
+  
+  //equivalency typeahead
+  search = (text$: Observable<string>) =>
+    text$
+      .debounceTime(100)
+      .distinctUntilChanged()
+      .map(term => term.length < 1 ? []
+        : this.schools.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
 
   open(content, course) {
     this.dialogInputs.Mode = "Add";
