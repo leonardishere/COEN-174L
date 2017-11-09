@@ -46,20 +46,19 @@ import { School } from './../models/school';
         <hr/>
         <form>
         <div class="form-group">
-          <label for="school">School:</label>
-          <!--<input id="school" name="school" type="text" [(ngModel)]="dialogInputs.SchoolName"/>-->
-          <input id="typeahead-basic1" type="text" class="form-control" [(ngModel)]="model1" [ngbTypeahead]="search1" [ngModelOptions]="{standalone: true}"/>
+          <ng-template #rt let-r="result" let-t="term">
+            <p (click)="selectSchool(r.Name)">{{r.Name}}</p>
+          </ng-template>
+          <label for="typeahead-basic1">School:</label>
+          <input id="typeahead-basic1" type="text" class="form-control" [(ngModel)]="dialogInputs.SchoolName" [ngbTypeahead]="search1" [ngModelOptions]="{standalone: true}" [resultTemplate]="rt" [inputFormatter]="formatter1" (blur)="selectSchool(dialogInputs.SchoolName)"/>
         </div>
         <div class="form-group">
           <label for="course">Course Title:</label>
-          <!--<input id="course" name="course" type="text"
-          [(ngModel)]="dialogInputs.ForeignCourseName"/>-->
-          <input id="typeahead-basic2" type="text" class="form-control" [(ngModel)]="model2" [ngbTypeahead]="search2" [ngModelOptions]="{standalone: true}"/>
+          <input id="typeahead-basic2" type="text" class="form-control" [(ngModel)]="dialogInputs.ForeignCourseName" [ngbTypeahead]="search2" [ngModelOptions]="{standalone: true}"/>
         </div>
         <div class="form-group">
           <label for="status">Status:</label>
-          <!--<input id="status" name="status" type="text" [(ngModel)]="dialogInputs.Status"/>-->
-          <input id="typeahead-basic3" type="text" class="form-control" [(ngModel)]="model3" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}"/>
+          <input id="typeahead-basic3" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}"/>
         </div>
         <div class="form-group">
           <label for="notes">Notes:</label>
@@ -143,10 +142,11 @@ import { School } from './../models/school';
   `]
 })
 export class LocalCoursesComponent implements OnInit {
-  model1: any;
-  model2: any;
-  schools: string[]; //should be school[]
+  //schools: string[]; //should be school[]
+  schools: School[];
   foreignCourses: string[]; //should be foreignCourse[]
+  //foreignCourses: ForeignCourse[];
+  //foreignCourses: any[];
   statuses: string[];
   
   courses: LocalCourse2[];
@@ -159,6 +159,13 @@ export class LocalCoursesComponent implements OnInit {
   };
   dialogCourse: LocalCourse2;
   dialogInputs = {
+	  Mode: "Add Equivalency",
+	  SchoolName: "",
+	  ForeignCourseName: "",
+	  Status: "",
+	  Notes: ""
+  }
+  dialogOutputs = {
 	  Mode: "Add Equivalency",
 	  SchoolName: "",
 	  ForeignCourseName: "",
@@ -196,21 +203,18 @@ export class LocalCoursesComponent implements OnInit {
       this.source.addFilter({field: 'LocalCourseName', search: search});
     });
     
-    this.schools = new Array<string>();
+    //this.schools = new Array<string>();
     this.localCourseService.getSchools().then(schools => {
-      //this.schools = schools;
-      schools.forEach(school => {
-        this.schools.push(school.Name);
-      });
-      console.log(schools);
+      this.schools = schools;
+      //schools.forEach(school => {this.schools.push(school.Name);});
+      //console.log(schools);
     });
     
     this.foreignCourses = new Array<string>();
     this.localCourseService.getForeignCourses().then(foreignCourses => {
-      foreignCourses.forEach(foreignCourse => {
-        this.foreignCourses.push(foreignCourse.ForeignCourseName);
-      });
-      console.log(this.foreignCourses);
+      //this.foreignCourses = foreignCourses;
+      foreignCourses.forEach(foreignCourse => {this.foreignCourses.push(foreignCourse.ForeignCourseName);});
+      //console.log(this.foreignCourses);
     });
     
     this.statuses = new Array<string>();
@@ -228,7 +232,21 @@ export class LocalCoursesComponent implements OnInit {
       .debounceTime(100)
       .distinctUntilChanged()
       .map(term => term.length < 1 ? []
-        : this.schools.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
+        : this.schools.filter(v => v.Name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
+  
+  formatter1 = (x: {Name: string}) => x.Name;
+  
+  selectSchool(school){
+    /*
+    if(school.Name == null){
+      console.log("school: " + school);
+      this.dialogOutputs.SchoolName = school;
+    }else{
+      console.log("school: " + school.Name);
+      this.dialogOutputs.SchoolName = school.Name;
+    }
+    */
+  }
         
   search2 = (text$: Observable<string>) =>
     text$
@@ -251,8 +269,40 @@ export class LocalCoursesComponent implements OnInit {
       course.ForeignCourses.push(result);
       console.log(course);
       result.LocalCourseID = course.LocalCourseID;
+      
       console.log(result);
-      this.localCourseService.addEquivCourse(result);
+      console.log(result.SchoolName);
+      
+      //result.SchoolName = this.dialogOutputs.SchoolName;
+      //console.log(result);
+      
+      
+      if(result === "Close"){
+        console.log("Closed, don't add");
+      }else{
+        if(result.Mode == null || result.SchoolName == null || result.ForeignCourseName == null || result.Status == null || result.Notes == null){
+          console.log("null check, don't add");
+        }else{
+          var result2 = result;
+          if(result.SchoolName.Name == null){
+            console.log("school: " + result.SchoolName);
+          }else{
+            console.log("school: " + result.SchoolName.Name);
+            result2.SchoolName = result.SchoolName.Name;
+          }
+          if(result.Mode === "" || result2.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
+            console.log("empty check, don't add");
+          }else{
+            console.log(result2);
+            this.localCourseService.addEquivCourse(result2);
+          }
+        }
+      }
+      result.Mode = "";
+      result.SchoolName = "";
+      result.ForeignCourseName = "";
+      result.Status = "";
+      result.Notes = "";
     });
   }
 
@@ -264,6 +314,19 @@ export class LocalCoursesComponent implements OnInit {
       let i = course.ForeignCourses.find(fc => fc.ForeignCourseName === foreignCourse.ForeignCourseName);
       course.ForeignCourses[i] = result;
       result.LocalCourseID = course.LocalCourseID;
+      console.log(""+result.SchoolName);
+      /*
+      if(typeof result.SchoolName.Name === 'undefined'){
+        console.log("valid 2");
+      }else{
+        console.log("valid 1");
+        result.SchoolName = result.SchoolName.Name;
+      }
+      */
+      console.log(this.dialogInputs.SchoolName);
+      console.log(this.dialogOutputs.SchoolName);
+      console.log(result);
+      result.SchoolName = this.dialogOutputs.SchoolName;
       console.log(result);
       this.localCourseService.editEquivCourse(result);
     });
