@@ -9,62 +9,71 @@ import { ForeignCourseService } from './../services/foreign_courses';
 	selector: 'foreign-courses',
 	template: `
 		<h1>Foreign Courses</h1>
+    
+    <!-- Equivalency Modal -->
 		<ng-template #content let-c="close" let-d="dismiss">
 		  <div class="modal-header">
-		<h4 class="modal-title">{{dialogInputs.Mode}} Equivalency</h4>
-			<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-			  <span aria-hidden="true">&times;</span>
-			</button>
-		  </div>
-		  <div class="modal-body">
-		Foreign Course: {{dialogCourse.ForeignCourseName}}<br/>
-		School: {{dialogCourse.SchoolName}}<br/>
-		<br/>
-		SCU Course:
-		<hr/>
-		<form>
-		<div class="form-group">
-			<label for="course">Course Title:</label>
-			<input id="course" name="course" type="text" [(ngModel)]="dialogInputs.LocalCourseName"/>
-		</div>
-		<div class="form-group">
-			<label for="status">Status:</label>
-			<input id="status" name="status" type="text" [(ngModel)]="dialogInputs.Status"/>
-		</div>
-		<div class="form-group">
-			<label for="notes">Notes:</label>
-			<textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
-		</div>
-		</form>
-		  </div>
-		  <div class="modal-footer">
-		  <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">{{dialogInputs.Mode}}</button>
-			  <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
-		  </div>
-		</ng-template>
-		<ngb-accordion #acc="ngbAccordion">
-        <ngb-panel *ngFor="let course of courses" title="{{course.ForeignCourseName}}">
-	    	<ng-template ngbPanelContent>
-		<button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
-		<div *ngIf="course.LocalCourses.length <= 0">
-			No equivalent courses
-		</div>
-		<table *ngIf="course.LocalCourses.length > 0">
-			<tr>
-				<th>Local Course</th>
-				<th>Status</th>
-				<th></th>
-			</tr>
-			<tr *ngFor="let localCourse of course.LocalCourses">
-				<td>{{localCourse.LocalCourseName}}</td>
-				<td>{{localCourse.Status}}</td>
-				<td>
-					<i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, localCourse)"></i>
-					<i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, localCourse)"></i>
-				</td>
-			</tr>
-		</table>
-		</ng-template>
+        <h4 class="modal-title">{{dialogInputs.Mode}} Equivalency</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Foreign Course: {{dialogCourse.ForeignCourseName}}<br/>
+        School: {{dialogCourse.SchoolName}}<br/>
+        <br/>
+        SCU Course:
+        <hr/>
+        <form>
+          <div class="form-group">
+            <label for="course">Course Title:</label>
+            <input id="course" name="course" type="text" [(ngModel)]="dialogInputs.LocalCourseName"/>
+          </div>
+          <div class="form-group">
+            <label for="status">Status:</label>
+            <input id="status" name="status" type="text" [(ngModel)]="dialogInputs.Status"/>
+          </div>
+          <div class="form-group">
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">{{dialogInputs.Mode}}</button>
+        <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+      </div>
+    </ng-template>
+    
+    <!-- Courses Accordion -->
+    <ngb-accordion #acc="ngbAccordion">
+      <ngb-panel *ngFor="let course of courses" title="{{course.ForeignCourseName}}">
+        <ng-template ngbPanelContent>
+          <button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
+          <div *ngIf="course.LocalCourses.length <= 0">
+            No equivalent courses
+          </div>
+          <table *ngIf="course.LocalCourses.length > 0">
+            <tr>
+              <th>Local Course</th>
+              <th>Status</th>
+              <th>Locked By</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+            <tr *ngFor="let localCourse of course.LocalCourses">
+              <td>{{localCourse.LocalCourseName}}</td>
+              <td>{{localCourse.Status}}</td>
+              <td>{{localCourse.LockedByUser}}</td>
+              <td>{{localCourse.Notes}}</td>
+              
+              <td>
+                <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, localCourse)"></i>
+                <i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, localCourse)"></i>
+              </td>
+            </tr>
+          </table>
+        </ng-template>
 	    </ngb-panel>
     </ngb-accordion>
 	`,

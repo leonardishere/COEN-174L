@@ -262,13 +262,26 @@ CREATE TABLE IF NOT EXISTS `EquivCourse` (
 	`LockedBy`	INTEGER,
 	`Notes`	TEXT
 );
-INSERT INTO `EquivCourse` (EquivID,LocalCourseID,ForeignCourseID,Status,LockedBy,Notes) VALUES 
- (1,9,1,'accepted',NULL,''),
- (2,42,17,'accepted',NULL,''),
- (3,29,93,'accepted',NULL,''),
+INSERT INTO `EquivCourse` (EquivID,LocalCourseID,ForeignCourseID,Status,LockedBy,Notes) VALUES
+ (1,9,1,'accepted',0,''),
+ (2,42,17,'accepted',2,''),
+ (3,29,93,'accepted',3,''),
  (4,27,94,'accepted',NULL,''),
- (5,22,19,'rejected',NULL,''),
- (6,26,99,'accepted',NULL,''),
- (7,53,99,'rejected',NULL,''),
- (8,9,115,'accepted',NULL,'');
+ (5,22,19,'rejected',0,''),
+ (6,26,99,'accepted',2,''),
+ (7,53,99,'rejected',3,''),
+ (8,9,115,'accepted',NULL,''),
+ (36,11,95,'accepted',0,''),
+ (37,14,30,'accepted',2,''),
+ (38,26,77,'accepted',3,''),
+ (39,27,16,'accepted',NULL,''),
+ (40,30,112,'accepted',0,''),
+ (41,31,50,'accepted',2,''),
+ (42,40,70,'accepted',3,''),
+ (43,40,115,'accepted',NULL,''),
+ (44,42,105,'accepted',0,''),
+ (45,51,7,'accepted',2,''),
+ (46,54,94,'accepted',3,''),
+ (47,55,93,'accepted',NULL,''),
+ (48,63,131,'rejected',NULL,'');
 COMMIT;

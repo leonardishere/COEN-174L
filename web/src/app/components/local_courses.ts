@@ -126,6 +126,7 @@ import { School } from './../models/school';
 						<th>School</th>
 						<th>Status</th>
             <th>Locked By</th>
+            <th>Notes</th>
 						<th></th>
 					</tr>
 					<tr *ngFor="let foreignCourse of course.ForeignCourses">
@@ -133,6 +134,7 @@ import { School } from './../models/school';
 						<td>{{foreignCourse.SchoolName}}</td>
 						<td>{{foreignCourse.Status}}</td>
             <td>{{foreignCourse.LockedByUser}}</td>
+            <td>{{foreignCourse.Notes}}</td>
 						<td>
 							<i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
 							<i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
