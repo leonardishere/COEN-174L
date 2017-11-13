@@ -61,6 +61,10 @@ import { School } from './../models/school';
           <input id="typeahead-basic3" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}"/>
         </div>
         <div class="form-group">
+          <label for="lock">Lock future modification?:</label>
+          <input id="lock" name="lock" type="checkbox" [(ngModel)]="dialogInputs.Lock"/>
+        </div>
+        <div class="form-group">
           <label for="notes">Notes:</label>
           <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
         </div>
@@ -121,12 +125,14 @@ import { School } from './../models/school';
 						<th>Foreign Course</th>
 						<th>School</th>
 						<th>Status</th>
+            <th>Locked By</th>
 						<th></th>
 					</tr>
 					<tr *ngFor="let foreignCourse of course.ForeignCourses">
 						<td>{{foreignCourse.ForeignCourseName}}</td>
 						<td>{{foreignCourse.SchoolName}}</td>
 						<td>{{foreignCourse.Status}}</td>
+            <td>{{foreignCourse.LockedByUser}}</td>
 						<td>
 							<i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
 							<i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
@@ -163,6 +169,7 @@ export class LocalCoursesComponent implements OnInit {
 	  SchoolName: "",
 	  ForeignCourseName: "",
 	  Status: "",
+    Lock: "",
 	  Notes: ""
   }
   dialogOutputs = {
@@ -262,7 +269,8 @@ export class LocalCoursesComponent implements OnInit {
       .map(term => term.length < 0 ? []
         : this.statuses.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
 
-  open(content, course) {
+  //open equivalency modal
+  open(content, course) {    
     this.dialogInputs.Mode = "Add";
     this.dialogCourse = course;
     this.modalService.open(content).result.then((result) => {
@@ -280,7 +288,7 @@ export class LocalCoursesComponent implements OnInit {
       if(result === "Close"){
         console.log("Closed, don't add");
       }else{
-        if(result.Mode == null || result.SchoolName == null || result.ForeignCourseName == null || result.Status == null || result.Notes == null){
+        if(result.Mode == null || result.SchoolName == null || result.ForeignCourseName == null || result.Status == null || result.Lock == null || result.Notes == null){
           console.log("null check, don't add");
         }else{
           var result2 = result;
@@ -293,6 +301,12 @@ export class LocalCoursesComponent implements OnInit {
           if(result.Mode === "" || result2.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
             console.log("empty check, don't add");
           }else{
+            if(result.Lock){
+              //get current user's userid, shove it into result2.LockedBy
+              result2.LockedBy = 0;
+            }else{
+              result2.LockedBy = null;
+            }
             console.log(result2);
             this.localCourseService.addEquivCourse(result2);
           }
@@ -302,10 +316,12 @@ export class LocalCoursesComponent implements OnInit {
       result.SchoolName = "";
       result.ForeignCourseName = "";
       result.Status = "";
+      result.Lock = false;
       result.Notes = "";
     });
   }
 
+  //edit equivalency
   edit(content, course, foreignCourse) {
     this.dialogInputs.Mode = "Edit";
     this.dialogCourse = course;
@@ -329,9 +345,17 @@ export class LocalCoursesComponent implements OnInit {
       result.SchoolName = this.dialogOutputs.SchoolName;
       console.log(result);
       this.localCourseService.editEquivCourse(result);
+      
+      result.Mode = "";
+      result.SchoolName = "";
+      result.ForeignCourseName = "";
+      result.Status = "";
+      result.Lock = false;
+      result.Notes = "";
     });
   }
 
+  //delete equivalency
   delete(course, foreignCourse) {
     course.ForeignCourses = course.ForeignCourses.filter(fc =>
 	    fc.ForeignCourseName !== foreignCourse.ForeignCourseName
@@ -360,6 +384,7 @@ export class LocalCoursesComponent implements OnInit {
             console.log("empty check, don't add");
           }else{
             this.localCourseService.addLocalCourse(result);
+            //this.courses.push(result); //doesnt actually do anything. how do we get the new course to appear?
           }
         }
       }

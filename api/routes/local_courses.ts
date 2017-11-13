@@ -8,7 +8,7 @@ var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
 	console.log('Get local courses');
-	db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName from LocalCourse left join EquivCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) left join ForeignCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join School on (School.SchoolID=ForeignCourse.SchoolID) order by LocalCourseName asc")
+	db.all("select EquivID, Status, LocalCourse.CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName, ForeignCourse.CourseID as ForeignCourseID, ForeignCourse.Dept||' '||ForeignCourse.CourseNum||' - '||ForeignCourse.Title as ForeignCourseName, School.Name as SchoolName, EquivCourse.LockedBy, User.Name as LockedByUser from LocalCourse left join EquivCourse on (LocalCourse.CourseID=EquivCourse.LocalCourseID) left join ForeignCourse on (ForeignCourse.CourseID=EquivCourse.ForeignCourseID) left join School on (School.SchoolID=ForeignCourse.SchoolID) left join User on (EquivCourse.LockedBy=User.UserID) order by LocalCourseName asc")
 	.then(result => {return reformatResults(res, result);});
   })
   .post((req, res) => {
@@ -36,6 +36,8 @@ interface ForeignCourse{
 	ForeignCourseName: string;
 	SchoolName: string;
 	Status: string;
+  LockedBy: number;
+  LockedByUser: string;
 }
 
 interface LocalCourse{
@@ -48,7 +50,7 @@ function reformatResults(res, result){
 	var columnNames1 = ["SCU Course", "Equivalencies"];
 	var columnNames2 = ["Foreign Course", "School", "Status"];
 	var columns2 = ["ForeignCourseName", "SchoolName", "Status"];
-	var cols = ['EquivID', 'ForeignCourseID', 'ForeignCourseName', 'SchoolName', 'Status'];
+	var cols = ['EquivID', 'ForeignCourseID', 'ForeignCourseName', 'SchoolName', 'Status', 'LockedBy', 'LockedByUser'];
 	
 	var array1 = new Array<LocalCourse>();
 	var array2 = new Array<ForeignCourse>();
@@ -71,18 +73,20 @@ function reformatResults(res, result){
 				obj1 = {LocalCourseID: 0, LocalCourseName:'',ForeignCourses: new Array<ForeignCourse>()};
 				innerTableOpen = false;
 			}else{
-				var obj2: ForeignCourse = {EquivID: 0, ForeignCourseID: 0, ForeignCourseName:'',SchoolName:'',Status:''};
+				var obj2: ForeignCourse = {EquivID: 0, ForeignCourseID: 0, ForeignCourseName:'',SchoolName:'',Status:'', LockedBy:-1, LockedByUser:''};
 				cols.forEach((col) => {
 					obj2[col] = row[col];
 				});
+        if(obj2['LockedByUser'] == null) obj2['LockedByUser'] = 'null';
 				array2.push(obj2);
 				innerTableOpen = true;
 			}
 		}else{
-			var obj2: ForeignCourse = {EquivID: 0, ForeignCourseID: 0, ForeignCourseName:'',SchoolName:'',Status:''};
+			var obj2: ForeignCourse = {EquivID: 0, ForeignCourseID: 0, ForeignCourseName:'',SchoolName:'',Status:'', LockedBy:0, LockedByUser:''};
 			cols.forEach((col) => {
 				obj2[col] = row[col];
 			});
+      if(obj2['LockedByUser'] == null) obj2['LockedByUser'] = 'null';
 			array2.push(obj2);
 			innerTableOpen = true;
 		}

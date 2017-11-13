@@ -10,7 +10,6 @@ import { CourseService } from './services/course.service';
 import { EquivCourseService } from './services/equiv_courses';
 import { LocalCourseService } from './services/local_courses';
 import { UserService } from './services/users';
-import { ChangeService } from './services/changes';
 import { SchoolService } from './services/schools';
 import { ForeignCourseService } from './services/foreign_courses';
 
@@ -20,7 +19,6 @@ import { CoursesComponent } from './components/courses.component';
 import { EquivCoursesComponent } from './components/equiv_courses';
 import { LocalCoursesComponent } from './components/local_courses';
 import { UserComponent } from './components/users';
-import { ChangeComponent } from './components/changes';
 import { SchoolComponent } from './components/schools';
 import { ForeignCourseComponent } from './components/foreign_courses';
 
@@ -32,7 +30,6 @@ import { ForeignCourseComponent } from './components/foreign_courses';
     EquivCoursesComponent,
     LocalCoursesComponent,
     UserComponent,
-    ChangeComponent,
     SchoolComponent,
     ForeignCourseComponent
   ],
@@ -44,7 +41,7 @@ import { ForeignCourseComponent } from './components/foreign_courses';
     NgbModule.forRoot(),
     Ng2SmartTableModule
   ],
-  providers: [CourseService, EquivCourseService, LocalCourseService, UserService, ChangeService, SchoolService, ForeignCourseService],
+  providers: [CourseService, EquivCourseService, LocalCourseService, UserService, SchoolService, ForeignCourseService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

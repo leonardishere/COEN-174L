@@ -1,4 +1,5 @@
 BEGIN TRANSACTION;
+DROP TABLE IF EXISTS `User`;
 CREATE TABLE IF NOT EXISTS `User` (
 	`UserID`	INTEGER PRIMARY KEY AUTOINCREMENT,
 	`Name`	TEXT NOT NULL,
@@ -9,6 +10,7 @@ INSERT INTO `User` (UserID,Name,Position,Email) VALUES
  (0,'Andrew Leonard','admin','aleonard@scu.edu'),
  (2,'Rowan Decker','admin','rdecker@scu.edu'),
  (3,'Chloe de Guzman','admin','cdeguzman@scu.edu');
+DROP TABLE IF EXISTS `School`;
 CREATE TABLE IF NOT EXISTS `School` (
 	`SchoolID`	INTEGER PRIMARY KEY AUTOINCREMENT,
 	`Name`	TEXT NOT NULL
@@ -37,14 +39,15 @@ INSERT INTO `School` (SchoolID,Name) VALUES
  (21,'California State University, San Marcos'),
  (22,'Sonoma State University'),
  (23,'California State University, Stanislaus');
+DROP TABLE IF EXISTS `LocalCourse`;
 CREATE TABLE IF NOT EXISTS `LocalCourse` (
 	`CourseID`	INTEGER PRIMARY KEY AUTOINCREMENT,
 	`Dept`	TEXT,
 	`CourseNum`	TEXT,
 	`Title`	TEXT
 );
-INSERT INTO `LocalCourse` 
- (CourseID,Dept,CourseNum,Title) VALUES (1,'COEN','200','Logic Analysis & Synthesis'),
+INSERT INTO `LocalCourse` (CourseID,Dept,CourseNum,Title) VALUES 
+ (1,'COEN','200','Logic Analysis & Synthesis'),
  (2,'COEN','201','Digital Signal Processing I'),
  (3,'COEN','201E','Digital Signal Processing I and II'),
  (4,'COEN','202','Digital Signal Processing II'),
@@ -110,6 +113,7 @@ INSERT INTO `LocalCourse`
  (64,'COEN','912C','Abstract Data Types & Structures'),
  (65,'COEN','920C','Embedded Systems and Assembly Language'),
  (66,'COEN','921C','Introduction to Logic Design');
+DROP TABLE IF EXISTS `ForeignCourse`;
 CREATE TABLE IF NOT EXISTS `ForeignCourse` (
 	`CourseID`	INTEGER PRIMARY KEY AUTOINCREMENT,
 	`Dept`	TEXT,
@@ -249,61 +253,22 @@ INSERT INTO `ForeignCourse` (CourseID,Dept,CourseNum,Title,SchoolID) VALUES
  (129,'CSC','897','Research',18),
  (130,'CSC','898','Masters Thesis',18),
  (131,'CSC','899','Independent Study',18);
+DROP TABLE IF EXISTS `EquivCourse`;
 CREATE TABLE IF NOT EXISTS `EquivCourse` (
 	`EquivID`	INTEGER PRIMARY KEY AUTOINCREMENT,
 	`LocalCourseID`	INTEGER NOT NULL,
 	`ForeignCourseID`	INTEGER NOT NULL,
-	`Status`	TEXT NOT NULL
+	`Status`	TEXT NOT NULL,
+	`LockedBy`	INTEGER,
+	`Notes`	TEXT
 );
-INSERT INTO `EquivCourse` 
- (EquivID,LocalCourseID,ForeignCourseID,Status) VALUES (1,9,1,'accepted'),
- (2,42,17,'accepted'),
- (3,29,93,'accepted'),
- (4,27,94,'accepted'),
- (5,22,19,'rejected'),
- (6,26,99,'accepted'),
- (7,53,99,'rejected'),
- (8,9,115,'accepted'),
- (36,11,95,'accepted'),
- (37,14,30,'accepted'),
- (38,26,77,'accepted'),
- (39,27,16,'accepted'),
- (40,30,112,'accepted'),
- (41,31,50,'accepted'),
- (42,40,70,'accepted'),
- (43,40,115,'accepted'),
- (44,42,105,'accepted'),
- (45,51,7,'accepted'),
- (46,54,94,'accepted'),
- (47,55,93,'accepted'),
- (48,63,131,'rejected');
-CREATE TABLE IF NOT EXISTS `Change` (
-	`EquivID`	INTEGER PRIMARY KEY AUTOINCREMENT,
-	`NewStatus`	TEXT NOT NULL,
-	`AdminID`	INTEGER NOT NULL,
-	`Notes`	TEXT,
-	`Date`	BLOB
-);
-INSERT INTO `Change` (EquivID,NewStatus,AdminID,Notes,Date) VALUES 
- (0,'accepted',0,'','2017-10-10 11:42:54'),
- (1,'accepted',0,'','2017-10-10 11:42:54'),
- (2,'accepted',0,'','2017-10-10 11:42:54'),
- (3,'accepted',0,'','2017-10-10 11:42:54'),
- (4,'rejected',0,'','2017-10-10 11:42:54'),
- (5,'accepted',0,'course is valid for this version of algorithms','2017-10-10 11:42:54'),
- (6,'rejected',0,'course is invalid for this version of algorithms','2017-10-10 11:42:54'),
- (8,'accepted',0,'','2017-10-11 12:04:55'),
- (36,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (37,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (38,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (39,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (40,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (41,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (42,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (43,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (44,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (45,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (46,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (47,'accepted',0,'added via recommender system','2017-10-11 21:11:53'),
- (48,'rejected',0,'added via recommender system','2017-10-11 21:11:53');
+INSERT INTO `EquivCourse` (EquivID,LocalCourseID,ForeignCourseID,Status,LockedBy,Notes) VALUES 
+ (1,9,1,'accepted',NULL,''),
+ (2,42,17,'accepted',NULL,''),
+ (3,29,93,'accepted',NULL,''),
+ (4,27,94,'accepted',NULL,''),
+ (5,22,19,'rejected',NULL,''),
+ (6,26,99,'accepted',NULL,''),
+ (7,53,99,'rejected',NULL,''),
+ (8,9,115,'accepted',NULL,'');
 COMMIT;
