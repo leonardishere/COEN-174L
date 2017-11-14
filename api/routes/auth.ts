@@ -41,7 +41,7 @@ router.get('/',
 
 router.get('/callback', 
 	passport.authenticate('google', { failureRedirect: '/auth' }),
-	(req, res) => res.json(req.user)
+	(req, res) => res.redirect("http://students.engr.scu.edu/~rdecker/coen174")
 );
 
 router.post('/add', (req, res) => 
