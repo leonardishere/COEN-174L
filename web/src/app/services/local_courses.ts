@@ -49,4 +49,9 @@ export class LocalCourseService {
     return this.http.get(environment.api + 'foreign_courses').toPromise()
     .then(response => response.json())
   }
+  
+  getSchool(schoolName): Promise<any[]> {
+    return this.http.get(environment.api + 'schools/' + schoolName).toPromise()
+    .then(response => response.json())
+  }
 }

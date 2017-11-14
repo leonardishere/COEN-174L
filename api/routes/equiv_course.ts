@@ -19,9 +19,9 @@ router.route('/')
 	  .then(result => result.stmt.lastID)
 	  .then(ForeignCourseID =>
 	    db.run(`INSERT INTO EquivCourse
-	      (LocalCourseID, ForeignCourseID, Status)
-	      VALUES (?,?,?)`,
-	      [req.body.LocalCourseID, ForeignCourseID, req.body.Status]))
+	      (LocalCourseID, ForeignCourseID, Status, LockedBy, Notes)
+	      VALUES (?,?,?,?,?)`,
+	      [req.body.LocalCourseID, ForeignCourseID, req.body.Status, req.body.LockedBy, req.body.Notes]))
 	  .then(result => res.json({ row: result.stmt.lastID }));
   });
 router.route('/:EquivID')
@@ -31,9 +31,9 @@ router.route('/:EquivID')
   })
   .put((req, res) => {
     db.run(`UPDATE EquivCourse
-      SET Status=? WHERE EquivID=?`,
-      [req.body.Status, req.params.EquivID])
-    .then(result => res.json({ status: 'OK' }));
+      SET Status=?, LockedBy=?, Notes=? WHERE EquivID=?`,
+      [req.body.Status, req.body.LockedBy, req.body.Notes, req.params.EquivID])
+    .then(result => {console.log(req.body);res.json({ status: 'OK' });});
   })
   .delete((req, res) => {
     db.run(`DELETE FROM EquivCourse WHERE EquivID=?`, req.params.EquivID)

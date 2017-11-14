@@ -272,7 +272,7 @@ export class LocalCoursesComponent implements OnInit {
         : this.statuses.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
 
   //open equivalency modal
-  open(content, course) {    
+  open(content, course) {
     this.dialogInputs.Mode = "Add";
     this.dialogCourse = course;
     this.modalService.open(content).result.then((result) => {
@@ -281,11 +281,7 @@ export class LocalCoursesComponent implements OnInit {
       result.LocalCourseID = course.LocalCourseID;
       
       console.log(result);
-      console.log(result.SchoolName);
-      
-      //result.SchoolName = this.dialogOutputs.SchoolName;
-      //console.log(result);
-      
+      console.log(result.SchoolName);      
       
       if(result === "Close"){
         console.log("Closed, don't add");
@@ -303,28 +299,49 @@ export class LocalCoursesComponent implements OnInit {
           if(result.Mode === "" || result2.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
             console.log("empty check, don't add");
           }else{
-            if(result.Lock){
-              //get current user's userid, shove it into result2.LockedBy
-              result2.LockedBy = 0;
+            /* // the schools router for this is broken for now, will fix later
+            var schools;
+            this.localCourseService.getSchool(result2.SchoolName).then(schools2 => {schools = schools2;});
+            console.log(schools);
+            if(schools.length != 1){
+              console.log("School \"" + result2.SchoolName + "\" does not exist. Enter a valid school.");
+            */
+            if(false){
             }else{
-              result2.LockedBy = null;
+              if(result.Lock){
+                //get current user's userid, shove it into result2.LockedBy
+                result2.LockedBy = 0;
+              }else{
+                result2.LockedBy = null;
+              }
+              console.log(result2);
+              this.localCourseService.addEquivCourse(result2);
             }
-            console.log(result2);
-            this.localCourseService.addEquivCourse(result2);
           }
         }
       }
+      /*
       result.Mode = "";
       result.SchoolName = "";
       result.ForeignCourseName = "";
       result.Status = "";
       result.Lock = false;
       result.Notes = "";
+      */
     });
   }
 
   //edit equivalency
   edit(content, course, foreignCourse) {
+    //check if user has permission
+    var currentUserID = 0; //get these
+    var currentUserName = "Andrew Leonard";
+    var currentUserPosition = "not an admin";
+    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
+      alert("You don't have permission to edit this equivalency. Consult " + foreignCourse.LockedByUser + " or an Admin to edit it. (This demo assumes you're Andrew Leonard.)");
+      return;
+    }
+    
     this.dialogInputs.Mode = "Edit";
     this.dialogCourse = course;
     this.dialogInputs = foreignCourse;
@@ -333,20 +350,13 @@ export class LocalCoursesComponent implements OnInit {
       course.ForeignCourses[i] = result;
       result.LocalCourseID = course.LocalCourseID;
       console.log(""+result.SchoolName);
-      /*
-      if(typeof result.SchoolName.Name === 'undefined'){
-        console.log("valid 2");
-      }else{
-        console.log("valid 1");
-        result.SchoolName = result.SchoolName.Name;
-      }
-      */
       console.log(this.dialogInputs.SchoolName);
       console.log(this.dialogOutputs.SchoolName);
       console.log(result);
       result.SchoolName = this.dialogOutputs.SchoolName;
       console.log(result);
       this.localCourseService.editEquivCourse(result);
+      
       
       result.Mode = "";
       result.SchoolName = "";
@@ -366,6 +376,7 @@ export class LocalCoursesComponent implements OnInit {
     this.localCourseService.deleteEquivCourse(foreignCourse);
   }
   
+  //add new course
   openNewCourse(content2){
 	  this.dialogInputs2.Mode = "Add";
 	  this.modalService.open(content2).result.then((result) => {

@@ -6,4 +6,5 @@ export class ForeignCourse2 {
 	Status: string;
   LockedBy: number;
   LockedByUser: string;
+  Notes: string;
 };
