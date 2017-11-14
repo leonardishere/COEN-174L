@@ -76,7 +76,7 @@ function reformatResults(res, result){
 				cols.forEach((col) => {
 					obj2[col] = row[col];
 				});
-        if(obj2['LockedByUser'] == null) obj2['LockedByUser'] = 'null';
+        if(obj2['LockedByUser'] == null) obj2['LockedByUser'] = '';
 				array2.push(obj2);
 				innerTableOpen = true;
 			}
@@ -85,7 +85,7 @@ function reformatResults(res, result){
 			cols.forEach((col) => {
 				obj2[col] = row[col];
 			});
-      if(obj2['LockedByUser'] == null) obj2['LockedByUser'] = 'null';
+      if(obj2['LockedByUser'] == null) obj2['LockedByUser'] = '';
 			array2.push(obj2);
 			innerTableOpen = true;
 		}

@@ -9,13 +9,22 @@ import { subscribeChanges, contains } from '../utils';
 selector: 'equiv-courses',
   template: `
 	<h1>Equivalent Courses</h1>
+  
+  <!-- form -->
 	<form>
 		Local Course:<br>
+    
     <input #LocalCourse
       type="text"
       name="LocalCourseName"
       placeholder="{{placeholders.LocalCourseName}}"
       (input)="changes.LocalCourseName.next(LocalCourse.value)">
+    <!--
+    <div class="form-group">
+      <label for="localCourse">Course Title:</label>
+      <input id="localCourse" type="text" class="form-control" [(ngModel)]="dialogInputs.ForeignCourseName" [ngbTypeahead]="search2" [ngModelOptions]="{standalone: true}" />
+    </div>
+    -->
 		<br>
 		School Name:<br>
     <input #School
@@ -33,6 +42,8 @@ selector: 'equiv-courses',
       (input)="changes.ForeignCourseName.next(ForeignCourse.value)">
 		<br><br>
 	</form>
+  
+  <!-- table -->
   <ng2-smart-table
     [settings]="settings"
     [source]="source">

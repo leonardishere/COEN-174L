@@ -50,8 +50,20 @@ export class LocalCourseService {
     .then(response => response.json())
   }
   
+  //getSchool(schoolName): Promise<any[]> {
   getSchool(schoolName): Promise<any[]> {
+    //console.log("getSchool("+schoolName+")");
     return this.http.get(environment.api + 'schools/' + schoolName).toPromise()
+    /*
+    .then(response => {
+      
+      console.log("returning:");
+      console.log(response);
+      response.json();
+      
+      //return null;
+    })
+    */
     .then(response => response.json())
   }
 }

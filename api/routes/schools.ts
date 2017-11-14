@@ -12,7 +12,16 @@ router.route('/')
   })
 router.route('/:SchoolName')
   .get((req, res) => {
-    db.all(`select * from school where Name=?`, [req.body.SchoolName])
+    console.log(req.params);
+    /*
+    //console.log(req);
+    console.log(req.body);
+    console.log(req.body.SchoolName);
+    console.log(req.params);
+    console.log(req.params.SchoolName);
+    */
+    db.run(`select * from school where Name=?`, req.params.SchoolName)
+    //db.all('select * from school where name='+req.params.SchoolName)
     .then(result => res.json(result));
   });
 

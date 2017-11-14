@@ -18,8 +18,8 @@ import { School } from './../models/school';
   template: `
     <h1>Local Courses</h1>
     <button type="button" class="btn btn-success" (click)="openNewCourse(content2)">Add Course</button>
-    <br>
-    <p>This adds the course, but doesn't display it. Should we force a refresh or what?</p>
+    <br><br>
+    <!--<p>This adds the course, but doesn't display it. Should we force a refresh or what?</p>-->
     <form>
       Course Name:
       <input #LocalCourse 
@@ -28,7 +28,7 @@ import { School } from './../models/school';
         placeholder="{{placeholders.LocalCourseName}}" (input)="changes.LocalCourseName.next(LocalCourse.value)"/>
     </form>
     <br>
-    <p>This should filter courses. I tried to do it like you did in equiv_courses, but I realized the accordion doesnt use a LocalDataSource that you can filter.</p>
+    <!--<p>This should filter courses. I tried to do it like you did in equiv_courses, but I realized the accordion doesnt use a LocalDataSource that you can filter.</p>-->
 	
 	
     <!-- Equivalency Modal -->
@@ -299,24 +299,54 @@ export class LocalCoursesComponent implements OnInit {
           if(result.Mode === "" || result2.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
             console.log("empty check, don't add");
           }else{
-            /* // the schools router for this is broken for now, will fix later
-            var schools;
-            this.localCourseService.getSchool(result2.SchoolName).then(schools2 => {schools = schools2;});
-            console.log(schools);
-            if(schools.length != 1){
-              console.log("School \"" + result2.SchoolName + "\" does not exist. Enter a valid school.");
-            */
-            if(false){
-            }else{
-              if(result.Lock){
-                //get current user's userid, shove it into result2.LockedBy
-                result2.LockedBy = 0;
+             // the schools router for this is broken for now, will fix later
+            //var schools;
+            console.log("query school: " + result2.SchoolName);
+            /*
+            this.localCourseService.getSchool(result2.SchoolName).then(schools => {
+              console.log("returned schools 1:");
+              console.log(schools);
+              //schools = schools2;
+              console.log("returned schools 2:");
+              //console.log(schools);
+              if(schools.length != 1){
+                console.log("School \"" + result2.SchoolName + "\" does not exist. Enter a valid school.");
+              
+              //if(false){
               }else{
-                result2.LockedBy = null;
+                if(result.Lock){
+                  //get current user's userid, shove it into result2.LockedBy
+                  result2.LockedBy = 0;
+                }else{
+                  result2.LockedBy = null;
+                }
+                console.log(result2);
+                this.localCourseService.addEquivCourse(result2);
               }
-              console.log(result2);
-              this.localCourseService.addEquivCourse(result2);
+            });
+            */
+            var found = false;
+            for(var i = 0; i < this.schools.length; ++i){
+              if(this.schools[i].Name === result2.SchoolName){
+                console.log("school was found");
+                found = true;
+                i = this.schools.length+999;
+              }
             }
+            if(!found){
+              console.log("school was not found");
+            }
+            
+            if(result.Lock){
+              //get current user's userid, shove it into result2.LockedBy
+              result.LockedBy = 0;
+              result2.LockedBy = 0;
+            }else{
+              result.LockedBy = 0;
+              result2.LockedBy = null;
+            }
+            console.log(result2);
+            this.localCourseService.addEquivCourse(result2);
           }
         }
       }
@@ -338,7 +368,7 @@ export class LocalCoursesComponent implements OnInit {
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "not an admin";
     if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
-      alert("You don't have permission to edit this equivalency. Consult " + foreignCourse.LockedByUser + " or an Admin to edit it. (This demo assumes you're Andrew Leonard.)");
+      alert("You don't have permission to edit this equivalency. Consult " + foreignCourse.LockedByUser + " or an Admin to edit it.");
       return;
     }
     

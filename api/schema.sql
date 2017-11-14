@@ -7,9 +7,9 @@ CREATE TABLE IF NOT EXISTS `User` (
 	`Email`	TEXT NOT NULL
 );
 INSERT INTO `User` (UserID,Name,Position,Email) VALUES 
- (0,'Andrew Leonard','admin','aleonard@scu.edu'),
- (2,'Rowan Decker','admin','rdecker@scu.edu'),
- (3,'Chloe de Guzman','admin','cdeguzman@scu.edu');
+(0,'Andrew Leonard','Admin','aleonard@scu.edu'),
+ (1,'Rowan Decker','Admin','rdecker@scu.edu'),
+ (2,'Chloe de Guzman','Admin','cdeguzman@scu.edu');
 DROP TABLE IF EXISTS `School`;
 CREATE TABLE IF NOT EXISTS `School` (
 	`SchoolID`	INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -46,7 +46,7 @@ CREATE TABLE IF NOT EXISTS `LocalCourse` (
 	`CourseNum`	TEXT,
 	`Title`	TEXT
 );
-INSERT INTO `LocalCourse` (CourseID,Dept,CourseNum,Title) VALUES 
+INSERT INTO `LocalCourse` (CourseID,Dept,CourseNum,Title) VALUES
  (1,'COEN','200','Logic Analysis & Synthesis'),
  (2,'COEN','201','Digital Signal Processing I'),
  (3,'COEN','201E','Digital Signal Processing I and II'),
@@ -121,8 +121,8 @@ CREATE TABLE IF NOT EXISTS `ForeignCourse` (
 	`Title`	TEXT,
 	`SchoolID`	INTEGER NOT NULL
 );
-INSERT INTO `ForeignCourse` (CourseID,Dept,CourseNum,Title,SchoolID) VALUES 
- (1,'CMPE','200','Computer Architecture',19),
+INSERT INTO `ForeignCourse` (CourseID,Dept,CourseNum,Title,SchoolID)
+ VALUES (1,'CMPE','200','Computer Architecture',19),
  (2,'CMPE','202','Software Systems Engineering',19),
  (3,'CMPE','203','Software Engineering Management',19),
  (4,'CMPE','206','Computer Network Design',19),
@@ -263,25 +263,25 @@ CREATE TABLE IF NOT EXISTS `EquivCourse` (
 	`Notes`	TEXT
 );
 INSERT INTO `EquivCourse` (EquivID,LocalCourseID,ForeignCourseID,Status,LockedBy,Notes) VALUES
- (1,9,1,'accepted',0,''),
- (2,42,17,'accepted',2,''),
- (3,29,93,'accepted',3,''),
- (4,27,94,'accepted',NULL,''),
- (5,22,19,'rejected',0,''),
- (6,26,99,'accepted',2,''),
- (7,53,99,'rejected',3,''),
- (8,9,115,'accepted',NULL,''),
- (36,11,95,'accepted',0,''),
- (37,14,30,'accepted',2,''),
- (38,26,77,'accepted',3,''),
- (39,27,16,'accepted',NULL,''),
- (40,30,112,'accepted',0,''),
- (41,31,50,'accepted',2,''),
- (42,40,70,'accepted',3,''),
- (43,40,115,'accepted',NULL,''),
- (44,42,105,'accepted',0,''),
- (45,51,7,'accepted',2,''),
- (46,54,94,'accepted',3,''),
- (47,55,93,'accepted',NULL,''),
- (48,63,131,'rejected',NULL,'');
+ (1,9,1,'Accepted',2,''),
+ (2,42,17,'Accepted',1,''),
+ (3,29,93,'Accepted',2,''),
+ (4,27,94,'Accepted',NULL,''),
+ (5,22,19,'Rejected',1,''),
+ (6,26,99,'Accepted',1,''),
+ (7,53,99,'Rejected',2,''),
+ (8,9,115,'Accepted',NULL,''),
+ (36,11,95,'Accepted',0,''),
+ (37,14,30,'Accepted',1,''),
+ (38,26,77,'Accepted',2,''),
+ (39,27,16,'Accepted',NULL,''),
+ (40,30,112,'Accepted',0,''),
+ (41,31,50,'Accepted',1,''),
+ (42,40,70,'Accepted',2,''),
+ (43,40,115,'Accepted',NULL,''),
+ (44,42,105,'Accepted',0,''),
+ (45,51,7,'Accepted',1,''),
+ (46,54,94,'Accepted',2,''),
+ (47,55,93,'Accepted',NULL,''),
+ (48,63,131,'Rejected',NULL,'');
 COMMIT;
