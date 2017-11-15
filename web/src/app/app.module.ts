@@ -22,6 +22,8 @@ import { UserComponent } from './components/users';
 import { SchoolComponent } from './components/schools';
 import { ForeignCourseComponent } from './components/foreign_courses';
 
+import { AccordionViewComponent } from './components/local_courses_accordion';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,6 +34,8 @@ import { ForeignCourseComponent } from './components/foreign_courses';
     UserComponent,
     SchoolComponent,
     ForeignCourseComponent
+    ,
+    AccordionViewComponent
   ],
   imports: [
     BrowserModule,

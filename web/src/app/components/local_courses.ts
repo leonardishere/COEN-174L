@@ -1,8 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, NgModule } from '@angular/core';
 import { LocalCourse2 } from './../models/local_course2';
-import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
-import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
+import { Ng2SmartTableModule, LocalDataSource, ViewCell } from 'ng2-smart-table';
 import { LocalCourseService } from './../services/local_courses';
 import { subscribeChanges, contains } from '../utils';
 
@@ -13,7 +13,99 @@ import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { School } from './../models/school';
 import { LocalCoursePlain } from './../models/local_course_plain';
+//import { ViewCell } from '../../../../ng2-smart-table';
 
+//these werent required earlier
+import { NgbAccordion, NgbPanel } from '@ng-bootstrap/ng-bootstrap/accordion/accordion';
+import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap/accordion/accordion.module';
+import { AccordionViewComponent } from './local_courses_accordion';
+ 
+//custom accordion component
+/*
+@Component({
+  selector: 'accordion-view',
+  template: `
+    <!--
+    <ngb-accordion>
+      <ngb-panel title="{{course.LocalCourseName}}">
+        <ng-template ngbPanelContent>
+          <button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
+          <div *ngIf="course.ForeignCourses.length <= 0">
+            No equivalent courses
+          </div>
+          <table *ngIf="course.ForeignCourses.length > 0">
+            <tr>
+              <th>Foreign Course</th>
+              <th>School</th>
+              <th>Status</th>
+              <th>Locked By</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+            <tr *ngFor="let foreignCourse of course.ForeignCourses">
+              <td>{{foreignCourse.ForeignCourseName}}</td>
+              <td>{{foreignCourse.SchoolName}}</td>
+              <td>{{foreignCourse.Status}}</td>
+              <td>{{foreignCourse.LockedByUser}}</td>
+              <td>{{foreignCourse.Notes}}</td>
+              <td>
+                <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
+                <i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
+              </td>
+            </tr>
+          </table>
+          <p>Open</p>
+        </ng-template>
+	    </ngb-panel>
+    </ngb-accordion>
+    -->
+    <!--<p>{{course.LocalCourseName}}</p>-->
+    
+    
+    <p>{{course}}</p>
+    
+    
+    <ngb-accordion>
+      <ngb-panel title="{{course}}">
+        <ng-template ngbPanelContent>
+          <p>{{course}}</p>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+    
+  `,
+  styles: [`
+    table { width: 100%; }
+  `]
+})
+class AccordionViewComponent implements ViewCell, OnInit {
+  @Input() rowData: any;
+  /*
+  course: LocalCourse2;
+
+  @Input() value: LocalCourse2;
+
+  ngOnInit() {
+    this.course = this.value;
+  }
+  
+  
+  course: string;
+  @Input() value: string;
+  ngOnInit(){
+    this.course = this.value;
+  }
+}
+*/
+/*
+@NgModule({
+  imports: [NgbModule.forRoot(), NgbAccordion, NgbPanel, NgbAccordionModule], 
+  declarations: [NgbAccordion, NgbPanel, NgbAccordionModule, AccordionViewComponent],
+  bootstrap: [AccordionViewComponent]
+}) 
+*/
+
+//main component
 @Component({
   selector: 'local-courses',
   template: `
@@ -22,13 +114,6 @@ import { LocalCoursePlain } from './../models/local_course_plain';
     <br><br>
     <p>This adds the course, but doesn't display it. Should we force a refresh or what?</p>
     <form>
-      <!--
-      Course Name:
-      <input #LocalCourse 
-        type="text" 
-        name="LocalCourseName" 
-        placeholder="{{placeholders.LocalCourseName}}" (input)="changes.LocalCourseName.next(LocalCourse.value)"/>
-      -->
       <div class="form-group">
         <ng-template #rtLocalCourse let-r="result" let-t="term">
           <p>{{r.LocalCourseName}}</p>
@@ -37,9 +122,12 @@ import { LocalCoursePlain } from './../models/local_course_plain';
         <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
       </div>
     </form>
-    <br>
+    <!--
     <p>This should filter courses. I tried to do it like you did in equiv_courses, but I realized the accordion doesnt use a LocalDataSource that you can filter.</p>
-	
+    <p>I attempted to throw the data into a smart table, with each accordion fold in a different row. That way the data source can be filtered by the local course input and reflected in the table, and new courses can be added. However I managed to break stuff in doing so, so I reverted to a working state. I'll try again later.</p>
+    -->
+    <p>Finally got the table and filtering to work, holy balls that was a headache. Now to populate the data.</p>
+    <p>I'll get back to this later. If you need the old version, it's in here. In components/local_courses.ts, in the template, uncomment the courses accordion, and comment the table under it.</p>
 	
     <!-- Equivalency Modal -->
     <ng-template #content let-c="close" let-d="dismiss">
@@ -118,46 +206,56 @@ import { LocalCoursePlain } from './../models/local_course_plain';
     </ng-template>
 	
 	<!-- Courses Accordion -->
+    <!--
     <ngb-accordion #acc="ngbAccordion">
-        <ngb-panel *ngFor="let course of courses" title="{{course.LocalCourseName}}">
-			<!-- Figure out how to put this into the header bar
-			<div *ngIf="course.ForeignCourses.length <= 0">
-				No equivalent courses
-			</div>
-			-->
-	    	<ng-template ngbPanelContent>
-				<button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
-				<div *ngIf="course.ForeignCourses.length <= 0">
-					No equivalent courses
-				</div>
-				<table *ngIf="course.ForeignCourses.length > 0">
-					<tr>
-						<th>Foreign Course</th>
-						<th>School</th>
-						<th>Status</th>
-            <th>Locked By</th>
-            <th>Notes</th>
-						<th></th>
-					</tr>
-					<tr *ngFor="let foreignCourse of course.ForeignCourses">
-						<td>{{foreignCourse.ForeignCourseName}}</td>
-						<td>{{foreignCourse.SchoolName}}</td>
-						<td>{{foreignCourse.Status}}</td>
-            <td>{{foreignCourse.LockedByUser}}</td>
-            <td>{{foreignCourse.Notes}}</td>
-						<td>
-							<i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
-							<i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
-						</td>
-					</tr>
-				</table>
-			</ng-template>
+      <ngb-panel *ngFor="let course of courses" title="{{course.LocalCourseName}}">
+        <ng-template ngbPanelContent>
+          <button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
+          <div *ngIf="course.ForeignCourses.length <= 0">
+            No equivalent courses
+          </div>
+          <table *ngIf="course.ForeignCourses.length > 0">
+            <tr>
+              <th>Foreign Course</th>
+              <th>School</th>
+              <th>Status</th>
+              <th>Locked By</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+            <tr *ngFor="let foreignCourse of course.ForeignCourses">
+              <td>{{foreignCourse.ForeignCourseName}}</td>
+              <td>{{foreignCourse.SchoolName}}</td>
+              <td>{{foreignCourse.Status}}</td>
+              <td>{{foreignCourse.LockedByUser}}</td>
+              <td>{{foreignCourse.Notes}}</td>
+              <td>
+                <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
+                <i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
+              </td>
+            </tr>
+          </table>
+        </ng-template>
 	    </ngb-panel>
     </ngb-accordion>
+    -->
+    
+    <!-- table -->
+    
+    <ng2-smart-table
+      [settings]="settings"
+      [source]="source">
+    </ng2-smart-table>
+    
   `,
   styles: [`
     table { width: 100%; }
-  `]
+  `],
+  entryComponents: [AccordionViewComponent]
+})
+@NgModule({
+  imports: [ AccordionViewComponent ],
+  entryComponents: [ AccordionViewComponent ]
 })
 export class LocalCoursesComponent implements OnInit {
   schools: School[];
@@ -197,18 +295,29 @@ export class LocalCoursesComponent implements OnInit {
 	  CourseNum: "",
 	  CourseTitle: ""
   }
+  
+  
   settings = {
     columns: {
-      LocalCourseName: { title: 'Local Course' },
-      ForeignCourseName: { title: 'Foreign Course' },
-      SchoolName: { title: 'School' },
-      Status: { title: 'Status' }
+      LocalCourseName: { 
+        title: 'Local Course',
+        type: 'custom',
+        renderComponent: AccordionViewComponent,
+        onComponentInitFunction(instance) {}
+      }
     },
     pager: {
       perPage: 100
-    }
+    },
+    actions: {
+      add: false,
+      delete: false,
+      edit: false
+    },
+    hideSubHeader: true
   };
-
+  
+  
   constructor(private localCourseService: LocalCourseService,
     private modalService: NgbModal) { }
 
