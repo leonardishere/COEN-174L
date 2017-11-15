@@ -12,6 +12,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { School } from './../models/school';
+import { LocalCoursePlain } from './../models/local_course_plain';
 
 @Component({
   selector: 'local-courses',
@@ -19,16 +20,25 @@ import { School } from './../models/school';
     <h1>Local Courses</h1>
     <button type="button" class="btn btn-success" (click)="openNewCourse(content2)">Add Course</button>
     <br><br>
-    <!--<p>This adds the course, but doesn't display it. Should we force a refresh or what?</p>-->
+    <p>This adds the course, but doesn't display it. Should we force a refresh or what?</p>
     <form>
+      <!--
       Course Name:
       <input #LocalCourse 
         type="text" 
         name="LocalCourseName" 
         placeholder="{{placeholders.LocalCourseName}}" (input)="changes.LocalCourseName.next(LocalCourse.value)"/>
+      -->
+      <div class="form-group">
+        <ng-template #rtLocalCourse let-r="result" let-t="term">
+          <p>{{r.LocalCourseName}}</p>
+        </ng-template>
+        <label for="typeahead-LocalCourse">Local Course:</label>
+        <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
+      </div>
     </form>
     <br>
-    <!--<p>This should filter courses. I tried to do it like you did in equiv_courses, but I realized the accordion doesnt use a LocalDataSource that you can filter.</p>-->
+    <p>This should filter courses. I tried to do it like you did in equiv_courses, but I realized the accordion doesnt use a LocalDataSource that you can filter.</p>
 	
 	
     <!-- Equivalency Modal -->
@@ -150,12 +160,12 @@ import { School } from './../models/school';
   `]
 })
 export class LocalCoursesComponent implements OnInit {
-  //schools: string[]; //should be school[]
   schools: School[];
   foreignCourses: string[]; //should be foreignCourse[]
   //foreignCourses: ForeignCourse[];
   //foreignCourses: any[];
   statuses: string[];
+  localCourses: LocalCoursePlain[];
   
   courses: LocalCourse2[];
   source: LocalDataSource;
@@ -229,7 +239,22 @@ export class LocalCoursesComponent implements OnInit {
     this.statuses = new Array<string>();
     this.statuses.push("Accepted");
     this.statuses.push("Rejected");
+    
+    this.localCourseService.getLocalCoursesPlain().then(localCourses => {
+      this.localCourses = localCourses;
+    });
   }
+  
+  //local courses typeahead
+  searchLocalCourse = (text$: Observable<string>) =>
+    text$
+      .debounceTime(100)
+      .distinctUntilChanged()
+      .map(term => term.length < 1 ? []
+          : this.localCourses.filter(v => contains(v.LocalCourseName, term)).slice(0, 10)
+  );
+  
+  formatterLocalCourse = (x: LocalCoursePlain) => x.LocalCourseName;
 
   onSelect(course: LocalCourse2): void {
     console.log('Selected', course);

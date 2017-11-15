@@ -66,4 +66,9 @@ export class LocalCourseService {
     */
     .then(response => response.json())
   }
+  
+  getLocalCoursesPlain(): Promise<any[]> {
+    return this.http.get(environment.api + 'local_courses_plain').toPromise()
+    .then(response => response.json())
+  }
 }

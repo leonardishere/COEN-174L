@@ -41,7 +41,7 @@ selector: 'equiv-courses',
       <ng-template #rtForeignCourse let-r="result" let-t="term">
         <p>{{r.ForeignCourseName}}</p>
       </ng-template>
-      <label for="typeahead-ForeignCourse">Local Course:</label>
+      <label for="typeahead-ForeignCourse">Foreign Course:</label>
       <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" [ngbTypeahead]="searchForeignCourse" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse" (input)="changes.ForeignCourseName.next(ForeignCourse.value)" (selectItem)="changes.ForeignCourseName.next($event.item.ForeignCourseName)" placeholder="{{placeholders.ForeignCourseName}}"/>
     </div>
     
@@ -153,7 +153,7 @@ export class EquivCoursesComponent {
           : this.localCourses.filter(v => contains(v.LocalCourseName, term)).slice(0, 10)
   );
   
-  formatterLocalCourse = (x: {LocalCourseName: string}) => x.LocalCourseName;
+  formatterLocalCourse = (x: LocalCoursePlain) => x.LocalCourseName;
   
   //school typeahead
   searchSchool = (text$: Observable<string>) =>
@@ -164,7 +164,7 @@ export class EquivCoursesComponent {
           : this.schools.filter(v => contains(v.Name, term)).slice(0, 10)
   );
   
-  formatterSchool = (x: {Name: string}) => x.Name;
+  formatterSchool = (x: School) => x.Name;
   
   //foreign courses typeahead
   searchForeignCourse = (text$: Observable<string>) =>
@@ -175,7 +175,7 @@ export class EquivCoursesComponent {
           : this.foreignCourses.filter(v => contains(v.ForeignCourseName, term) && contains(v.SchoolName, this.currentSchool)).slice(0, 10)
   );
   
-  formatterForeignCourse = (x: {ForeignCourseName: string}) => x.ForeignCourseName;
+  formatterForeignCourse = (x: ForeignCourseSchool) => x.ForeignCourseName;
   
   //status typeahead
   searchStatus = (text$: Observable<string>) =>
@@ -186,5 +186,5 @@ export class EquivCoursesComponent {
           : this.statuses.filter(v => contains(v.Status, term)).slice(0, 10)
   );
   
-  formatterStatus = (x: {Status: string}) => x.Status;
+  formatterStatus = (x: Status) => x.Status;
 }
