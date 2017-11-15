@@ -11,6 +11,8 @@ import { UsersRouter } from './routes/users';
 import { SchoolsRouter } from './routes/schools';
 import { ForeignCourseRouter } from './routes/foreign_courses';
 import { EverythingRouter } from './routes/index';
+import { LocalCoursePlainRouter } from './routes/local_courses_plain';
+import { ForeignCourseSchoolRouter } from './routes/foreign_courses_schools';
 
 var app = express();
 //app.use(express.session({ secret: 'keyboard cat' }));
@@ -34,6 +36,9 @@ app.use('/users', UsersRouter);
 app.use('/schools', SchoolsRouter);
 app.use('/foreign_courses', ForeignCourseRouter);
 app.use('/', EverythingRouter);
+app.use('/local_courses_plain', LocalCoursePlainRouter);
+app.use('/foreign_courses_schools', ForeignCourseSchoolRouter);
+app.use('/favicon.ico', (req, res) => console.log('another favicon.ico warning'));
 
 app.use('*', (req, res, next) => {
   next({ err: 'Unknown route' });

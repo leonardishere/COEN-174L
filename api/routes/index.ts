@@ -22,6 +22,8 @@ router.route('/')
 		res.write("<a href=\"foreign_courses\">Foreign Courses</a><p>//should be accessed through schools</p><br>");
 		res.write("<a href=\"users\">Users</a><br>");
 		res.write("<a href=\"recommender\">Recommender</a><p>//I kinda fucked around and made a recommender system based on the names of courses, sorry about that</p><br>");
+    res.write("<a href=\"local_courses_plain\">Local Courses Only</a><br>");
+    res.write("<a href=\"foreign_courses_schools\">Foreign Courses by School</a><br>");
 		return res.end();
 	});
 
