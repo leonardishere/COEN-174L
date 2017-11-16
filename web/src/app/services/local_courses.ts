@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import { ForeignCourse2 } from './../models/foreign_course2';
 import { LocalCourse2 } from './../models/local_course2';
 
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment'
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class LocalCourseService {
-	constructor(private http: Http) {}
+	constructor(private http: HttpClient) {}
 	
-	getLocalCourses(): Promise<any[]> {
-		return this.http.get(environment.api + 'local_courses').toPromise()
-		.then(response => response.json())
+	getLocalCourses(): Promise<any> {
+		return this.http.get(environment.api + 'local_courses').toPromise();
 	}
 
   addEquivCourse(course): Promise<any> {
@@ -40,35 +39,19 @@ export class LocalCourseService {
   }
   
   //these shouldnt be here but whatever
-  getSchools(): Promise<any[]> {
-    return this.http.get(environment.api + 'schools').toPromise()
-    .then(response => response.json())
+  getSchools(): Promise<any> {
+    return this.http.get(environment.api + 'schools').toPromise();
   }
   
   getForeignCourses(): Promise<any> {
-    return this.http.get(environment.api + 'foreign_courses').toPromise()
-    .then(response => response.json())
+    return this.http.get(environment.api + 'foreign_courses').toPromise();
   }
   
-  //getSchool(schoolName): Promise<any[]> {
-  getSchool(schoolName): Promise<any[]> {
-    //console.log("getSchool("+schoolName+")");
-    return this.http.get(environment.api + 'schools/' + schoolName).toPromise()
-    /*
-    .then(response => {
-      
-      console.log("returning:");
-      console.log(response);
-      response.json();
-      
-      //return null;
-    })
-    */
-    .then(response => response.json())
+  getSchool(schoolName): Promise<any> {
+    return this.http.get(environment.api + 'schools/' + schoolName).toPromise();
   }
   
-  getLocalCoursesPlain(): Promise<any[]> {
-    return this.http.get(environment.api + 'local_courses_plain').toPromise()
-    .then(response => response.json())
+  getLocalCoursesPlain(): Promise<any> {
+    return this.http.get(environment.api + 'local_courses_plain').toPromise();
   }
 }

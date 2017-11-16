@@ -2,17 +2,16 @@ import { Injectable } from '@angular/core';
 import { User } from './../models/user';
 import { USERS } from './../mock-db/users';
 
-import { Http } from '@angular/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment'
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
 export class UserService {
-	constructor(private http: Http) {}
+	constructor(private http: HttpClient) {}
 	
-	getUsers(): Promise<any[]> {
-		return this.http.get(environment.api + 'users').toPromise()
-		.then(response => response.json())
+	getUsers(): Promise<any> {
+		return this.http.get(environment.api + 'users').toPromise();
 	}  
 
   addUser(user): Promise<any> {
