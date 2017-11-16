@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http';
 import { FormsModule }   from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { Ng2Webstorage } from 'ngx-webstorage';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { AppRoutingModule } from './app-routing.module';
@@ -33,8 +34,7 @@ import { AccordionViewComponent } from './components/local_courses_accordion';
     LocalCoursesComponent,
     UserComponent,
     SchoolComponent,
-    ForeignCourseComponent
-    ,
+    ForeignCourseComponent,
     AccordionViewComponent
   ],
   imports: [
@@ -43,6 +43,7 @@ import { AccordionViewComponent } from './components/local_courses_accordion';
     HttpModule,
     FormsModule,
     NgbModule.forRoot(),
+    Ng2Webstorage,
     Ng2SmartTableModule
   ],
   providers: [CourseService, EquivCourseService, LocalCourseService, UserService, SchoolService, ForeignCourseService],
