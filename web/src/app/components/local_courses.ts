@@ -1,5 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, NgModule } from '@angular/core';
 import { LocalCourse2 } from './../models/local_course2';
+import { LocalCourse2Wrapper } from './../models/local_course2_wrapper';
 import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
 import { Ng2SmartTableModule, LocalDataSource, ViewCell } from 'ng2-smart-table';
@@ -112,7 +113,6 @@ class AccordionViewComponent implements ViewCell, OnInit {
     <h1>Local Courses</h1>
     <button type="button" class="btn btn-success" (click)="openNewCourse(content2)">Add Course</button>
     <br><br>
-    <p>This adds the course, but doesn't display it. Should we force a refresh or what?</p>
     <form>
       <div class="form-group">
         <ng-template #rtLocalCourse let-r="result" let-t="term">
@@ -122,12 +122,7 @@ class AccordionViewComponent implements ViewCell, OnInit {
         <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
       </div>
     </form>
-    <!--
-    <p>This should filter courses. I tried to do it like you did in equiv_courses, but I realized the accordion doesnt use a LocalDataSource that you can filter.</p>
-    <p>I attempted to throw the data into a smart table, with each accordion fold in a different row. That way the data source can be filtered by the local course input and reflected in the table, and new courses can be added. However I managed to break stuff in doing so, so I reverted to a working state. I'll try again later.</p>
-    -->
-    <p>Finally got the table and filtering to work, holy balls that was a headache. Now to populate the data.</p>
-    <p>I'll get back to this later. If you need the old version, it's in here. In components/local_courses.ts, in the template, uncomment the courses accordion, and comment the table under it.</p>
+    <p>I got the course filtering to work by shoving the entire thing into a ng2 smart table. I'll work on restoring functionality soon. The css changed a little but not by much.</p>
 	
     <!-- Equivalency Modal -->
     <ng-template #content let-c="close" let-d="dismiss">
@@ -266,6 +261,7 @@ export class LocalCoursesComponent implements OnInit {
   localCourses: LocalCoursePlain[];
   
   courses: LocalCourse2[];
+  //courses: LocalCourse2Wrapper[];
   source: LocalDataSource;
   placeholders = {
     LocalCourseName: "COEN 210 - Computer Architecture"
@@ -303,7 +299,9 @@ export class LocalCoursesComponent implements OnInit {
         title: 'Local Course',
         type: 'custom',
         renderComponent: AccordionViewComponent,
-        onComponentInitFunction(instance) {}
+        onComponentInitFunction(instance) {
+          //console.log(instance);
+        }
       }
     },
     pager: {
@@ -324,6 +322,7 @@ export class LocalCoursesComponent implements OnInit {
   ngOnInit(): void {
     this.localCourseService.getLocalCourses().then(courses => {
       this.courses = courses;
+      //console.log(courses);
       this.source = new LocalDataSource(this.courses);
     });
   
@@ -331,11 +330,8 @@ export class LocalCoursesComponent implements OnInit {
       this.source.addFilter({field: 'LocalCourseName', search: search});
     });
     
-    //this.schools = new Array<string>();
     this.localCourseService.getSchools().then(schools => {
       this.schools = schools;
-      //schools.forEach(school => {this.schools.push(school.Name);});
-      //console.log(schools);
     });
     
     this.foreignCourses = new Array<string>();

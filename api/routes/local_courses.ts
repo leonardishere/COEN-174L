@@ -45,6 +45,11 @@ interface LocalCourse{
 	ForeignCourses: Array<ForeignCourse>;
 }
 
+interface LocalCourseWrapper{
+  LocalCourseName: string;
+  LocalCourse: LocalCourse;
+}
+
 function reformatResults(res, result){
 	var columnNames1 = ["SCU Course", "Equivalencies"];
 	var columnNames2 = ["Foreign Course", "School", "Status"];
@@ -99,7 +104,17 @@ function reformatResults(res, result){
 	}
 	
 	res.json(array1);
+  //reformatResults2(res, array1);
 	return res.end();
+}
+
+function reformatResults2(res, values){
+  var array = new Array<LocalCourseWrapper>();
+  values.forEach(course => {
+    var obj: LocalCourseWrapper = {LocalCourseName: course.LocalCourseName, LocalCourse: course};
+    array.push(obj);
+  });
+  res.json(array);
 }
 
 export var LocalCourseRouter = router;
