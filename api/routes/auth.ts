@@ -1,7 +1,12 @@
 import { Database } from '../database';
 import * as PromiseRouter from 'express-promise-router';
 import * as passport from 'passport';
+import * as jwt from 'jsonwebtoken';
+import * as expressJwt from 'express-jwt';
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
+
+var jwtSecret = 'SECRET';
+var redirectUrl = 'http://localhost:4200/#/login';
 
 var db = new Database();
 passport.use(new GoogleStrategy({
@@ -39,9 +44,16 @@ router.get('/',
 	passport.authenticate('google', { scope: ['profile', 'email'] })
 );
 
+router.get('/test', expressJwt({secret: jwtSecret}),
+	(req, res) => res.json(req.user)
+);
+
 router.get('/callback', 
 	passport.authenticate('google', { failureRedirect: '/auth' }),
-	(req, res) => res.redirect("http://students.engr.scu.edu/~rdecker/coen174")
+	(req, res) => {
+		let token = jwt.sign(req.user, jwtSecret);
+		res.redirect(redirectUrl + '?token=' + token);
+	}
 );
 
 router.post('/add', (req, res) => 

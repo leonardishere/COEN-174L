@@ -1,11 +1,15 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { FormsModule }   from '@angular/forms';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { Ng2Webstorage } from 'ngx-webstorage';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 
 import { AppRoutingModule } from './app-routing.module';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './auth_interceptor';
+
 import { CourseService } from './services/course.service';
 import { EquivCourseService } from './services/equiv_courses';
 import { LocalCourseService } from './services/local_courses';
@@ -33,19 +37,27 @@ import { AccordionViewComponent } from './components/local_courses_accordion';
     LocalCoursesComponent,
     UserComponent,
     SchoolComponent,
-    ForeignCourseComponent
-    ,
+    ForeignCourseComponent,
     AccordionViewComponent
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
-    HttpModule,
+    HttpClientModule,
     FormsModule,
     NgbModule.forRoot(),
+    Ng2Webstorage,
     Ng2SmartTableModule
   ],
-  providers: [CourseService, EquivCourseService, LocalCourseService, UserService, SchoolService, ForeignCourseService],
+  providers: [
+    {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    CourseService,
+    EquivCourseService,
+    LocalCourseService,
+    UserService,
+    SchoolService,
+    ForeignCourseService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
