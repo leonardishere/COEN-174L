@@ -23,6 +23,7 @@ export class LoginComponent implements OnInit {
 
 	ngOnInit() {
     if (this.auth.isLoggedIn()) {
+      console.log('Already logged in');
       this.router.navigate(['/']);
     } else {
       let token = this.route.snapshot.queryParams.token;
