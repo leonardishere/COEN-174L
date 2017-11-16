@@ -1,6 +1,8 @@
 import { NgModule }             from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { AuthGuard } from './auth_guard';
+
 import { LoginComponent } from './components/login.component';
 import { CoursesComponent } from './components/courses.component';
 import { EquivCoursesComponent } from './components/equiv_courses';
@@ -13,10 +15,12 @@ const routes: Routes = [
   { path: '', redirectTo: '/equiv_courses', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'equiv_courses', component: EquivCoursesComponent },
-  { path: 'local_courses', component: LocalCoursesComponent },
-  { path: 'users', component: UserComponent},
-  { path: 'schools', component: SchoolComponent},
-  { path: 'foreign_courses', component: ForeignCourseComponent}
+  { path: '', canActivateChild: [AuthGuard], children: [
+    { path: 'local_courses', component: LocalCoursesComponent },
+    { path: 'users', component: UserComponent},
+    { path: 'schools', component: SchoolComponent},
+    { path: 'foreign_courses', component: ForeignCourseComponent}
+  ]}
 ];
 
 @NgModule({

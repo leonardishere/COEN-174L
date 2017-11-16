@@ -9,7 +9,9 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { AppRoutingModule } from './app-routing.module';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { AuthInterceptor } from './auth_interceptor';
+import { AuthGuard } from './auth_guard';
 
+import { AuthService } from './services/auth.service';
 import { CourseService } from './services/course.service';
 import { EquivCourseService } from './services/equiv_courses';
 import { LocalCourseService } from './services/local_courses';
@@ -51,6 +53,8 @@ import { AccordionViewComponent } from './components/local_courses_accordion';
   ],
   providers: [
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true},
+    AuthGuard,
+    AuthService,
     CourseService,
     EquivCourseService,
     LocalCourseService,
