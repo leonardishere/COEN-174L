@@ -16,55 +16,9 @@ import { Status } from './../models/status';
 
 @Component({
 selector: 'equiv-courses',
-  template: `
-	<h1>Equivalent Courses</h1>
-  
-  <!-- form -->
-	<form>
-    <div class="form-group">
-      <ng-template #rtLocalCourse let-r="result" let-t="term">
-        <p>{{r.LocalCourseName}}</p>
-      </ng-template>
-      <label for="typeahead-LocalCourse">Local Course:</label>
-      <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
-    </div>
-    
-    <div class="form-group">
-      <ng-template #rtSchool let-r="result" let-t="term">
-        <p>{{r.Name}}</p>
-      </ng-template>
-      <label for="typeahead-School">School:</label>
-      <input #School id="typeahead-School" type="text" class="form-control" [ngbTypeahead]="searchSchool" [resultTemplate]="rtSchool" [inputFormatter]="formatterSchool" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)" placeholder="{{placeholders.SchoolName}}"/>
-    </div>
-    
-    <div class="form-group">
-      <ng-template #rtForeignCourse let-r="result" let-t="term">
-        <p>{{r.ForeignCourseName}}</p>
-      </ng-template>
-      <label for="typeahead-ForeignCourse">Foreign Course:</label>
-      <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" [ngbTypeahead]="searchForeignCourse" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse" (input)="changes.ForeignCourseName.next(ForeignCourse.value)" (selectItem)="changes.ForeignCourseName.next($event.item.ForeignCourseName)" placeholder="{{placeholders.ForeignCourseName}}"/>
-    </div>
-    
-    <div class="form-group">
-      <ng-template #rtStatus let-r="result" let-t="term">
-        <p>{{r.Status}}</p>
-      </ng-template>
-      <label for="typeahead-Status">Status:</label>
-      <input #Status id="typeahead-Status" type="text" class="form-control" [ngbTypeahead]="searchStatus" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus" (input)="changes.Status.next(Status.value)" (selectItem)="changes.Status.next($event.item.Status)" placeholder="{{placeholders.Status}}"/>
-    </div>
-	</form>
-  
-  <!-- table -->
-  <ng2-smart-table
-    [settings]="settings"
-    [source]="source">
-  </ng2-smart-table>
-  `,
-  styles: [`
-    input {
-      width: 500px;
-    }
-  `]
+templateUrl: './equiv_courses.html',
+styleUrls: ['./equiv_courses.css']
+
 })
 export class EquivCoursesComponent {
   schools: School[];
@@ -72,7 +26,7 @@ export class EquivCoursesComponent {
   foreignCourses: ForeignCourseSchool[];
   statuses: Status[];
   currentSchool: string;
-  
+
   courses: EquivCourseJoined[];
   source: LocalDataSource;
   placeholders = {
@@ -126,24 +80,24 @@ export class EquivCoursesComponent {
     subscribeChanges(this.changes.Status, (search) => {
       this.source.addFilter({field: 'Status', search: search});
     });
-    
+
     this.currentSchool = "";
-    
+
     this.equivCourseService.getSchools().then(schools => {
       this.schools = schools;
     });
-    
+
     this.equivCourseService.getLocalCoursesPlain().then(localCourses => {
       this.localCourses = localCourses;
     });
-    
+
     this.equivCourseService.getForeignCoursesSchools().then(foreignCoursesSchools => {
       this.foreignCourses = foreignCoursesSchools;
     });
-    
+
     this.statuses = [{'Status': 'Accepted'}, {'Status': 'Rejected'}];
   }
-  
+
   //local courses typeahead
   searchLocalCourse = (text$: Observable<string>) =>
     text$
@@ -152,9 +106,9 @@ export class EquivCoursesComponent {
       .map(term => term.length < 1 ? []
           : this.localCourses.filter(v => contains(v.LocalCourseName, term)).slice(0, 10)
   );
-  
+
   formatterLocalCourse = (x: LocalCoursePlain) => x.LocalCourseName;
-  
+
   //school typeahead
   searchSchool = (text$: Observable<string>) =>
     text$
@@ -163,9 +117,9 @@ export class EquivCoursesComponent {
       .map(term => term.length < 1 ? []
           : this.schools.filter(v => contains(v.Name, term)).slice(0, 10)
   );
-  
+
   formatterSchool = (x: School) => x.Name;
-  
+
   //foreign courses typeahead
   searchForeignCourse = (text$: Observable<string>) =>
     text$
@@ -174,9 +128,9 @@ export class EquivCoursesComponent {
       .map(term => term.length < 1 ? []
           : this.foreignCourses.filter(v => contains(v.ForeignCourseName, term) && contains(v.SchoolName, this.currentSchool)).slice(0, 10)
   );
-  
+
   formatterForeignCourse = (x: ForeignCourseSchool) => x.ForeignCourseName;
-  
+
   //status typeahead
   searchStatus = (text$: Observable<string>) =>
     text$
@@ -185,6 +139,8 @@ export class EquivCoursesComponent {
       .map(term => term.length < 1 ? []
           : this.statuses.filter(v => contains(v.Status, term)).slice(0, 10)
   );
-  
+
   formatterStatus = (x: Status) => x.Status;
+
+
 }
