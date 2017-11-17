@@ -102,12 +102,21 @@ import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap/accordion/accordi
 })
 export class AccordionViewComponent implements ViewCell, OnInit {
   @Input() rowData: any;
-  
   course: string;
   @Input() value: string;
+  
+  dialogCourse: LocalCourse2;
+  dialogInputs = {
+	  Mode: "Add Equivalency",
+	  SchoolName: "",
+	  ForeignCourseName: "",
+	  Status: "",
+    Lock: "",
+	  Notes: ""
+  }
+  
   ngOnInit(){
     this.course = this.value;
     //console.log(this.value);
   }
-  
 }

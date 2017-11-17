@@ -1,0 +1,86 @@
+<h1>Local Courses</h1>
+<button type="button" class="btn btn-success" (click)="addCourse(content2)">Add Course</button>
+<br><br>
+<form>
+  <div class="form-group">
+    <ng-template #rtLocalCourse let-r="result" let-t="term">
+      <p>{{r.LocalCourseName}}</p>
+    </ng-template>
+    <label for="typeahead-LocalCourse">Local Course:</label>
+    <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
+  </div>
+</form>
+<p>I got the course filtering to work by shoving the entire thing into a ng2 smart table. I'll work on restoring functionality soon. The css changed a little but not by much.</p>
+
+<!-- Course Modal -->
+<ng-template #content2 let-c="close" let-d="dismiss">
+  <div class="modal-header">
+<h4 class="modal-title">{{dialogInputs2.Mode}} Course</h4>
+  <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  <div class="modal-body">
+<br/>
+<form>
+  <div class="form-group">
+    <label for="dept">Department:</label>
+    <input id="dept" name="dept" type="text" [(ngModel)]="dialogInputs2.Dept"/>
+  </div>
+  <div class="form-group">
+    <label for="courseNum">Number:</label>
+    <input id="courseNum" name="courseNum" type="text" [(ngModel)]="dialogInputs2.CourseNum"/>
+  </div>
+  <div class="form-group">
+    <label for="courseTitle">Title:</label>
+    <input id="courseTitle" name="courseTitle" type="text" [(ngModel)]="dialogInputs2.CourseTitle"/>
+  </div>
+</form>
+  </div>
+  <div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2)">{{dialogInputs2.Mode}}</button>
+  <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+  </div>
+</ng-template>
+
+<!-- Courses Accordion -->
+<!--
+<ngb-accordion #acc="ngbAccordion">
+  <ngb-panel *ngFor="let course of courses" title="{{course.LocalCourseName}}">
+    <ng-template ngbPanelContent>
+      <button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
+      <div *ngIf="course.ForeignCourses.length <= 0">
+        No equivalent courses
+      </div>
+      <table *ngIf="course.ForeignCourses.length > 0">
+        <tr>
+          <th>Foreign Course</th>
+          <th>School</th>
+          <th>Status</th>
+          <th>Locked By</th>
+          <th>Notes</th>
+          <th></th>
+        </tr>
+        <tr *ngFor="let foreignCourse of course.ForeignCourses">
+          <td>{{foreignCourse.ForeignCourseName}}</td>
+          <td>{{foreignCourse.SchoolName}}</td>
+          <td>{{foreignCourse.Status}}</td>
+          <td>{{foreignCourse.LockedByUser}}</td>
+          <td>{{foreignCourse.Notes}}</td>
+          <td>
+            <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
+            <i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
+          </td>
+        </tr>
+      </table>
+    </ng-template>
+  </ngb-panel>
+</ngb-accordion>
+-->
+
+<!-- table -->
+
+<ng2-smart-table
+  [settings]="settings"
+  [source]="source">
+</ng2-smart-table>

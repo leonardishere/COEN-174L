@@ -19,177 +19,230 @@ import { LocalCoursePlain } from './../models/local_course_plain';
 //these werent required earlier
 import { NgbAccordion, NgbPanel } from '@ng-bootstrap/ng-bootstrap/accordion/accordion';
 import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap/accordion/accordion.module';
-//import { AccordionViewComponent } from './local_courses_accordion';
-
-//global vars work
-var localCoursesGlobal: LocalCoursePlain[];
-var schoolsGlobal: School[];
-var foreignCoursesGlobal: string[]; //should be foreignCourse[]
-  //foreignCourses: ForeignCourse[];
-  //foreignCourses: any[];
-var statusesGlobal: string[];
-
+import { AccordionViewComponent } from './local_courses_accordion';
+ 
+//custom accordion component
+/*
 @Component({
   selector: 'accordion-view',
-  templateUrl: './local_courses_accordion_template.html',
+  template: `
+    <!--
+    <ngb-accordion>
+      <ngb-panel title="{{course.LocalCourseName}}">
+        <ng-template ngbPanelContent>
+          <button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
+          <div *ngIf="course.ForeignCourses.length <= 0">
+            No equivalent courses
+          </div>
+          <table *ngIf="course.ForeignCourses.length > 0">
+            <tr>
+              <th>Foreign Course</th>
+              <th>School</th>
+              <th>Status</th>
+              <th>Locked By</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+            <tr *ngFor="let foreignCourse of course.ForeignCourses">
+              <td>{{foreignCourse.ForeignCourseName}}</td>
+              <td>{{foreignCourse.SchoolName}}</td>
+              <td>{{foreignCourse.Status}}</td>
+              <td>{{foreignCourse.LockedByUser}}</td>
+              <td>{{foreignCourse.Notes}}</td>
+              <td>
+                <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
+                <i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
+              </td>
+            </tr>
+          </table>
+          <p>Open</p>
+        </ng-template>
+	    </ngb-panel>
+    </ngb-accordion>
+    -->
+    <!--<p>{{course.LocalCourseName}}</p>-->
+    
+    
+    <p>{{course}}</p>
+    
+    
+    <ngb-accordion>
+      <ngb-panel title="{{course}}">
+        <ng-template ngbPanelContent>
+          <p>{{course}}</p>
+        </ng-template>
+      </ngb-panel>
+    </ngb-accordion>
+    
+  `,
   styles: [`
     table { width: 100%; }
   `]
 })
-export class AccordionViewComponent implements ViewCell, OnInit {
+class AccordionViewComponent implements ViewCell, OnInit {
   @Input() rowData: any;
-  course: string;
-  @Input() value: string;
-  
-  dialogCourse: LocalCourse2;
-  
-  dialogInputs = {
-	  Mode: "Add Equivalency",
-	  SchoolName: "",
-	  ForeignCourseName: "",
-	  Status: "",
-    Lock: "",
-	  Notes: ""
-  }
-  
-  constructor(private localCourseService: LocalCourseService,
-    private modalService: NgbModal) { }
-    
-  ngOnInit(){
+  /*
+  course: LocalCourse2;
+
+  @Input() value: LocalCourse2;
+
+  ngOnInit() {
     this.course = this.value;
   }
   
-  addEquivCourse(content, course){
-    console.log("addEquivCourse()");
-    this.dialogInputs.Mode = "Add";
-    this.dialogCourse = course;
-    this.modalService.open(content).result.then((result) => {
-      course.ForeignCourses.push(result);
-      console.log(course);
-      result.LocalCourseID = course.LocalCourseID;
-      
-      //console.log(result);
-      //console.log(result.SchoolName);      
-      
-      if(result === "Close"){
-        console.log("Closed, don't add");
-      }else{
-        if(result.Mode == null || result.SchoolName == null || result.ForeignCourseName == null || result.Status == null || result.Lock == null || result.Notes == null){
-          console.log("null check, don't add");
-        }else{
-          var result2 = result;
-          if(result.SchoolName.Name == null){
-            console.log("school: " + result.SchoolName);
-          }else{
-            console.log("school: " + result.SchoolName.Name);
-            result2.SchoolName = result.SchoolName.Name;
-          }
-          if(result.Mode === "" || result2.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
-            console.log("empty check, don't add");
-          }else{
-            // the schools router for this is broken for now, will fix later
-            //var schools;
-            //console.log("query school: " + result2.SchoolName);
-            /*
-            this.localCourseService.getSchool(result2.SchoolName).then(schools => {
-              console.log("returned schools 1:");
-              console.log(schools);
-              //schools = schools2;
-              console.log("returned schools 2:");
-              //console.log(schools);
-              if(schools.length != 1){
-                console.log("School \"" + result2.SchoolName + "\" does not exist. Enter a valid school.");
-              */
-              if(false){
-              }else{
-                if(result.Lock){
-                  //get current user's userid, shove it into result2.LockedBy
-                  result2.LockedBy = 0;
-                }else{
-                  result2.LockedBy = null;
-                }
-                console.log(result2);
-                this.localCourseService.addEquivCourse(result2);
-              }
-            //});
-            
-            var found = false;
-            for(var i = 0; i < schoolsGlobal.length; ++i){
-              if(schoolsGlobal[i].Name === result2.SchoolName){
-                console.log("school was found");
-                found = true;
-                i = schoolsGlobal.length+999;
-              }
-            }
-            if(!found){
-              console.log("school was not found");
-            }
-            
-            if(result.Lock){
-              //get current user's userid, shove it into result2.LockedBy
-              result.LockedBy = 0;
-              result2.LockedBy = 0;
-            }else{
-              result.LockedBy = 0;
-              result2.LockedBy = null;
-            }
-            console.log(result2);
-            this.localCourseService.addEquivCourse(result2);
-          }
-        }
-      }
-      /*
-      result.Mode = "";
-      result.SchoolName = "";
-      result.ForeignCourseName = "";
-      result.Status = "";
-      result.Lock = false;
-      result.Notes = "";
-      */
-    });
+  
+  course: string;
+  @Input() value: string;
+  ngOnInit(){
+    this.course = this.value;
   }
-  
-  //equivalency typeahead
-  search1 = (text$: Observable<string>) =>
-    text$
-      .debounceTime(100)
-      .distinctUntilChanged()
-      .map(term => term.length < 1 ? []
-        : schoolsGlobal.filter(v => v.Name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
-  
-  formatter1 = (x: {Name: string}) => x.Name;
-  
-  selectSchool(school){
-    /*
-    if(school.Name == null){
-      console.log("school: " + school);
-      this.dialogOutputs.SchoolName = school;
-    }else{
-      console.log("school: " + school.Name);
-      this.dialogOutputs.SchoolName = school.Name;
-    }
-    */
-  }
-  
-  search2 = (text$: Observable<string>) =>
-    text$
-      .debounceTime(100)
-      .distinctUntilChanged()
-      .map(term => term.length < 1 ? []
-        : foreignCoursesGlobal.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
-        
-  search3 = (text$: Observable<string>) =>
-    text$
-      .debounceTime(100)
-      .distinctUntilChanged()
-      .map(term => term.length < 0 ? []
-        : statusesGlobal.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
 }
+*/
+/*
+@NgModule({
+  imports: [NgbModule.forRoot(), NgbAccordion, NgbPanel, NgbAccordionModule], 
+  declarations: [NgbAccordion, NgbPanel, NgbAccordionModule, AccordionViewComponent],
+  bootstrap: [AccordionViewComponent]
+}) 
+*/
 
 //main component
 @Component({
   selector: 'local-courses',
-  templateUrl: './local_courses_template.html',
+  template: `
+    <h1>Local Courses</h1>
+    <button type="button" class="btn btn-success" (click)="addCourse(content2)">Add Course</button>
+    <br><br>
+    <form>
+      <div class="form-group">
+        <ng-template #rtLocalCourse let-r="result" let-t="term">
+          <p>{{r.LocalCourseName}}</p>
+        </ng-template>
+        <label for="typeahead-LocalCourse">Local Course:</label>
+        <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
+      </div>
+    </form>
+    <p>I got the course filtering to work by shoving the entire thing into a ng2 smart table. I'll work on restoring functionality soon. The css changed a little but not by much.</p>
+	
+    <!-- Equivalency Modal -->
+    <ng-template #content let-c="close" let-d="dismiss">
+      <div class="modal-header">
+        <h4 class="modal-title">{{dialogInputs.Mode}} Equivalency</h4>
+        <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        SCU Course: {{dialogCourse.LocalCourseName}}<br/>
+        <br/>
+        Foreign Course:
+        <hr/>
+        <form>
+        <div class="form-group">
+          <ng-template #rt let-r="result" let-t="term">
+            <p (click)="selectSchool(r.Name)">{{r.Name}}</p>
+          </ng-template>
+          <label for="typeahead-basic1">School:</label>
+          <input id="typeahead-basic1" type="text" class="form-control" [(ngModel)]="dialogInputs.SchoolName" [ngbTypeahead]="search1" [ngModelOptions]="{standalone: true}" [resultTemplate]="rt" [inputFormatter]="formatter1" (blur)="selectSchool(dialogInputs.SchoolName)"/>
+        </div>
+        <div class="form-group">
+          <label for="course">Course Title:</label>
+          <input id="typeahead-basic2" type="text" class="form-control" [(ngModel)]="dialogInputs.ForeignCourseName" [ngbTypeahead]="search2" [ngModelOptions]="{standalone: true}"/>
+        </div>
+        <div class="form-group">
+          <label for="status">Status:</label>
+          <input id="typeahead-basic3" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}"/>
+        </div>
+        <div class="form-group">
+          <label for="lock">Lock future modification?:</label>
+          <input id="lock" name="lock" type="checkbox" [(ngModel)]="dialogInputs.Lock"/>
+        </div>
+        <div class="form-group">
+          <label for="notes">Notes:</label>
+          <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
+        </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">{{dialogInputs.Mode}}</button>
+			  <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+		  </div>
+    </ng-template>
+	
+	<!-- Course Modal -->
+	<ng-template #content2 let-c="close" let-d="dismiss">
+      <div class="modal-header">
+		<h4 class="modal-title">{{dialogInputs2.Mode}} Course</h4>
+			<button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body">
+		<br/>
+		<form>
+			<div class="form-group">
+				<label for="dept">Department:</label>
+				<input id="dept" name="dept" type="text" [(ngModel)]="dialogInputs2.Dept"/>
+			</div>
+			<div class="form-group">
+				<label for="courseNum">Number:</label>
+				<input id="courseNum" name="courseNum" type="text" [(ngModel)]="dialogInputs2.CourseNum"/>
+			</div>
+			<div class="form-group">
+				<label for="courseTitle">Title:</label>
+				<input id="courseTitle" name="courseTitle" type="text" [(ngModel)]="dialogInputs2.CourseTitle"/>
+			</div>
+		</form>
+		  </div>
+		  <div class="modal-footer">
+		  <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2)">{{dialogInputs2.Mode}}</button>
+		  <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+		  </div>
+    </ng-template>
+	
+	<!-- Courses Accordion -->
+    <!--
+    <ngb-accordion #acc="ngbAccordion">
+      <ngb-panel *ngFor="let course of courses" title="{{course.LocalCourseName}}">
+        <ng-template ngbPanelContent>
+          <button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
+          <div *ngIf="course.ForeignCourses.length <= 0">
+            No equivalent courses
+          </div>
+          <table *ngIf="course.ForeignCourses.length > 0">
+            <tr>
+              <th>Foreign Course</th>
+              <th>School</th>
+              <th>Status</th>
+              <th>Locked By</th>
+              <th>Notes</th>
+              <th></th>
+            </tr>
+            <tr *ngFor="let foreignCourse of course.ForeignCourses">
+              <td>{{foreignCourse.ForeignCourseName}}</td>
+              <td>{{foreignCourse.SchoolName}}</td>
+              <td>{{foreignCourse.Status}}</td>
+              <td>{{foreignCourse.LockedByUser}}</td>
+              <td>{{foreignCourse.Notes}}</td>
+              <td>
+                <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
+                <i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
+              </td>
+            </tr>
+          </table>
+        </ng-template>
+	    </ngb-panel>
+    </ngb-accordion>
+    -->
+    
+    <!-- table -->
+    
+    <ng2-smart-table
+      [settings]="settings"
+      [source]="source">
+    </ng2-smart-table>
+    
+  `,
   styles: [`
     table { width: 100%; }
   `],
@@ -281,17 +334,12 @@ export class LocalCoursesComponent implements OnInit {
     
     this.localCourseService.getSchools().then(schools => {
       this.schools = schools;
-      schoolsGlobal = schools;
     });
     
     this.foreignCourses = new Array<string>();
-    foreignCoursesGlobal = new Array<string>();
     this.localCourseService.getForeignCourses().then(foreignCourses => {
       //this.foreignCourses = foreignCourses;
-      foreignCourses.forEach(foreignCourse => {
-        this.foreignCourses.push(foreignCourse.ForeignCourseName);
-        foreignCoursesGlobal.push(foreignCourse.ForeignCourseName);
-      });
+      foreignCourses.forEach(foreignCourse => {this.foreignCourses.push(foreignCourse.ForeignCourseName);});
       //console.log(this.foreignCourses);
     });
     
@@ -299,13 +347,8 @@ export class LocalCoursesComponent implements OnInit {
     this.statuses.push("Accepted");
     this.statuses.push("Rejected");
     
-    statusesGlobal = new Array<string>();
-    statusesGlobal.push("Accepted");
-    statusesGlobal.push("Rejected");
-    
     this.localCourseService.getLocalCoursesPlain().then(localCourses => {
       this.localCourses = localCourses;
-      localCoursesGlobal = localCourses;
     });
     
     this.currentLocalCourseSearch = "";
@@ -505,7 +548,7 @@ export class LocalCoursesComponent implements OnInit {
       if(result === "Close"){
         console.log("Closed, don't add");
       }else{
-        //console.log(result.Dept + " " + result.CourseNum + " - " + result.CourseTitle);
+        console.log(result.Dept + " " + result.CourseNum + " - " + result.CourseTitle);
         if(result.Dept == null || result.CourseNum == null || result.CourseTitle == null){
           console.log("null check, don't add");
         }else{
@@ -518,9 +561,7 @@ export class LocalCoursesComponent implements OnInit {
           }else{
             this.localCourseService.addLocalCourse(result)
             .then(http => {
-              //console.log(http);
-              //let result2 = http.json();
-              let result2 = http;
+              let result2 = http.json();
               //console.log(result2);
               var newLocalCourse: LocalCourse2 = {
                 LocalCourseID: result2.stmt.lastID,

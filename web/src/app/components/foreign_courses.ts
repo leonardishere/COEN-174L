@@ -118,6 +118,7 @@ export class ForeignCourseComponent implements OnInit {
   open(content, course) {
     this.dialogInputs.Mode = "Add";
     this.dialogCourse = course;
+    console.log(content);
     this.modalService.open(content).result.then((result) => {
       course.LocalCourses.push(result);
       console.log(result);
