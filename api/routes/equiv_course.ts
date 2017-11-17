@@ -11,6 +11,7 @@ router.route('/')
     .then(result => res.json(result));
   })
   .post((req, res) => {
+    /*
 	  db.run(`INSERT INTO School (Name) VALUES (?)`, [req.body.SchoolName])
 	  .then(result => result.stmt.lastID)
 	  .then(SchoolID =>
@@ -23,6 +24,12 @@ router.route('/')
 	      VALUES (?,?,?,?,?)`,
 	      [req.body.LocalCourseID, ForeignCourseID, req.body.Status, req.body.LockedBy, req.body.Notes]))
 	  .then(result => res.json({ row: result.stmt.lastID }));
+    */
+    db.run(`INSERT INTO EquivCourse
+      (LocalCourseID, ForeignCourseID, Status, LockedBy, Notes)
+      VALUES (?,?,?,?,?)`,
+      [req.body.LocalCourseID, req.body.ForeignCourseID, req.body.Status, req.body.LockedBy, req.body.Notes])
+    .then(result => res.json({ row: result.stmt.lastID }));
   });
 router.route('/:EquivID')
   .get((req, res) => {

@@ -10,7 +10,6 @@
     <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
   </div>
 </form>
-<p>I got the course filtering to work by shoving the entire thing into a ng2 smart table. I'll work on restoring functionality soon. The css changed a little but not by much.</p>
 
 <!-- Course Modal -->
 <ng-template #content2 let-c="close" let-d="dismiss">

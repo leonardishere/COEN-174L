@@ -24,6 +24,7 @@ router.route('/')
 		res.write("<a href=\"recommender\">Recommender</a><p>//I kinda fucked around and made a recommender system based on the names of courses, sorry about that</p><br>");
     res.write("<a href=\"local_courses_plain\">Local Courses Only</a><br>");
     res.write("<a href=\"foreign_courses_schools\">Foreign Courses by School</a><br>");
+    res.write("<a href=\"reset_db\">Reset database</a><p>//apparently this doesnt work right. just execute schema.sql</p><br>");
 		return res.end();
 	});
 

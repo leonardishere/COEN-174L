@@ -15,6 +15,9 @@ import 'rxjs/add/operator/distinctUntilChanged';
 import { School } from './../models/school';
 import { LocalCoursePlain } from './../models/local_course_plain';
 //import { ViewCell } from '../../../../ng2-smart-table';
+import { ForeignCourseSchool } from './../models/foreign_course_school';
+import { EquivCourse } from './../models/equiv_course';
+import { Status } from './../models/status';
 
 //these werent required earlier
 import { NgbAccordion, NgbPanel } from '@ng-bootstrap/ng-bootstrap/accordion/accordion';
@@ -24,10 +27,8 @@ import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap/accordion/accordi
 //global vars work
 var localCoursesGlobal: LocalCoursePlain[];
 var schoolsGlobal: School[];
-var foreignCoursesGlobal: string[]; //should be foreignCourse[]
-  //foreignCourses: ForeignCourse[];
-  //foreignCourses: any[];
-var statusesGlobal: string[];
+var foreignCoursesSchoolsGlobal: ForeignCourseSchool[];
+var statusesGlobal: Status[];
 
 @Component({
   selector: 'accordion-view',
@@ -43,6 +44,8 @@ export class AccordionViewComponent implements ViewCell, OnInit {
   
   dialogCourse: LocalCourse2;
   
+  currentSchool: string;
+  
   dialogInputs = {
 	  Mode: "Add Equivalency",
 	  SchoolName: "",
@@ -51,12 +54,24 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     Lock: "",
 	  Notes: ""
   }
+  changes = {
+    //LocalCourseName: new Subject<string>(),
+    SchoolName: new Subject<string>(),
+    //ForeignCourseName: new Subject<string>()//,
+    //Status: new Subject<string>()
+  };
   
   constructor(private localCourseService: LocalCourseService,
     private modalService: NgbModal) { }
     
   ngOnInit(){
     this.course = this.value;
+    
+    subscribeChanges(this.changes.SchoolName, (search) => {
+      this.currentSchool = search;
+    });
+    
+    this.currentSchool = '';
   }
   
   addEquivCourse(content, course){
@@ -64,88 +79,96 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     this.dialogInputs.Mode = "Add";
     this.dialogCourse = course;
     this.modalService.open(content).result.then((result) => {
-      course.ForeignCourses.push(result);
-      console.log(course);
       result.LocalCourseID = course.LocalCourseID;
-      
-      //console.log(result);
-      //console.log(result.SchoolName);      
-      
       if(result === "Close"){
         console.log("Closed, don't add");
       }else{
         if(result.Mode == null || result.SchoolName == null || result.ForeignCourseName == null || result.Status == null || result.Lock == null || result.Notes == null){
           console.log("null check, don't add");
         }else{
-          var result2 = result;
+          //display
+          var result3: ForeignCourse2 = {EquivID: -1, ForeignCourseID: -1, ForeignCourseName:'',SchoolName:'',Status:'', LockedBy:-1, LockedByUser:'', Notes:''};
+          //add to database
+          var result4: EquivCourse = {EquivID: -1, LocalCourseID: -1, ForeignCourseID: -1, Status: '', LockedBy: -1, Notes: ''};
+          //result3.Status = result.Status;
+          result3.Notes = result.Notes.trim();
+          //result4.Status = result.Status;
+          result4.Notes = result.Notes.trim();
+          result4.LocalCourseID = result.LocalCourseID;
+          
           if(result.SchoolName.Name == null){
-            console.log("school: " + result.SchoolName);
+            result3.SchoolName = result.SchoolName;
           }else{
-            console.log("school: " + result.SchoolName.Name);
-            result2.SchoolName = result.SchoolName.Name;
+            result3.SchoolName = result.SchoolName.Name;
           }
-          if(result.Mode === "" || result2.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
+          
+          if(result.ForeignCourseName.ForeignCourseName == null){
+            result3.ForeignCourseName = result.ForeignCourseName;
+          }else{
+            result3.ForeignCourseName = result.ForeignCourseName.ForeignCourseName;
+          }
+          
+          if(result.Lock){
+            //get current user's userid, shove it into result3+4.LockedBy
+            result.LockedBy = 0;
+            result3.LockedBy = 0;
+            result3.LockedByUser = 'Andrew Leonard';
+            result4.LockedBy = 0;
+          }else{
+            result.LockedBy = 0;
+            result3.LockedBy = null;
+            result3.LockedByUser = '';
+            result4.LockedBy = null;
+          }
+          
+          if(result.Status.Status == null){
+            result3.Status = result.Status;
+            result4.Status = result.Status;
+          }else{
+            result3.Status = result.Status.Status;
+            result4.Status = result.Status.Status;
+          }
+          
+          if(result.Mode === "" || result3.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
             console.log("empty check, don't add");
           }else{
-            // the schools router for this is broken for now, will fix later
-            //var schools;
-            //console.log("query school: " + result2.SchoolName);
-            /*
-            this.localCourseService.getSchool(result2.SchoolName).then(schools => {
-              console.log("returned schools 1:");
-              console.log(schools);
-              //schools = schools2;
-              console.log("returned schools 2:");
-              //console.log(schools);
-              if(schools.length != 1){
-                console.log("School \"" + result2.SchoolName + "\" does not exist. Enter a valid school.");
-              */
-              if(false){
-              }else{
-                if(result.Lock){
-                  //get current user's userid, shove it into result2.LockedBy
-                  result2.LockedBy = 0;
-                }else{
-                  result2.LockedBy = null;
-                }
-                console.log(result2);
-                this.localCourseService.addEquivCourse(result2);
-              }
-            //});
-            
             var found = false;
-            for(var i = 0; i < schoolsGlobal.length; ++i){
-              if(schoolsGlobal[i].Name === result2.SchoolName){
-                console.log("school was found");
+            for(var i = 0; i < foreignCoursesSchoolsGlobal.length; ++i){
+              if(foreignCoursesSchoolsGlobal[i].SchoolName === result3.SchoolName && foreignCoursesSchoolsGlobal[i].ForeignCourseName === result3.ForeignCourseName){
                 found = true;
-                i = schoolsGlobal.length+999;
+                result4.ForeignCourseID = foreignCoursesSchoolsGlobal[i].ForeignCourseID;
+                result3.ForeignCourseID = foreignCoursesSchoolsGlobal[i].ForeignCourseID;
+                
+                if(result4.Status !== "Accepted" && result4.Status !== "Rejected"){
+                  alert("The status must be either \"Accepted\" or \"Rejected\". Try again.");
+                }else{
+                  this.localCourseService.addEquivCourse(result4)
+                  .then(promise => {
+                    result4.EquivID = promise.row;
+                    result3.EquivID = promise.row;
+                    console.log(result3);
+                    //course.ForeignCourses.push(result3);
+                  })
+                  .catch(err => console.log(err));
+                  course.ForeignCourses.push(result3);
+                  i = foreignCoursesSchoolsGlobal.length+999;
+                }
               }
             }
             if(!found){
-              console.log("school was not found");
+              alert("School (" + result3.SchoolName + ") and foreign course (" + result3.ForeignCourseName + ") combination was not found. If you believe that this is an error, refresh and try again.");
             }
-            
-            if(result.Lock){
-              //get current user's userid, shove it into result2.LockedBy
-              result.LockedBy = 0;
-              result2.LockedBy = 0;
-            }else{
-              result.LockedBy = 0;
-              result2.LockedBy = null;
-            }
-            console.log(result2);
-            this.localCourseService.addEquivCourse(result2);
           }
         }
       }
-      /*
+      
       result.Mode = "";
       result.SchoolName = "";
       result.ForeignCourseName = "";
       result.Status = "";
       result.Lock = false;
       result.Notes = "";
-      */
+      
     });
   }
   
@@ -159,31 +182,29 @@ export class AccordionViewComponent implements ViewCell, OnInit {
   
   formatter1 = (x: {Name: string}) => x.Name;
   
-  selectSchool(school){
-    /*
-    if(school.Name == null){
-      console.log("school: " + school);
-      this.dialogOutputs.SchoolName = school;
-    }else{
-      console.log("school: " + school.Name);
-      this.dialogOutputs.SchoolName = school.Name;
-    }
-    */
-  }
-  
   search2 = (text$: Observable<string>) =>
     text$
       .debounceTime(100)
       .distinctUntilChanged()
       .map(term => term.length < 1 ? []
-        : foreignCoursesGlobal.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
+        : foreignCoursesSchoolsGlobal.filter(v => {
+          //console.log(v);
+          //console.log("ForeignCourseName: " + v.ForeignCourseName);
+          //console.log("SchoolName: " + v.SchoolName);
+          //return true;
+          return (contains(v.ForeignCourseName, term) && contains(v.SchoolName, this.currentSchool));
+        }).slice(0, 10));
         
+  formatterForeignCourse = (x: ForeignCourseSchool) => x.ForeignCourseName;
+  
   search3 = (text$: Observable<string>) =>
     text$
       .debounceTime(100)
       .distinctUntilChanged()
-      .map(term => term.length < 0 ? []
-        : statusesGlobal.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
+      .map(term => term.length < 1 ? []
+        : statusesGlobal.filter(v => contains(v.Status, term)).slice(0, 10));
+        
+  formatterStatus = (x: Status) => x.Status
 }
 
 //main component
@@ -284,24 +305,16 @@ export class LocalCoursesComponent implements OnInit {
       schoolsGlobal = schools;
     });
     
-    this.foreignCourses = new Array<string>();
-    foreignCoursesGlobal = new Array<string>();
-    this.localCourseService.getForeignCourses().then(foreignCourses => {
-      //this.foreignCourses = foreignCourses;
-      foreignCourses.forEach(foreignCourse => {
-        this.foreignCourses.push(foreignCourse.ForeignCourseName);
-        foreignCoursesGlobal.push(foreignCourse.ForeignCourseName);
-      });
-      //console.log(this.foreignCourses);
-    });
-    
     this.statuses = new Array<string>();
     this.statuses.push("Accepted");
     this.statuses.push("Rejected");
     
+    /*
     statusesGlobal = new Array<string>();
     statusesGlobal.push("Accepted");
     statusesGlobal.push("Rejected");
+    */
+    statusesGlobal = [{'Status': 'Accepted'}, {'Status': 'Rejected'}];
     
     this.localCourseService.getLocalCoursesPlain().then(localCourses => {
       this.localCourses = localCourses;
@@ -309,6 +322,10 @@ export class LocalCoursesComponent implements OnInit {
     });
     
     this.currentLocalCourseSearch = "";
+    
+    this.localCourseService.getForeignCoursesSchools().then(foreignCoursesSchools => {
+      foreignCoursesSchoolsGlobal = foreignCoursesSchools;
+    });
   }
   
   //local courses typeahead
@@ -335,18 +352,6 @@ export class LocalCoursesComponent implements OnInit {
         : this.schools.filter(v => v.Name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
   
   formatter1 = (x: {Name: string}) => x.Name;
-  
-  selectSchool(school){
-    /*
-    if(school.Name == null){
-      console.log("school: " + school);
-      this.dialogOutputs.SchoolName = school;
-    }else{
-      console.log("school: " + school.Name);
-      this.dialogOutputs.SchoolName = school.Name;
-    }
-    */
-  }
         
   search2 = (text$: Observable<string>) =>
     text$

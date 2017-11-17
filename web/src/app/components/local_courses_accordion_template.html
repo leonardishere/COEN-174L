@@ -85,19 +85,25 @@
     <hr/>
     <form>
     <div class="form-group">
-      <ng-template #rt let-r="result" let-t="term">
-        <p (click)="selectSchool(r.Name)">{{r.Name}}</p>
+      <ng-template #rtSchool let-r="result" let-t="term">
+        <p>{{r.Name}}</p>
       </ng-template>
       <label for="typeahead-basic1">School:</label>
-      <input id="typeahead-basic1" type="text" class="form-control" [(ngModel)]="dialogInputs.SchoolName" [ngbTypeahead]="search1" [ngModelOptions]="{standalone: true}" [resultTemplate]="rt" [inputFormatter]="formatter1" (blur)="selectSchool(dialogInputs.SchoolName)"/>
+      <input #School id="typeahead-basic1" type="text" class="form-control" [(ngModel)]="dialogInputs.SchoolName" [ngbTypeahead]="search1" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtSchool" [inputFormatter]="formatter1" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)"/>
     </div>
     <div class="form-group">
-      <label for="course">Course Title:</label>
-      <input id="typeahead-basic2" type="text" class="form-control" [(ngModel)]="dialogInputs.ForeignCourseName" [ngbTypeahead]="search2" [ngModelOptions]="{standalone: true}"/>
+      <ng-template #rtForeignCourse let-r="result" let-t="term">
+        <p>{{r.ForeignCourseName}}</p>
+      </ng-template>
+      <label for="typeahead-basic2">Course Title:</label>
+      <input #ForeignCourse id="typeahead-basic2" type="text" class="form-control" [(ngModel)]="dialogInputs.ForeignCourseName" [ngbTypeahead]="search2" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse"/>
     </div>
     <div class="form-group">
+      <ng-template #rtStatus let-r="result" let-t="term">
+        <p>{{r.Status}}</p>
+      </ng-template>
       <label for="status">Status:</label>
-      <input id="typeahead-basic3" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}"/>
+      <input id="typeahead-basic3" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus"/>
     </div>
     <div class="form-group">
       <label for="lock">Lock future modification?:</label>

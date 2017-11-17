@@ -13,6 +13,7 @@ import { ForeignCourseRouter } from './routes/foreign_courses';
 import { EverythingRouter } from './routes/index';
 import { LocalCoursePlainRouter } from './routes/local_courses_plain';
 import { ForeignCourseSchoolRouter } from './routes/foreign_courses_schools';
+import { ResetDbRouter } from './routes/reset_db';
 
 var app = express();
 //app.use(express.session({ secret: 'keyboard cat' }));
@@ -38,6 +39,7 @@ app.use('/foreign_courses', ForeignCourseRouter);
 app.use('/', EverythingRouter);
 app.use('/local_courses_plain', LocalCoursePlainRouter);
 app.use('/foreign_courses_schools', ForeignCourseSchoolRouter);
+app.use('/reset_db', ResetDbRouter);
 app.use('/favicon.ico', (req, res) => console.log('another favicon.ico warning'));
 
 app.use('*', (req, res, next) => {

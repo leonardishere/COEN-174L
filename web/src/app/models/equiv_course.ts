@@ -3,4 +3,6 @@ export class EquivCourse {
   LocalCourseID: number;
   ForeignCourseID: number;
   Status: string;
+  LockedBy: number;
+  Notes: string;
 };

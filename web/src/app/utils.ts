@@ -10,5 +10,7 @@ export function subscribeChanges(subject: Subject<any>, callback: (any) => any) 
 }
 
 export function contains(haystack: string, needle: string): boolean {
+  if(needle === "") return true;
+  if(haystack == null || needle == null) return false;
   return haystack.toLowerCase().indexOf(needle.toLowerCase()) !== -1;
 }

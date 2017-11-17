@@ -47,11 +47,11 @@ export class LocalCourseService {
     return this.http.get(environment.api + 'foreign_courses').toPromise();
   }
   
-  getSchool(schoolName): Promise<any> {
-    return this.http.get(environment.api + 'schools/' + schoolName).toPromise();
-  }
-  
   getLocalCoursesPlain(): Promise<any> {
     return this.http.get(environment.api + 'local_courses_plain').toPromise();
+  }
+  
+  getForeignCoursesSchools(): Promise<any> {
+    return this.http.get(environment.api + 'foreign_courses_schools').toPromise();
   }
 }
