@@ -43,6 +43,7 @@ export class AccordionViewComponent implements ViewCell, OnInit {
   @Input() value: string;
   
   dialogCourse: LocalCourse2;
+  dialogForeignCourse: ForeignCourse2;
   
   currentSchool: string;
   
@@ -50,8 +51,8 @@ export class AccordionViewComponent implements ViewCell, OnInit {
 	  Mode: "Add Equivalency",
 	  SchoolName: "",
 	  ForeignCourseName: "",
-	  Status: "",
-    Lock: "",
+	  Status: {'Status': 'Accepted'},
+    Lock: false,
 	  Notes: ""
   }
   changes = {
@@ -160,16 +161,147 @@ export class AccordionViewComponent implements ViewCell, OnInit {
             }
           }
         }
+        
+        result.Mode = "";
+        result.SchoolName = "";
+        result.ForeignCourseName = "";
+        result.Status = "";
+        result.Lock = false;
+        result.Notes = "";
       }
-      
-      result.Mode = "";
-      result.SchoolName = "";
-      result.ForeignCourseName = "";
-      result.Status = "";
-      result.Lock = false;
-      result.Notes = "";
-      
+    })
+    .catch(err => {
+      console.log("Closed via cross click");
     });
+  }
+    
+  editEquivCourse(content, localCourse, foreignCourse){
+    console.log("editEquivCourse()");
+    //console.log(content);
+    //console.log(localCourse);
+    //console.log(foreignCourse);
+    
+    //check if user has permission
+    var currentUserID = 0; //get these
+    var currentUserName = "Andrew Leonard";
+    var currentUserPosition = "not an admin";
+    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
+      alert("You don't have permission to edit this equivalency. Consult " + foreignCourse.LockedByUser + " or an Admin to edit it.");
+      return;
+    }
+    
+    this.dialogCourse = localCourse;
+    this.dialogForeignCourse = foreignCourse;
+    //this.dialogInputs.Status = foreignCourse.Status;
+    this.dialogInputs.Status = {'Status': foreignCourse.Status};
+    this.dialogInputs.Lock = foreignCourse.LockedBy != null;
+    this.dialogInputs.Notes = foreignCourse.Notes;
+    
+    this.modalService.open(content).result.then((result) => {
+      //console.log(result);
+      if(result === "Close"){
+        console.log("Closed, don't edit");
+      }else{
+        if(result.Status == null || result.Lock == null || result.Notes == null){
+          console.log("null check, don't add");
+        }else{
+          //display
+          //var result3: ForeignCourse2 = {EquivID: -1, ForeignCourseID: -1, ForeignCourseName:'',SchoolName:'',Status:'', LockedBy:-1, LockedByUser:'', Notes:''};
+          //add to database
+          var result4: EquivCourse = {EquivID: -1, LocalCourseID: -1, ForeignCourseID: -1, Status: '', LockedBy: -1, Notes: ''};
+          //result3.Notes = result.Notes.trim();
+          //foreignCourse.Notes = result.Notes.trim();
+          //result4.Status = result.Status;
+          result4.Notes = result.Notes.trim();
+          result4.LocalCourseID = result.LocalCourseID;
+          
+          result4.EquivID = foreignCourse.EquivID;
+          result4.LocalCourseID = localCourse.LocalCourseID;
+          result4.ForeignCourseID = foreignCourse.ForeignCourseID;
+          
+          /*
+          if(result.SchoolName.Name == null){
+            result3.SchoolName = result.SchoolName;
+          }else{
+            result3.SchoolName = result.SchoolName.Name;
+          }
+          */
+          
+          /*
+          if(result.ForeignCourseName.ForeignCourseName == null){
+            result3.ForeignCourseName = result.ForeignCourseName;
+          }else{
+            result3.ForeignCourseName = result.ForeignCourseName.ForeignCourseName;
+          }
+          */
+          
+          var lockedBy = 0;
+          var lockedByUser = '';
+
+          if(result.Lock){
+            //get current user's userid, shove it into result3+4.LockedBy
+            result.LockedBy = 0;
+            //result3.LockedBy = 0;
+            //result3.LockedByUser = 'Andrew Leonard';
+            //foreignCourse.LockedBy = 0;
+            //foreignCourse.LockedByUser = 'Andrew Leonard';
+            lockedBy = 0;
+            lockedByUser = 'Andrew Leonard';
+            result4.LockedBy = 0;
+          }else{
+            result.LockedBy = 0;
+            //result3.LockedBy = null;
+            //result3.LockedByUser = '';
+            //foreignCourse.LockedBy = null;
+            //foreignCourse.LockedByUser = '';
+            lockedBy = null;
+            lockedByUser = '';
+            result4.LockedBy = null;
+          }
+          
+          if(result.Status.Status == null){
+            //result3.Status = result.Status;
+            //foreignCourse.Status = result.Status;
+            result4.Status = result.Status;
+          }else{
+            //result3.Status = result.Status.Status;
+            //foreignCourse.Status = result.Status.Status;
+            result4.Status = result.Status.Status;
+          }
+          
+          if(result4.Status !== "Accepted" && result4.Status !== "Rejected"){
+            alert("The status must be either \"Accepted\" or \"Rejected\". Try again.");
+          }else{
+            foreignCourse.Status = result4.Status;
+            foreignCourse.LockedBy = lockedBy;
+            foreignCourse.LockedByUser = lockedByUser;
+            foreignCourse.Notes = result4.Notes;
+            this.localCourseService.editEquivCourse(result4);
+          }
+        }
+      }
+    })
+    .catch(err => {
+      console.log("Closed via cross click");
+    });
+  }
+  
+  //delete equivalency
+  deleteEquivCourse(localCourse, foreignCourse) {
+    //check if user has permission
+    var currentUserID = 0; //get these
+    var currentUserName = "Andrew Leonard";
+    var currentUserPosition = "not an admin";
+    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
+      alert("You don't have permission to delete this equivalency. Consult " + foreignCourse.LockedByUser + " or an Admin to delete it.");
+      return;
+    }
+    
+    localCourse.ForeignCourses = localCourse.ForeignCourses.filter(fc =>
+	    fc.ForeignCourseName !== foreignCourse.ForeignCourseName
+    );
+    foreignCourse.LocalCourseID = localCourse.LocalCourseID;
+    this.localCourseService.deleteEquivCourse(foreignCourse);
   }
   
   //equivalency typeahead

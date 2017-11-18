@@ -61,8 +61,8 @@
           <td>{{foreignCourse.LockedByUser}}</td>
           <td>{{foreignCourse.Notes}}</td>
           <td>
-            <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
-            <i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
+            <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="editEquivCourse(editContent, rowData, foreignCourse)"></i>
+            <i class="fa fa-trash-o" aria-hidden="true" (click)="deleteEquivCourse(rowData, foreignCourse)"></i>
           </td>
         </tr>
       </table>
@@ -70,7 +70,7 @@
   </ngb-panel>
 </ngb-accordion>
 
-<!-- Equivalency Modal -->
+<!-- Add Equivalency Modal -->
 <ng-template #content let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">{{dialogInputs.Mode}} Equivalency</h4>
@@ -117,6 +117,44 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">{{dialogInputs.Mode}}</button>
+    <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+  </div>
+</ng-template>
+
+<!-- Edit Equivalency Modal -->
+<ng-template #editContent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Edit Equivalency</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>SCU Course: {{dialogCourse.LocalCourseName}}</p>
+    <p>Foreign Course: {{dialogForeignCourse.ForeignCourseName}}</p>
+    <p>School: {{dialogForeignCourse.SchoolName}}</p>
+    
+    <hr/>
+    <form>
+      <div class="form-group">
+        <ng-template #rtStatus let-r="result" let-t="term">
+          <p>{{r.Status}}</p>
+        </ng-template>
+        <label for="typeaheadStatus2">Status:</label>
+        <input id="typeaheadStatus2" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus"/>
+      </div>
+      <div class="form-group">
+        <label for="lock">Lock future modification?:</label>
+        <input id="lock" name="lock" type="checkbox" [(ngModel)]="dialogInputs.Lock"/>
+      </div>
+      <div class="form-group">
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">Edit</button>
     <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
   </div>
 </ng-template>
