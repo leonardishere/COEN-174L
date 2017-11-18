@@ -2,48 +2,48 @@
 
 <!-- form -->
 <div class = "container">
-<div class="row">
-  <div class="col-sm-8">
-<form role="form">
-  <div class="form-group float-label-control">
-    <ng-template #rtLocalCourse let-r="result" let-t="term">
-      <p class="form-control-static">{{r.LocalCourseName}}</p>
-    </ng-template>
-    <label for="typeahead-LocalCourse">SCU Grad Course:</label>
-    <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
+  <div class="row">
+    <div class="col-sm-8">
+  <form role="form">
+    <div class="form-group float-label-control">
+      <ng-template #rtLocalCourse let-r="result" let-t="term">
+        <p class="form-control-static">{{r.LocalCourseName}}</p>
+      </ng-template>
+      <label for="typeahead-LocalCourse">SCU Grad Course:</label>
+      <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
+    </div>
+
+    <div class="form-group float-label-control">
+      <ng-template #rtSchool let-r="result" let-t="term">
+        <p>{{r.Name}}</p>
+      </ng-template>
+      <label for="typeahead-School">School to compare:</label>
+      <input #School id="typeahead-School" type="text" class="form-control" [ngbTypeahead]="searchSchool" [resultTemplate]="rtSchool" [inputFormatter]="formatterSchool" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)" placeholder="{{placeholders.SchoolName}}"/>
+    </div>
+
+
+    <div class="form-group float-label-control">
+      <ng-template #rtForeignCourse let-r="result" let-t="term">
+        <p>{{r.ForeignCourseName}}</p>
+      </ng-template>
+      <label for="typeahead-ForeignCourse">Course to compare:</label>
+      <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" [ngbTypeahead]="searchForeignCourse" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse" (input)="changes.ForeignCourseName.next(ForeignCourse.value)" (selectItem)="changes.ForeignCourseName.next($event.item.ForeignCourseName)" placeholder="{{placeholders.ForeignCourseName}}"/>
+    </div>
+
+
+    <div class="form-group float-label-control">
+      <ng-template #rtStatus let-r="result" let-t="term">
+        <p>{{r.Status}}</p>
+      </ng-template>
+      <label for="typeahead-Status">Status:</label>
+      <input #Status id="typeahead-Status" type="text" class="form-control" [ngbTypeahead]="searchStatus" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus" (input)="changes.Status.next(Status.value)" (selectItem)="changes.Status.next($event.item.Status)" placeholder="{{placeholders.Status}}"/>
+    </div>
+  </form>
+  </div>
   </div>
 
-  <div class="form-group float-label-control">
-    <ng-template #rtSchool let-r="result" let-t="term">
-      <p>{{r.Name}}</p>
-    </ng-template>
-    <label for="typeahead-School">School to compare:</label>
-    <input #School id="typeahead-School" type="text" class="form-control" [ngbTypeahead]="searchSchool" [resultTemplate]="rtSchool" [inputFormatter]="formatterSchool" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)" placeholder="{{placeholders.SchoolName}}"/>
-  </div>
-
-
-  <div class="form-group float-label-control">
-    <ng-template #rtForeignCourse let-r="result" let-t="term">
-      <p>{{r.ForeignCourseName}}</p>
-    </ng-template>
-    <label for="typeahead-ForeignCourse">Course to compare:</label>
-    <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" [ngbTypeahead]="searchForeignCourse" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse" (input)="changes.ForeignCourseName.next(ForeignCourse.value)" (selectItem)="changes.ForeignCourseName.next($event.item.ForeignCourseName)" placeholder="{{placeholders.ForeignCourseName}}"/>
-  </div>
-
-
-  <div class="form-group float-label-control">
-    <ng-template #rtStatus let-r="result" let-t="term">
-      <p>{{r.Status}}</p>
-    </ng-template>
-    <label for="typeahead-Status">Status:</label>
-    <input #Status id="typeahead-Status" type="text" class="form-control" [ngbTypeahead]="searchStatus" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus" (input)="changes.Status.next(Status.value)" (selectItem)="changes.Status.next($event.item.Status)" placeholder="{{placeholders.Status}}"/>
-  </div>
-</form>
-</div>
-</div>
-
-<ng2-smart-table
-  [settings]="settings"
-  [source]="source">
-</ng2-smart-table>
+  <ng2-smart-table
+    [settings]="settings"
+    [source]="source">
+  </ng2-smart-table>
 </div>

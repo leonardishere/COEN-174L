@@ -1,45 +1,13 @@
-<!--
 <ngb-accordion>
-  <ngb-panel title="{{course.LocalCourseName}}">
-    <ng-template ngbPanelContent>
-      <button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
-      <div *ngIf="course.ForeignCourses.length <= 0">
-        No equivalent courses
-      </div>
-      <table *ngIf="course.ForeignCourses.length > 0">
-        <tr>
-          <th>Foreign Course</th>
-          <th>School</th>
-          <th>Status</th>
-          <th>Locked By</th>
-          <th>Notes</th>
-          <th></th>
-        </tr>
-        <tr *ngFor="let foreignCourse of course.ForeignCourses">
-          <td>{{foreignCourse.ForeignCourseName}}</td>
-          <td>{{foreignCourse.SchoolName}}</td>
-          <td>{{foreignCourse.Status}}</td>
-          <td>{{foreignCourse.LockedByUser}}</td>
-          <td>{{foreignCourse.Notes}}</td>
-          <td>
-            <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
-            <i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
-          </td>
-        </tr>
-      </table>
-      <p>Open</p>
+  <ngb-panel>
+    <ng-template ngbPanelTitle>
+      {{course}}
+      <span class="header_buttons">
+        <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="editLocalCourse($event, editLocalCourseContent, rowData)"></i>
+        <i class="fa fa-trash-o" aria-hidden="true" (click)="deleteLocalCourse($event, rowData)"></i>
+      </span>
     </ng-template>
-  </ngb-panel>
-</ngb-accordion>
--->
-<!--<p>{{course.LocalCourseName}}</p>-->
-
-<!--
-<p>{{course}}</p>
--->
-
-<ngb-accordion>
-  <ngb-panel title="{{course}}">
+    
     <ng-template ngbPanelContent>
       <button class="btn btn-success" (click)="addEquivCourse(content, rowData)">Add Equivalency</button>
       <div *ngIf="rowData.ForeignCourses.length <= 0">
@@ -155,6 +123,39 @@
   </div>
   <div class="modal-footer">
     <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">Edit</button>
+    <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+  </div>
+</ng-template>
+
+<!-- Edit local course modal -->
+<ng-template #editLocalCourseContent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">Edit Local Course</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    <p>SCU Course: {{dialogInputs2.Name}}</p>
+    
+    <hr/>
+    <form>
+      <div class="form-group">
+        <label for="dept">Department:</label>
+        <input id="dept" name="dept" type="text" [(ngModel)]="dialogInputs2.Dept"/>
+      </div>
+      <div class="form-group">
+        <label for="courseNum">Number:</label>
+        <input id="courseNum" name="courseNum" type="text" [(ngModel)]="dialogInputs2.CourseNum"/>
+      </div>
+      <div class="form-group">
+        <label for="courseTitle">Title:</label>
+        <input id="courseTitle" name="courseTitle" type="text" [(ngModel)]="dialogInputs2.CourseTitle"/>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2)">Edit</button>
     <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
   </div>
 </ng-template>

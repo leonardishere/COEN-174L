@@ -42,43 +42,6 @@
   </div>
 </ng-template>
 
-<!-- Courses Accordion -->
-<!--
-<ngb-accordion #acc="ngbAccordion">
-  <ngb-panel *ngFor="let course of courses" title="{{course.LocalCourseName}}">
-    <ng-template ngbPanelContent>
-      <button class="btn btn-success" (click)="open(content, course)">Add Equivalency</button>
-      <div *ngIf="course.ForeignCourses.length <= 0">
-        No equivalent courses
-      </div>
-      <table *ngIf="course.ForeignCourses.length > 0">
-        <tr>
-          <th>Foreign Course</th>
-          <th>School</th>
-          <th>Status</th>
-          <th>Locked By</th>
-          <th>Notes</th>
-          <th></th>
-        </tr>
-        <tr *ngFor="let foreignCourse of course.ForeignCourses">
-          <td>{{foreignCourse.ForeignCourseName}}</td>
-          <td>{{foreignCourse.SchoolName}}</td>
-          <td>{{foreignCourse.Status}}</td>
-          <td>{{foreignCourse.LockedByUser}}</td>
-          <td>{{foreignCourse.Notes}}</td>
-          <td>
-            <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="edit(content, course, foreignCourse)"></i>
-            <i class="fa fa-trash-o" aria-hidden="true" (click)="delete(course, foreignCourse)"></i>
-          </td>
-        </tr>
-      </table>
-    </ng-template>
-  </ngb-panel>
-</ngb-accordion>
--->
-
-<!-- table -->
-
 <ng2-smart-table
   [settings]="settings"
   [source]="source">

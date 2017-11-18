@@ -31,11 +31,11 @@ export class LocalCourseService {
   }
   
   deleteLocalCourse(course): Promise<any> {
-	  return this.http.delete(environment.api + 'local_course/'+course.LocalCourseID).toPromise();
+	  return this.http.delete(environment.api + 'local_courses/'+course.LocalCourseID).toPromise();
   }
 
   editLocalCourse(course): Promise<any> {
-	  return this.http.put(environment.api + 'local_course/'+course.LocalCourseID, course).toPromise();
+	  return this.http.put(environment.api + 'local_courses/'+course.LocalCourseID, course).toPromise();
   }
   
   //these shouldnt be here but whatever

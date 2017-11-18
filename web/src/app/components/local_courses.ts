@@ -29,12 +29,18 @@ var localCoursesGlobal: LocalCoursePlain[];
 var schoolsGlobal: School[];
 var foreignCoursesSchoolsGlobal: ForeignCourseSchool[];
 var statusesGlobal: Status[];
+var localCourseComponentGlobal: any;
 
 @Component({
   selector: 'accordion-view',
   templateUrl: './local_courses_accordion_template.html',
   styles: [`
     table { width: 100%; }
+    .header_buttons {
+      float: right;
+      display: inline-block;
+      color: #111;
+    }
   `]
 })
 export class AccordionViewComponent implements ViewCell, OnInit {
@@ -51,10 +57,18 @@ export class AccordionViewComponent implements ViewCell, OnInit {
 	  Mode: "Add Equivalency",
 	  SchoolName: "",
 	  ForeignCourseName: "",
-	  Status: {'Status': 'Accepted'},
+	  Status: {'Status': ''},
     Lock: false,
 	  Notes: ""
   }
+  dialogInputs2 = {
+    Name: "",
+	  Dept: "",
+	  CourseNum: "",
+	  CourseTitle: "",
+    LocalCourseID: -1
+  }
+  
   changes = {
     //LocalCourseName: new Subject<string>(),
     SchoolName: new Subject<string>(),
@@ -67,6 +81,9 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     
   ngOnInit(){
     this.course = this.value;
+    //console.log(this.rowData);
+    this.dialogCourse = this.rowData;
+    //console.log(this.dialogCourse);
     
     subscribeChanges(this.changes.SchoolName, (search) => {
       this.currentSchool = search;
@@ -134,7 +151,7 @@ export class AccordionViewComponent implements ViewCell, OnInit {
             console.log("empty check, don't add");
           }else{
             var found = false;
-            for(var i = 0; i < foreignCoursesSchoolsGlobal.length; ++i){
+            for(var i = 0; i < foreignCoursesSchoolsGlobal.length && !found; ++i){
               if(foreignCoursesSchoolsGlobal[i].SchoolName === result3.SchoolName && foreignCoursesSchoolsGlobal[i].ForeignCourseName === result3.ForeignCourseName){
                 found = true;
                 result4.ForeignCourseID = foreignCoursesSchoolsGlobal[i].ForeignCourseID;
@@ -152,7 +169,6 @@ export class AccordionViewComponent implements ViewCell, OnInit {
                   })
                   .catch(err => console.log(err));
                   course.ForeignCourses.push(result3);
-                  i = foreignCoursesSchoolsGlobal.length+999;
                 }
               }
             }
@@ -177,16 +193,16 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     
   editEquivCourse(content, localCourse, foreignCourse){
     console.log("editEquivCourse()");
-    //console.log(content);
-    //console.log(localCourse);
-    //console.log(foreignCourse);
+    console.log(content);
+    console.log(localCourse);
+    console.log(foreignCourse);
     
     //check if user has permission
     var currentUserID = 0; //get these
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "not an admin";
     if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
-      alert("You don't have permission to edit this equivalency. Consult " + foreignCourse.LockedByUser + " or an Admin to edit it.");
+      alert("You don't have permission to edit this equivalency. Contact " + foreignCourse.LockedByUser + " or an Admin to edit it.");
       return;
     }
     
@@ -286,14 +302,13 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     });
   }
   
-  //delete equivalency
   deleteEquivCourse(localCourse, foreignCourse) {
     //check if user has permission
     var currentUserID = 0; //get these
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "not an admin";
     if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
-      alert("You don't have permission to delete this equivalency. Consult " + foreignCourse.LockedByUser + " or an Admin to delete it.");
+      alert("You don't have permission to delete this equivalency. Contact " + foreignCourse.LockedByUser + " or an Admin to delete it.");
       return;
     }
     
@@ -302,6 +317,70 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     );
     foreignCourse.LocalCourseID = localCourse.LocalCourseID;
     this.localCourseService.deleteEquivCourse(foreignCourse);
+  }
+   
+  editLocalCourse(event, content, localCourse){
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("editLocalCourse()");
+    //console.log(localCourse);
+    
+    //check if user has permission
+    var currentUserID = 0; //get these
+    var currentUserName = "Andrew Leonard";
+    var currentUserPosition = "Admin";
+    if(currentUserPosition !== "Admin"){
+      alert("You don't have permission to edit courses. Contact an Admin to edit it.");
+      return;
+    }
+    
+    this.dialogInputs2.Name = localCourse.LocalCourseName;
+    this.dialogInputs2.Dept = localCourse.LocalCourseDept;
+    this.dialogInputs2.LocalCourseID = localCourse.LocalCourseID;
+    this.dialogInputs2.CourseNum = localCourse.LocalCourseNum;
+    this.dialogInputs2.CourseTitle = localCourse.LocalCourseTitle;
+    
+    this.modalService.open(content).result.then((result) => {
+      console.log(result);
+      if(result === "Close"){
+        console.log("Closed, don't edit");
+      }else{
+        if(result.Dept == null || result.CourseNum == null || result.CourseTitle == null){
+          console.log("null check, don't add");
+        }else{
+          var result2 = {LocalCourseID: localCourse.LocalCourseID, Dept: result.Dept.toUpperCase(), CourseNum: result.CourseNum, CourseTitle: result.CourseTitle};
+          console.log(result2);
+          this.localCourseService.editLocalCourse(result2)
+          .catch(err => {
+            console.log(err);
+          });
+          
+          //localCourse.LocalCourseName = result.Dept + " " + result.CourseNum + " - " + result.CourseTitle;
+          this.course = result.Dept.toUpperCase() + " " + result.CourseNum + " - " + result.CourseTitle;
+          console.log(this.course);
+        }
+      }
+    })
+    .catch(err => {console.log("closed via cross click");});
+  }
+  
+  deleteLocalCourse(event, localCourse){
+    event.preventDefault();
+    event.stopPropagation();
+    console.log("deleteLocalCourse()");
+    console.log(localCourse);
+    
+    //check if user has permission
+    var currentUserID = 0; //get these
+    var currentUserName = "Andrew Leonard";
+    var currentUserPosition = "Admin";
+    if(currentUserPosition !== "Admin"){
+      alert("You don't have permission to delete courses. Contact an Admin to delete it.");
+      return;
+    }
+    
+    this.localCourseService.deleteLocalCourse(localCourse);
+    localCourseComponentGlobal.deleteLocalCourse(localCourse);
   }
   
   //equivalency typeahead
@@ -458,6 +537,8 @@ export class LocalCoursesComponent implements OnInit {
     this.localCourseService.getForeignCoursesSchools().then(foreignCoursesSchools => {
       foreignCoursesSchoolsGlobal = foreignCoursesSchools;
     });
+    
+    localCourseComponentGlobal = this;
   }
   
   //local courses typeahead
@@ -499,141 +580,6 @@ export class LocalCoursesComponent implements OnInit {
       .map(term => term.length < 0 ? []
         : this.statuses.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
 
-  //open equivalency modal
-  open(content, course) {
-    this.dialogInputs.Mode = "Add";
-    this.dialogCourse = course;
-    this.modalService.open(content).result.then((result) => {
-      course.ForeignCourses.push(result);
-      console.log(course);
-      result.LocalCourseID = course.LocalCourseID;
-      
-      console.log(result);
-      console.log(result.SchoolName);      
-      
-      if(result === "Close"){
-        console.log("Closed, don't add");
-      }else{
-        if(result.Mode == null || result.SchoolName == null || result.ForeignCourseName == null || result.Status == null || result.Lock == null || result.Notes == null){
-          console.log("null check, don't add");
-        }else{
-          var result2 = result;
-          if(result.SchoolName.Name == null){
-            console.log("school: " + result.SchoolName);
-          }else{
-            console.log("school: " + result.SchoolName.Name);
-            result2.SchoolName = result.SchoolName.Name;
-          }
-          if(result.Mode === "" || result2.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
-            console.log("empty check, don't add");
-          }else{
-             // the schools router for this is broken for now, will fix later
-            //var schools;
-            console.log("query school: " + result2.SchoolName);
-            /*
-            this.localCourseService.getSchool(result2.SchoolName).then(schools => {
-              console.log("returned schools 1:");
-              console.log(schools);
-              //schools = schools2;
-              console.log("returned schools 2:");
-              //console.log(schools);
-              if(schools.length != 1){
-                console.log("School \"" + result2.SchoolName + "\" does not exist. Enter a valid school.");
-              
-              //if(false){
-              }else{
-                if(result.Lock){
-                  //get current user's userid, shove it into result2.LockedBy
-                  result2.LockedBy = 0;
-                }else{
-                  result2.LockedBy = null;
-                }
-                console.log(result2);
-                this.localCourseService.addEquivCourse(result2);
-              }
-            });
-            */
-            var found = false;
-            for(var i = 0; i < this.schools.length; ++i){
-              if(this.schools[i].Name === result2.SchoolName){
-                console.log("school was found");
-                found = true;
-                i = this.schools.length+999;
-              }
-            }
-            if(!found){
-              console.log("school was not found");
-            }
-            
-            if(result.Lock){
-              //get current user's userid, shove it into result2.LockedBy
-              result.LockedBy = 0;
-              result2.LockedBy = 0;
-            }else{
-              result.LockedBy = 0;
-              result2.LockedBy = null;
-            }
-            console.log(result2);
-            this.localCourseService.addEquivCourse(result2);
-          }
-        }
-      }
-      /*
-      result.Mode = "";
-      result.SchoolName = "";
-      result.ForeignCourseName = "";
-      result.Status = "";
-      result.Lock = false;
-      result.Notes = "";
-      */
-    });
-  }
-
-  //edit equivalency
-  edit(content, course, foreignCourse) {
-    //check if user has permission
-    var currentUserID = 0; //get these
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "not an admin";
-    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
-      alert("You don't have permission to edit this equivalency. Consult " + foreignCourse.LockedByUser + " or an Admin to edit it.");
-      return;
-    }
-    
-    this.dialogInputs.Mode = "Edit";
-    this.dialogCourse = course;
-    this.dialogInputs = foreignCourse;
-    this.modalService.open(content).result.then((result) => {
-      let i = course.ForeignCourses.find(fc => fc.ForeignCourseName === foreignCourse.ForeignCourseName);
-      course.ForeignCourses[i] = result;
-      result.LocalCourseID = course.LocalCourseID;
-      console.log(""+result.SchoolName);
-      console.log(this.dialogInputs.SchoolName);
-      console.log(this.dialogOutputs.SchoolName);
-      console.log(result);
-      result.SchoolName = this.dialogOutputs.SchoolName;
-      console.log(result);
-      this.localCourseService.editEquivCourse(result);
-      
-      
-      result.Mode = "";
-      result.SchoolName = "";
-      result.ForeignCourseName = "";
-      result.Status = "";
-      result.Lock = false;
-      result.Notes = "";
-    });
-  }
-
-  //delete equivalency
-  delete(course, foreignCourse) {
-    course.ForeignCourses = course.ForeignCourses.filter(fc =>
-	    fc.ForeignCourseName !== foreignCourse.ForeignCourseName
-    );
-    foreignCourse.LocalCourseID = course.LocalCourseID;
-    this.localCourseService.deleteEquivCourse(foreignCourse);
-  }
-  
   //add new course
   addCourse(content2){
     //console.log("add new local course");
@@ -661,6 +607,11 @@ export class LocalCoursesComponent implements OnInit {
               //console.log(result2);
               var newLocalCourse: LocalCourse2 = {
                 LocalCourseID: result2.stmt.lastID,
+                
+                LocalCourseDept: result.Dept,
+                LocalCourseNum: result.Num,
+                LocalCourseTitle: result.Title,
+                
                 LocalCourseName: result.Dept + " " + result.CourseNum + " - " + result.CourseTitle,
                 ForeignCourses: new Array<ForeignCourse2>()
               };
@@ -682,5 +633,16 @@ export class LocalCoursesComponent implements OnInit {
         }
       }
 	  });
+  }
+  
+  deleteLocalCourse(course){
+    this.courses = this.courses.filter(lc =>
+      lc.LocalCourseName !== course.LocalCourseName
+    );
+    this.source = new LocalDataSource(this.courses);
+    subscribeChanges(this.changes.LocalCourseName, (search) => {
+      this.source.addFilter({field: 'LocalCourseName', search: search});
+      this.currentLocalCourseSearch = search;
+    });
   }
 }
