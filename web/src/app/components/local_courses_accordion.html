@@ -1,15 +1,18 @@
+<!-- accordion -->
 <ngb-accordion>
   <ngb-panel>
+    <!-- title -->
     <ng-template ngbPanelTitle>
       {{course}}
-      <span class="header_buttons">
+      <span class="local_course_modify_buttons">
         <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="editLocalCourse($event, editLocalCourseContent, rowData)"></i>
         <i class="fa fa-trash-o" aria-hidden="true" (click)="deleteLocalCourse($event, rowData)"></i>
       </span>
     </ng-template>
     
+    <!-- inner content -->
     <ng-template ngbPanelContent>
-      <button class="btn btn-success" (click)="addEquivCourse(content, rowData)">Add Equivalency</button>
+      <button class="btn btn-success" (click)="addEquivCourse(addEquivCourseContent, rowData)">Add Equivalency</button>
       <div *ngIf="rowData.ForeignCourses.length <= 0">
         No equivalent courses
       </div>
@@ -29,7 +32,7 @@
           <td>{{foreignCourse.LockedByUser}}</td>
           <td>{{foreignCourse.Notes}}</td>
           <td>
-            <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="editEquivCourse(editContent, rowData, foreignCourse)"></i>
+            <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="editEquivCourse(editEquivCourseContent, rowData, foreignCourse)"></i>
             <i class="fa fa-trash-o" aria-hidden="true" (click)="deleteEquivCourse(rowData, foreignCourse)"></i>
           </td>
         </tr>
@@ -39,9 +42,9 @@
 </ngb-accordion>
 
 <!-- Add Equivalency Modal -->
-<ng-template #content let-c="close" let-d="dismiss">
+<ng-template #addEquivCourseContent let-c="close" let-d="dismiss">
   <div class="modal-header">
-    <h4 class="modal-title">{{dialogInputs.Mode}} Equivalency</h4>
+    <h4 class="modal-title">Add Equivalency</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -52,45 +55,45 @@
     Foreign Course:
     <hr/>
     <form>
-    <div class="form-group">
-      <ng-template #rtSchool let-r="result" let-t="term">
-        <p>{{r.Name}}</p>
-      </ng-template>
-      <label for="typeahead-basic1">School:</label>
-      <input #School id="typeahead-basic1" type="text" class="form-control" [(ngModel)]="dialogInputs.SchoolName" [ngbTypeahead]="search1" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtSchool" [inputFormatter]="formatter1" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)"/>
-    </div>
-    <div class="form-group">
-      <ng-template #rtForeignCourse let-r="result" let-t="term">
-        <p>{{r.ForeignCourseName}}</p>
-      </ng-template>
-      <label for="typeahead-basic2">Course Title:</label>
-      <input #ForeignCourse id="typeahead-basic2" type="text" class="form-control" [(ngModel)]="dialogInputs.ForeignCourseName" [ngbTypeahead]="search2" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse"/>
-    </div>
-    <div class="form-group">
-      <ng-template #rtStatus let-r="result" let-t="term">
-        <p>{{r.Status}}</p>
-      </ng-template>
-      <label for="status">Status:</label>
-      <input id="typeahead-basic3" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus"/>
-    </div>
-    <div class="form-group">
-      <label for="lock">Lock future modification?:</label>
-      <input id="lock" name="lock" type="checkbox" [(ngModel)]="dialogInputs.Lock"/>
-    </div>
-    <div class="form-group">
-      <label for="notes">Notes:</label>
-      <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
-    </div>
+      <div class="form-group">
+        <ng-template #rtSchool let-r="result" let-t="term">
+          <p>{{r.Name}}</p>
+        </ng-template>
+        <label for="typeahead-School">School:</label>
+        <input #School id="typeahead-School" type="text" class="form-control" [(ngModel)]="dialogInputs.SchoolName" [ngbTypeahead]="searchSchool" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtSchool" [inputFormatter]="formatterSchool" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)"/>
+      </div>
+      <div class="form-group">
+        <ng-template #rtForeignCourse let-r="result" let-t="term">
+          <p>{{r.ForeignCourseName}}</p>
+        </ng-template>
+        <label for="typeahead-ForeignCourse">Course Title:</label>
+        <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" [(ngModel)]="dialogInputs.ForeignCourseName" [ngbTypeahead]="searchForeignCourse" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse"/>
+      </div>
+      <div class="form-group">
+        <ng-template #rtStatus let-r="result" let-t="term">
+          <p>{{r.Status}}</p>
+        </ng-template>
+        <label for="typeahead-Status">Status:</label>
+        <input id="typeahead-Status" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="searchStatus" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus"/>
+      </div>
+      <div class="form-group">
+        <label for="lock">Lock future modification?:</label>
+        <input id="lock" name="lock" type="checkbox" [(ngModel)]="dialogInputs.Lock"/>
+      </div>
+      <div class="form-group">
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
+      </div>
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">{{dialogInputs.Mode}}</button>
+    <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">Add</button>
     <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
   </div>
 </ng-template>
 
 <!-- Edit Equivalency Modal -->
-<ng-template #editContent let-c="close" let-d="dismiss">
+<ng-template #editEquivCourseContent let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Edit Equivalency</h4>
     <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
@@ -109,7 +112,7 @@
           <p>{{r.Status}}</p>
         </ng-template>
         <label for="typeaheadStatus2">Status:</label>
-        <input id="typeaheadStatus2" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="search3" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus"/>
+        <input id="typeaheadStatus2" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="searchStatus" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus"/>
       </div>
       <div class="form-group">
         <label for="lock">Lock future modification?:</label>

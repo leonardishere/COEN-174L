@@ -7,22 +7,15 @@ import { Ng2SmartTableModule, LocalDataSource, ViewCell } from 'ng2-smart-table'
 import { LocalCourseService } from './../services/local_courses';
 import { subscribeChanges, contains } from '../utils';
 
-//import {Component} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/debounceTime';
 import 'rxjs/add/operator/distinctUntilChanged';
 import { School } from './../models/school';
 import { LocalCoursePlain } from './../models/local_course_plain';
-//import { ViewCell } from '../../../../ng2-smart-table';
 import { ForeignCourseSchool } from './../models/foreign_course_school';
 import { EquivCourse } from './../models/equiv_course';
 import { Status } from './../models/status';
-
-//these werent required earlier
-import { NgbAccordion, NgbPanel } from '@ng-bootstrap/ng-bootstrap/accordion/accordion';
-import { NgbAccordionModule } from '@ng-bootstrap/ng-bootstrap/accordion/accordion.module';
-//import { AccordionViewComponent } from './local_courses_accordion';
 
 //global vars work
 var localCoursesGlobal: LocalCoursePlain[];
@@ -33,10 +26,10 @@ var localCourseComponentGlobal: any;
 
 @Component({
   selector: 'accordion-view',
-  templateUrl: './local_courses_accordion_template.html',
+  templateUrl: './local_courses_accordion.html',
   styles: [`
     table { width: 100%; }
-    .header_buttons {
+    .local_course_modify_buttons {
       float: right;
       display: inline-block;
       color: #111;
@@ -70,10 +63,7 @@ export class AccordionViewComponent implements ViewCell, OnInit {
   }
   
   changes = {
-    //LocalCourseName: new Subject<string>(),
-    SchoolName: new Subject<string>(),
-    //ForeignCourseName: new Subject<string>()//,
-    //Status: new Subject<string>()
+    SchoolName: new Subject<string>()
   };
   
   constructor(private localCourseService: LocalCourseService,
@@ -81,9 +71,7 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     
   ngOnInit(){
     this.course = this.value;
-    //console.log(this.rowData);
     this.dialogCourse = this.rowData;
-    //console.log(this.dialogCourse);
     
     subscribeChanges(this.changes.SchoolName, (search) => {
       this.currentSchool = search;
@@ -108,9 +96,8 @@ export class AccordionViewComponent implements ViewCell, OnInit {
           var result3: ForeignCourse2 = {EquivID: -1, ForeignCourseID: -1, ForeignCourseName:'',SchoolName:'',Status:'', LockedBy:-1, LockedByUser:'', Notes:''};
           //add to database
           var result4: EquivCourse = {EquivID: -1, LocalCourseID: -1, ForeignCourseID: -1, Status: '', LockedBy: -1, Notes: ''};
-          //result3.Status = result.Status;
+          
           result3.Notes = result.Notes.trim();
-          //result4.Status = result.Status;
           result4.Notes = result.Notes.trim();
           result4.LocalCourseID = result.LocalCourseID;
           
@@ -165,7 +152,6 @@ export class AccordionViewComponent implements ViewCell, OnInit {
                     result4.EquivID = promise.row;
                     result3.EquivID = promise.row;
                     console.log(result3);
-                    //course.ForeignCourses.push(result3);
                   })
                   .catch(err => console.log(err));
                   course.ForeignCourses.push(result3);
@@ -208,26 +194,19 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     
     this.dialogCourse = localCourse;
     this.dialogForeignCourse = foreignCourse;
-    //this.dialogInputs.Status = foreignCourse.Status;
     this.dialogInputs.Status = {'Status': foreignCourse.Status};
     this.dialogInputs.Lock = foreignCourse.LockedBy != null;
     this.dialogInputs.Notes = foreignCourse.Notes;
     
     this.modalService.open(content).result.then((result) => {
-      //console.log(result);
       if(result === "Close"){
         console.log("Closed, don't edit");
       }else{
         if(result.Status == null || result.Lock == null || result.Notes == null){
           console.log("null check, don't add");
         }else{
-          //display
-          //var result3: ForeignCourse2 = {EquivID: -1, ForeignCourseID: -1, ForeignCourseName:'',SchoolName:'',Status:'', LockedBy:-1, LockedByUser:'', Notes:''};
           //add to database
           var result4: EquivCourse = {EquivID: -1, LocalCourseID: -1, ForeignCourseID: -1, Status: '', LockedBy: -1, Notes: ''};
-          //result3.Notes = result.Notes.trim();
-          //foreignCourse.Notes = result.Notes.trim();
-          //result4.Status = result.Status;
           result4.Notes = result.Notes.trim();
           result4.LocalCourseID = result.LocalCourseID;
           
@@ -235,53 +214,25 @@ export class AccordionViewComponent implements ViewCell, OnInit {
           result4.LocalCourseID = localCourse.LocalCourseID;
           result4.ForeignCourseID = foreignCourse.ForeignCourseID;
           
-          /*
-          if(result.SchoolName.Name == null){
-            result3.SchoolName = result.SchoolName;
-          }else{
-            result3.SchoolName = result.SchoolName.Name;
-          }
-          */
-          
-          /*
-          if(result.ForeignCourseName.ForeignCourseName == null){
-            result3.ForeignCourseName = result.ForeignCourseName;
-          }else{
-            result3.ForeignCourseName = result.ForeignCourseName.ForeignCourseName;
-          }
-          */
-          
           var lockedBy = 0;
           var lockedByUser = '';
 
           if(result.Lock){
             //get current user's userid, shove it into result3+4.LockedBy
             result.LockedBy = 0;
-            //result3.LockedBy = 0;
-            //result3.LockedByUser = 'Andrew Leonard';
-            //foreignCourse.LockedBy = 0;
-            //foreignCourse.LockedByUser = 'Andrew Leonard';
             lockedBy = 0;
             lockedByUser = 'Andrew Leonard';
             result4.LockedBy = 0;
           }else{
             result.LockedBy = 0;
-            //result3.LockedBy = null;
-            //result3.LockedByUser = '';
-            //foreignCourse.LockedBy = null;
-            //foreignCourse.LockedByUser = '';
             lockedBy = null;
             lockedByUser = '';
             result4.LockedBy = null;
           }
           
           if(result.Status.Status == null){
-            //result3.Status = result.Status;
-            //foreignCourse.Status = result.Status;
             result4.Status = result.Status;
           }else{
-            //result3.Status = result.Status.Status;
-            //foreignCourse.Status = result.Status.Status;
             result4.Status = result.Status.Status;
           }
           
@@ -323,7 +274,7 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     event.preventDefault();
     event.stopPropagation();
     console.log("editLocalCourse()");
-    //console.log(localCourse);
+    console.log(localCourse);
     
     //check if user has permission
     var currentUserID = 0; //get these
@@ -355,7 +306,11 @@ export class AccordionViewComponent implements ViewCell, OnInit {
             console.log(err);
           });
           
-          //localCourse.LocalCourseName = result.Dept + " " + result.CourseNum + " - " + result.CourseTitle;
+          localCourse.LocalCourseDept = result.Dept.toUpperCase();
+          localCourse.LocalCourseNum = result.CourseNum;
+          localCourse.LocalCourseTitle = result.CourseTitle;
+          localCourse.LocalCourseName = result.Dept.toUpperCase() + " " + result.CourseNum + " - " + result.CourseTitle;
+          
           this.course = result.Dept.toUpperCase() + " " + result.CourseNum + " - " + result.CourseTitle;
           console.log(this.course);
         }
@@ -383,32 +338,26 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     localCourseComponentGlobal.deleteLocalCourse(localCourse);
   }
   
-  //equivalency typeahead
-  search1 = (text$: Observable<string>) =>
+  //typeaheads
+  searchSchool = (text$: Observable<string>) =>
     text$
       .debounceTime(100)
       .distinctUntilChanged()
       .map(term => term.length < 1 ? []
-        : schoolsGlobal.filter(v => v.Name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
+        : schoolsGlobal.filter(v => contains(v.Name, term)).slice(0, 10));
   
-  formatter1 = (x: {Name: string}) => x.Name;
+  formatterSchool = (x: School) => x.Name;
   
-  search2 = (text$: Observable<string>) =>
+  searchForeignCourse = (text$: Observable<string>) =>
     text$
       .debounceTime(100)
       .distinctUntilChanged()
       .map(term => term.length < 1 ? []
-        : foreignCoursesSchoolsGlobal.filter(v => {
-          //console.log(v);
-          //console.log("ForeignCourseName: " + v.ForeignCourseName);
-          //console.log("SchoolName: " + v.SchoolName);
-          //return true;
-          return (contains(v.ForeignCourseName, term) && contains(v.SchoolName, this.currentSchool));
-        }).slice(0, 10));
+        : foreignCoursesSchoolsGlobal.filter(v => contains(v.ForeignCourseName, term) && contains(v.SchoolName, this.currentSchool)).slice(0, 10));
         
   formatterForeignCourse = (x: ForeignCourseSchool) => x.ForeignCourseName;
   
-  search3 = (text$: Observable<string>) =>
+  searchStatus = (text$: Observable<string>) =>
     text$
       .debounceTime(100)
       .distinctUntilChanged()
@@ -421,7 +370,7 @@ export class AccordionViewComponent implements ViewCell, OnInit {
 //main component
 @Component({
   selector: 'local-courses',
-  templateUrl: './local_courses_template.html',
+  templateUrl: './local_courses.html',
   styles: [`
     table { width: 100%; }
   `],
@@ -434,14 +383,11 @@ export class AccordionViewComponent implements ViewCell, OnInit {
 export class LocalCoursesComponent implements OnInit {
   schools: School[];
   foreignCourses: string[]; //should be foreignCourse[]
-  //foreignCourses: ForeignCourse[];
-  //foreignCourses: any[];
   statuses: string[];
   localCourses: LocalCoursePlain[];
   currentLocalCourseSearch: string;
   
   courses: LocalCourse2[];
-  //courses: LocalCourse2Wrapper[];
   source: LocalDataSource;
   placeholders = {
     LocalCourseName: "COEN 210 - Computer Architecture"
@@ -458,13 +404,6 @@ export class LocalCoursesComponent implements OnInit {
     Lock: "",
 	  Notes: ""
   }
-  dialogOutputs = {
-	  Mode: "Add Equivalency",
-	  SchoolName: "",
-	  ForeignCourseName: "",
-	  Status: "",
-	  Notes: ""
-  }
   dialogInputs2 = {
 	  Mode: "Add Course",
 	  Dept: "",
@@ -472,16 +411,13 @@ export class LocalCoursesComponent implements OnInit {
 	  CourseTitle: ""
   }
   
-  
   settings = {
     columns: {
       LocalCourseName: { 
         title: 'Local Course',
         type: 'custom',
         renderComponent: AccordionViewComponent,
-        onComponentInitFunction(instance) {
-          //console.log(instance);
-        }
+        onComponentInitFunction(instance) {}
       }
     },
     pager: {
@@ -502,7 +438,6 @@ export class LocalCoursesComponent implements OnInit {
   ngOnInit(): void {
     this.localCourseService.getLocalCourses().then(courses => {
       this.courses = courses;
-      //console.log(courses);
       this.source = new LocalDataSource(this.courses);
     });
   
@@ -516,15 +451,6 @@ export class LocalCoursesComponent implements OnInit {
       schoolsGlobal = schools;
     });
     
-    this.statuses = new Array<string>();
-    this.statuses.push("Accepted");
-    this.statuses.push("Rejected");
-    
-    /*
-    statusesGlobal = new Array<string>();
-    statusesGlobal.push("Accepted");
-    statusesGlobal.push("Rejected");
-    */
     statusesGlobal = [{'Status': 'Accepted'}, {'Status': 'Rejected'}];
     
     this.localCourseService.getLocalCoursesPlain().then(localCourses => {
@@ -552,78 +478,38 @@ export class LocalCoursesComponent implements OnInit {
   
   formatterLocalCourse = (x: LocalCoursePlain) => x.LocalCourseName;
 
-  onSelect(course: LocalCourse2): void {
-    console.log('Selected', course);
-  }
-  
-  //equivalency typeahead
-  search1 = (text$: Observable<string>) =>
-    text$
-      .debounceTime(100)
-      .distinctUntilChanged()
-      .map(term => term.length < 1 ? []
-        : this.schools.filter(v => v.Name.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
-  
-  formatter1 = (x: {Name: string}) => x.Name;
-        
-  search2 = (text$: Observable<string>) =>
-    text$
-      .debounceTime(100)
-      .distinctUntilChanged()
-      .map(term => term.length < 1 ? []
-        : this.foreignCourses.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
-        
-  search3 = (text$: Observable<string>) =>
-    text$
-      .debounceTime(100)
-      .distinctUntilChanged()
-      .map(term => term.length < 0 ? []
-        : this.statuses.filter(v => v.toLowerCase().indexOf(term.toLowerCase()) > -1).slice(0, 10));
-
   //add new course
-  addCourse(content2){
-    //console.log("add new local course");
+  addLocalCourse(content){
 	  this.dialogInputs2.Mode = "Add";
-	  this.modalService.open(content2).result.then((result) => {
+	  this.modalService.open(content).result.then((result) => {
       if(result === "Close"){
         console.log("Closed, don't add");
       }else{
-        //console.log(result.Dept + " " + result.CourseNum + " - " + result.CourseTitle);
         if(result.Dept == null || result.CourseNum == null || result.CourseTitle == null){
           console.log("null check, don't add");
         }else{
           result.Dept = result.Dept.trim().toUpperCase();
           result.CourseNum = result.CourseNum.trim();
           result.CourseTitle = result.CourseTitle.trim();
-          //console.log(result.Dept + " " + result.CourseNum + " - " + result.CourseTitle);
           if(result.Dept === "" || result.CourseNum === "" || result.CourseTitle === ""){
             console.log("empty check, don't add");
           }else{
             this.localCourseService.addLocalCourse(result)
             .then(http => {
-              //console.log(http);
-              //let result2 = http.json();
-              let result2 = http;
-              //console.log(result2);
               var newLocalCourse: LocalCourse2 = {
-                LocalCourseID: result2.stmt.lastID,
-                
+                LocalCourseID: http.stmt.lastID,
                 LocalCourseDept: result.Dept,
-                LocalCourseNum: result.Num,
-                LocalCourseTitle: result.Title,
-                
+                LocalCourseNum: result.CourseNum,
+                LocalCourseTitle: result.CourseTitle,
                 LocalCourseName: result.Dept + " " + result.CourseNum + " - " + result.CourseTitle,
                 ForeignCourses: new Array<ForeignCourse2>()
               };
-              //console.log("new course: ");
-              //console.log(newLocalCourse);
               this.courses.push(newLocalCourse);
               this.courses.sort((c1, c2) => {
                 if(c1.LocalCourseName > c2.LocalCourseName) return 1;
                 if(c1.LocalCourseName < c2.LocalCourseName) return -1;
                 return 0;
               });
-              //console.log(this.courses);
               this.source = new LocalDataSource(this.courses);
               this.changes.LocalCourseName.next("");
               this.changes.LocalCourseName.next(this.currentLocalCourseSearch);

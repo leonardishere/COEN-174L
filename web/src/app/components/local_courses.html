@@ -1,5 +1,5 @@
 <h1>Local Courses</h1>
-<button type="button" class="btn btn-success" (click)="addCourse(content2)">Add Course</button>
+<button type="button" class="btn btn-success" (click)="addLocalCourse(addLocalCoursecontent)">Add Course</button>
 <br><br>
 <form>
   <div class="form-group">
@@ -12,7 +12,7 @@
 </form>
 
 <!-- Course Modal -->
-<ng-template #content2 let-c="close" let-d="dismiss">
+<ng-template #addLocalCoursecontent let-c="close" let-d="dismiss">
   <div class="modal-header">
 <h4 class="modal-title">{{dialogInputs2.Mode}} Course</h4>
   <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
