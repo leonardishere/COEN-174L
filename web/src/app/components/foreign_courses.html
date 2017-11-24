@@ -1,0 +1,99 @@
+<h1>Foreign Courses</h1>
+<button type="button" class="btn btn-success" (click)="addForeignCourse(addForeignCoursecontent)">Add Course</button>
+<br><br>
+<form>
+  <div class="form-group">
+    <ng-template #rtSchool let-r="result" let-t="term">
+      <p>{{r.Name}}</p>
+    </ng-template>
+    <label for="typeahead-School">School:</label>
+    <input #School id="typeahead-School" type="text" class="form-control" [ngbTypeahead]="searchSchool" [resultTemplate]="rtSchool" [inputFormatter]="formatterSchool" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)" placeholder="{{placeholders.SchoolName}}" [placement]="['bottom-left']"/>
+  </div>
+  <div class="form-group">
+    <ng-template #rtForeignCourse let-r="result" let-t="term">
+      <p>{{r.ForeignCourseName}}</p>
+    </ng-template>
+    <label for="typeahead-ForeignCourse">Foreign Course:</label>
+    <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" [ngbTypeahead]="searchForeignCourse" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse" (input)="changes.ForeignCourseName.next(ForeignCourse.value)" (selectItem)="changes.ForeignCourseName.next($event.item.ForeignCourseName)" placeholder="{{placeholders.ForeignCourseName}}" [placement]="['bottom-left']"/>
+  </div>
+</form>
+
+<!-- Equivalency Modal -->
+<!--
+<ng-template #content let-c="close" let-d="dismiss">
+  <div class="modal-header">
+    <h4 class="modal-title">{{dialogInputs.Mode}} Equivalency</h4>
+    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">
+    Foreign Course: {{dialogCourse.ForeignCourseName}}<br/>
+    School: {{dialogCourse.SchoolName}}<br/>
+    <br/>
+    SCU Course:
+    <hr/>
+    <form>
+      <div class="form-group">
+        <label for="course">Course Title:</label>
+        <input id="course" name="course" type="text" [(ngModel)]="dialogInputs.LocalCourseName"/>
+      </div>
+      <div class="form-group">
+        <label for="status">Status:</label>
+        <input id="status" name="status" type="text" [(ngModel)]="dialogInputs.Status"/>
+      </div>
+      <div class="form-group">
+        <label for="notes">Notes:</label>
+        <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">{{dialogInputs.Mode}}</button>
+    <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+  </div>
+</ng-template>
+-->
+
+<!-- Course Modal -->
+<ng-template #addForeignCoursecontent let-c="close" let-d="dismiss">
+  <div class="modal-header">
+<h4 class="modal-title">Add Course</h4>
+  <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <span aria-hidden="true">&times;</span>
+  </button>
+  </div>
+  <div class="modal-body">
+<br/>
+<form>
+  <div class="form-group">
+    <ng-template #rtSchool2 let-r="result" let-t="term">
+      <p>{{r.Name}}</p>
+    </ng-template>
+    <label for="typeahead-School2">School:</label>
+    <input #School2 id="typeahead-School2" type="text" class="form-control" [ngbTypeahead]="searchSchool2" [resultTemplate]="rtSchool2" [inputFormatter]="formatterSchool2" placeholder="{{placeholders.SchoolName}}" [(ngModel)]="dialogInputs2.School" [ngModelOptions]="{standalone: true}"/>
+  </div>
+  <div class="form-group">
+    <label for="dept">Department:</label>
+    <input id="dept" name="dept" type="text" [(ngModel)]="dialogInputs2.Dept"/>
+  </div>
+  <div class="form-group">
+    <label for="courseNum">Number:</label>
+    <input id="courseNum" name="courseNum" type="text" [(ngModel)]="dialogInputs2.CourseNum"/>
+  </div>
+  <div class="form-group">
+    <label for="courseTitle">Title:</label>
+    <input id="courseTitle" name="courseTitle" type="text" [(ngModel)]="dialogInputs2.CourseTitle"/>
+  </div>
+</form>
+  </div>
+  <div class="modal-footer">
+  <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2)">{{dialogInputs2.Mode}}</button>
+  <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+  </div>
+</ng-template>
+
+<ng2-smart-table
+  [settings]="settings"
+  [source]="source">
+</ng2-smart-table>

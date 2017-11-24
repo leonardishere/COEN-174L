@@ -8,22 +8,17 @@ var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
 	db.all(`
-DROP TABLE IF EXISTS 'User';
-CREATE TABLE IF NOT EXISTS 'User' (
-	'UserID'	INTEGER PRIMARY KEY AUTOINCREMENT,
-	'Name'	TEXT NOT NULL,
-	'Position'	TEXT,
-	'Email'	TEXT NOT NULL
-);
+DELETE FROM USER;
+DELETE FROM SCHOOL;
+DELETE FROM LOCALCOURSE;
+DELETE FROM FOREIGNCOURSE;
+DELETE FROM EQUIVCOURSE;
+
 INSERT INTO 'User' (UserID,Name,Position,Email) VALUES 
 (0,'Andrew Leonard','Admin','aleonard@scu.edu'),
  (1,'Rowan Decker','Admin','rdecker@scu.edu'),
  (2,'Chloe de Guzman','Admin','cdeguzman@scu.edu');
-DROP TABLE IF EXISTS 'School';
-CREATE TABLE IF NOT EXISTS 'School' (
-	'SchoolID'	INTEGER PRIMARY KEY AUTOINCREMENT,
-	'Name'	TEXT NOT NULL
-);
+ 
 INSERT INTO 'School' (SchoolID,Name) VALUES 
  (1,'California State University, Bakersfield'),
  (2,'California State University, Channel Islands'),
@@ -48,13 +43,7 @@ INSERT INTO 'School' (SchoolID,Name) VALUES
  (21,'California State University, San Marcos'),
  (22,'Sonoma State University'),
  (23,'California State University, Stanislaus');
-DROP TABLE IF EXISTS 'LocalCourse';
-CREATE TABLE IF NOT EXISTS 'LocalCourse' (
-	'CourseID'	INTEGER PRIMARY KEY AUTOINCREMENT,
-	'Dept'	TEXT,
-	'CourseNum'	TEXT,
-	'Title'	TEXT
-);
+ 
 INSERT INTO 'LocalCourse' (CourseID,Dept,CourseNum,Title) VALUES
  (1,'COEN','200','Logic Analysis & Synthesis'),
  (2,'COEN','201','Digital Signal Processing I'),
@@ -122,14 +111,7 @@ INSERT INTO 'LocalCourse' (CourseID,Dept,CourseNum,Title) VALUES
  (64,'COEN','912C','Abstract Data Types & Structures'),
  (65,'COEN','920C','Embedded Systems and Assembly Language'),
  (66,'COEN','921C','Introduction to Logic Design');
-DROP TABLE IF EXISTS 'ForeignCourse';
-CREATE TABLE IF NOT EXISTS 'ForeignCourse' (
-	'CourseID'	INTEGER PRIMARY KEY AUTOINCREMENT,
-	'Dept'	TEXT,
-	'CourseNum'	TEXT,
-	'Title'	TEXT,
-	'SchoolID'	INTEGER NOT NULL
-);
+ 
 INSERT INTO 'ForeignCourse' (CourseID,Dept,CourseNum,Title,SchoolID)
  VALUES (1,'CMPE','200','Computer Architecture',19),
  (2,'CMPE','202','Software Systems Engineering',19),
@@ -262,15 +244,7 @@ INSERT INTO 'ForeignCourse' (CourseID,Dept,CourseNum,Title,SchoolID)
  (129,'CSC','897','Research',18),
  (130,'CSC','898','Masters Thesis',18),
  (131,'CSC','899','Independent Study',18);
-DROP TABLE IF EXISTS 'EquivCourse';
-CREATE TABLE IF NOT EXISTS 'EquivCourse' (
-	'EquivID'	INTEGER PRIMARY KEY AUTOINCREMENT,
-	'LocalCourseID'	INTEGER NOT NULL,
-	'ForeignCourseID'	INTEGER NOT NULL,
-	'Status'	TEXT NOT NULL,
-	'LockedBy'	INTEGER,
-	'Notes'	TEXT
-);
+ 
 INSERT INTO 'EquivCourse' (EquivID,LocalCourseID,ForeignCourseID,Status,LockedBy,Notes) VALUES
  (1,9,1,'Accepted',2,''),
  (2,42,17,'Accepted',1,''),
@@ -293,13 +267,12 @@ INSERT INTO 'EquivCourse' (EquivID,LocalCourseID,ForeignCourseID,Status,LockedBy
  (46,54,94,'Accepted',2,''),
  (47,55,93,'Accepted',NULL,''),
  (48,63,131,'Rejected',NULL,'');
- COMMIT;
  `)
 	.then(result => {
     res.status(200);
     res.write("done");
     return res.end();
-  })
+  });
 });
 
 export var ResetDbRouter = router;

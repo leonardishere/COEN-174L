@@ -7,7 +7,7 @@ var db = new Database();
 var router = PromiseRouter();
 router.route('/')
   .get((req, res) => {
-	db.all("select LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName from LocalCourse order by LocalCourseName asc")
+	db.all("select CourseID as LocalCourseID, LocalCourse.Dept||' '||LocalCourse.CourseNum||' - '||LocalCourse.Title as LocalCourseName from LocalCourse order by LocalCourseName asc")
 	.then(result => res.json(result));
   });
 

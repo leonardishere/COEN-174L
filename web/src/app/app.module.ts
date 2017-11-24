@@ -28,8 +28,8 @@ import { UserComponent } from './components/users';
 import { SchoolComponent } from './components/schools';
 import { ForeignCourseComponent } from './components/foreign_courses';
 
-//import { AccordionViewComponent } from './components/local_courses_accordion';
-import { AccordionViewComponent } from './components/local_courses';
+import { LocalAccordionViewComponent } from './components/local_courses';
+import { ForeignAccordionViewComponent } from './components/foreign_courses';
 
 @NgModule({
   declarations: [
@@ -41,7 +41,8 @@ import { AccordionViewComponent } from './components/local_courses';
     UserComponent,
     SchoolComponent,
     ForeignCourseComponent,
-    AccordionViewComponent
+    LocalAccordionViewComponent,
+    ForeignAccordionViewComponent
   ],
   imports: [
     BrowserModule,

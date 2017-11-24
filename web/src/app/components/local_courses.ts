@@ -17,13 +17,14 @@ import { ForeignCourseSchool } from './../models/foreign_course_school';
 import { EquivCourse } from './../models/equiv_course';
 import { Status } from './../models/status';
 
-//global vars work
+//global vars
 var localCoursesGlobal: LocalCoursePlain[];
 var schoolsGlobal: School[];
 var foreignCoursesSchoolsGlobal: ForeignCourseSchool[];
 var statusesGlobal: Status[];
 var localCourseComponentGlobal: any;
 
+//accordion component
 @Component({
   selector: 'accordion-view',
   templateUrl: './local_courses_accordion.html',
@@ -36,7 +37,7 @@ var localCourseComponentGlobal: any;
     }
   `]
 })
-export class AccordionViewComponent implements ViewCell, OnInit {
+export class LocalAccordionViewComponent implements ViewCell, OnInit {
   @Input() rowData: any;
   course: string;
   @Input() value: string;
@@ -147,14 +148,31 @@ export class AccordionViewComponent implements ViewCell, OnInit {
                 if(result4.Status !== "Accepted" && result4.Status !== "Rejected"){
                   alert("The status must be either \"Accepted\" or \"Rejected\". Try again.");
                 }else{
-                  this.localCourseService.addEquivCourse(result4)
-                  .then(promise => {
-                    result4.EquivID = promise.row;
-                    result3.EquivID = promise.row;
-                    console.log(result3);
-                  })
-                  .catch(err => console.log(err));
-                  course.ForeignCourses.push(result3);
+                  var found2 = false;
+                  for(var j = 0; j < course.ForeignCourses.length && !found2; ++j){
+                    if(course.ForeignCourses[j].ForeignCourseID === result4.ForeignCourseID){
+                      found2 = true;
+                      alert("That equivalency already exists. Refresh and try again.");
+                    }
+                  }
+                  if(!found2){
+                    this.localCourseService.addEquivCourse(result4)
+                    .then(promise => {
+                      result4.EquivID = promise.row;
+                      result3.EquivID = promise.row;
+                      console.log(result3);
+                    })
+                    .catch(err => console.log(err));
+                    course.ForeignCourses.push(result3);
+                    course.ForeignCourses.sort((c1, c2) => {
+                      if(c1.SchoolName > c2.SchoolName) return 1;
+                      if(c1.SchoolName < c2.SchoolName) return -1;
+                        
+                      if(c1.ForeignCourseName > c2.ForeignCourseName) return 1;
+                      if(c1.ForeignCourseName < c2.ForeignCourseName) return -1;
+                      return 0;
+                    });
+                  }
                 }
               }
             }
@@ -336,6 +354,9 @@ export class AccordionViewComponent implements ViewCell, OnInit {
     
     this.localCourseService.deleteLocalCourse(localCourse);
     localCourseComponentGlobal.deleteLocalCourse(localCourse);
+    localCoursesGlobal = localCoursesGlobal.filter(lc => 
+      lc.LocalCourseName !== localCourse.LocalCourseName
+    );      
   }
   
   //typeaheads
@@ -374,17 +395,16 @@ export class AccordionViewComponent implements ViewCell, OnInit {
   styles: [`
     table { width: 100%; }
   `],
-  entryComponents: [AccordionViewComponent]
+  entryComponents: [LocalAccordionViewComponent]
 })
 @NgModule({
-  imports: [ AccordionViewComponent ],
-  entryComponents: [ AccordionViewComponent ]
+  imports: [ LocalAccordionViewComponent ],
+  entryComponents: [ LocalAccordionViewComponent ]
 })
 export class LocalCoursesComponent implements OnInit {
   schools: School[];
   foreignCourses: string[]; //should be foreignCourse[]
   statuses: string[];
-  localCourses: LocalCoursePlain[];
   currentLocalCourseSearch: string;
   
   courses: LocalCourse2[];
@@ -416,7 +436,7 @@ export class LocalCoursesComponent implements OnInit {
       LocalCourseName: { 
         title: 'Local Course',
         type: 'custom',
-        renderComponent: AccordionViewComponent,
+        renderComponent: LocalAccordionViewComponent,
         onComponentInitFunction(instance) {}
       }
     },
@@ -454,7 +474,6 @@ export class LocalCoursesComponent implements OnInit {
     statusesGlobal = [{'Status': 'Accepted'}, {'Status': 'Rejected'}];
     
     this.localCourseService.getLocalCoursesPlain().then(localCourses => {
-      this.localCourses = localCourses;
       localCoursesGlobal = localCourses;
     });
     
@@ -473,7 +492,7 @@ export class LocalCoursesComponent implements OnInit {
       .debounceTime(100)
       .distinctUntilChanged()
       .map(term => term.length < 1 ? []
-          : this.localCourses.filter(v => contains(v.LocalCourseName, term)).slice(0, 10)
+          : localCoursesGlobal.filter(v => contains(v.LocalCourseName, term)).slice(0, 10)
   );
   
   formatterLocalCourse = (x: LocalCoursePlain) => x.LocalCourseName;
@@ -494,27 +513,48 @@ export class LocalCoursesComponent implements OnInit {
           if(result.Dept === "" || result.CourseNum === "" || result.CourseTitle === ""){
             console.log("empty check, don't add");
           }else{
-            this.localCourseService.addLocalCourse(result)
-            .then(http => {
-              var newLocalCourse: LocalCourse2 = {
-                LocalCourseID: http.stmt.lastID,
-                LocalCourseDept: result.Dept,
-                LocalCourseNum: result.CourseNum,
-                LocalCourseTitle: result.CourseTitle,
-                LocalCourseName: result.Dept + " " + result.CourseNum + " - " + result.CourseTitle,
-                ForeignCourses: new Array<ForeignCourse2>()
-              };
-              this.courses.push(newLocalCourse);
-              this.courses.sort((c1, c2) => {
-                if(c1.LocalCourseName > c2.LocalCourseName) return 1;
-                if(c1.LocalCourseName < c2.LocalCourseName) return -1;
-                return 0;
-              });
-              this.source = new LocalDataSource(this.courses);
-              this.changes.LocalCourseName.next("");
-              this.changes.LocalCourseName.next(this.currentLocalCourseSearch);
-            })
-            .catch(err => console.log(err));
+            var courseName = result.Dept + " " + result.CourseNum + " - " + result.CourseTitle;
+            var found = false;
+            for(var i = 0; i < localCoursesGlobal.length && !found; ++i){
+              if(localCoursesGlobal[i].LocalCourseName === courseName){
+                found = true;
+                alert("That course exists already. Refresh and try again.");
+              }
+            }
+            if(!found){
+              this.localCourseService.addLocalCourse(result)
+              .then(http => {
+                var newLocalCourse: LocalCourse2 = {
+                  LocalCourseID: http.stmt.lastID,
+                  LocalCourseDept: result.Dept,
+                  LocalCourseNum: result.CourseNum,
+                  LocalCourseTitle: result.CourseTitle,
+                  LocalCourseName: result.Dept + " " + result.CourseNum + " - " + result.CourseTitle,
+                  ForeignCourses: new Array<ForeignCourse2>()
+                };
+                this.courses.push(newLocalCourse);
+                this.courses.sort((c1, c2) => {
+                  if(c1.LocalCourseName > c2.LocalCourseName) return 1;
+                  if(c1.LocalCourseName < c2.LocalCourseName) return -1;
+                  return 0;
+                });
+                
+                this.source = new LocalDataSource(this.courses);
+                this.source.addFilter({field: 'LocalCourseName', search: this.currentLocalCourseSearch});
+                
+                var newLocalCoursePlain: LocalCoursePlain = {
+                  LocalCourseID: http.stmt.lastID,
+                  LocalCourseName: result.Dept + " " + result.CourseNum + " - " + result.CourseTitle
+                };
+                localCoursesGlobal.push(newLocalCoursePlain);
+                localCoursesGlobal.sort((c1, c2) => {
+                  if(c1.LocalCourseName > c2.LocalCourseName) return 1;
+                  if(c1.LocalCourseName < c2.LocalCourseName) return -1;
+                  return 0;
+                });
+              })
+              .catch(err => console.log(err));
+            }
           }
         }
       }

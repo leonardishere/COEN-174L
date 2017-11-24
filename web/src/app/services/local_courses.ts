@@ -10,35 +10,37 @@ import 'rxjs/add/operator/toPromise';
 export class LocalCourseService {
 	constructor(private http: HttpClient) {}
 	
+  //local courses
 	getLocalCourses(): Promise<any> {
 		return this.http.get(environment.api + 'local_courses').toPromise();
 	}
-
-  addEquivCourse(course): Promise<any> {
-	  return this.http.post(environment.api + 'equiv_course', course).toPromise();
-  }
-
-  deleteEquivCourse(course): Promise<any> {
-	  return this.http.delete(environment.api + 'equiv_course/'+course.EquivID).toPromise();
-  }
-
-  editEquivCourse(course): Promise<any> {
-	  return this.http.put(environment.api + 'equiv_course/'+course.EquivID, course).toPromise();
-  }
   
   addLocalCourse(course): Promise<any>{
 	  return this.http.post(environment.api + 'local_courses', course).toPromise();
-  }
-  
-  deleteLocalCourse(course): Promise<any> {
-	  return this.http.delete(environment.api + 'local_courses/'+course.LocalCourseID).toPromise();
   }
 
   editLocalCourse(course): Promise<any> {
 	  return this.http.put(environment.api + 'local_courses/'+course.LocalCourseID, course).toPromise();
   }
   
-  //these shouldnt be here but whatever
+  deleteLocalCourse(course): Promise<any> {
+	  return this.http.delete(environment.api + 'local_courses/'+course.LocalCourseID).toPromise();
+  }
+
+  //equiv courses
+  addEquivCourse(course): Promise<any> {
+	  return this.http.post(environment.api + 'equiv_course', course).toPromise();
+  }
+
+  editEquivCourse(course): Promise<any> {
+	  return this.http.put(environment.api + 'equiv_course/'+course.EquivID, course).toPromise();
+  }
+
+  deleteEquivCourse(course): Promise<any> {
+	  return this.http.delete(environment.api + 'equiv_course/'+course.EquivID).toPromise();
+  }
+  
+  //other
   getSchools(): Promise<any> {
     return this.http.get(environment.api + 'schools').toPromise();
   }
