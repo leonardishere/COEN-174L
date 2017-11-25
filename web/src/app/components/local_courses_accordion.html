@@ -4,7 +4,7 @@
     <!-- title -->
     <ng-template ngbPanelTitle>
       {{course}}
-      <span class="local_course_modify_buttons">
+      <span class="local_course_modify_buttons" *ngIf="isAdmin">
         <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="editLocalCourse($event, editLocalCourseContent, rowData)"></i>
         <i class="fa fa-trash-o" aria-hidden="true" (click)="deleteLocalCourse($event, rowData)"></i>
       </span>
@@ -33,7 +33,7 @@
           <td>{{foreignCourse.Notes}}</td>
           <td>
             <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="editEquivCourse(editEquivCourseContent, rowData, foreignCourse)"></i>
-            <i class="fa fa-trash-o" aria-hidden="true" (click)="deleteEquivCourse(rowData, foreignCourse)"></i>
+            <i class="fa fa-trash-o" aria-hidden="true" (click)="deleteEquivCourse(rowData,foreignCourse)"></i>
           </td>
         </tr>
       </table>

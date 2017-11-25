@@ -46,6 +46,8 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
   
   dialogLocalCourse: LocalCourse3;
   dialogCourse: ForeignCourse3;
+  isAdmin: boolean;
+  
   dialogInputs = {
 	  Mode: "Add Equivalency",
 	  ForeignCourseName: "",
@@ -72,6 +74,7 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
   
   ngOnInit(){
     this.course = this.rowData.ForeignCourseName + " | " + this.rowData.SchoolName;
+    this.isAdmin = foreignCourseComponentGlobal.isAdmin;
   }
   
   editForeignCourse(event, content, foreignCourse){
@@ -80,7 +83,7 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
     event.stopPropagation();
     
     //check if user has permission
-    var currentUserID = 0; //get these
+    var currentUserID = 0; //TODO: retrieve user
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "Admin";
     if(currentUserPosition !== "Admin"){
@@ -169,7 +172,7 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
     event.stopPropagation();
     
     //check if user has permission
-    var currentUserID = 0; //get these
+    var currentUserID = 0; //TODO: retrieve user
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "Admin";
     if(currentUserPosition !== "Admin"){
@@ -284,7 +287,7 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
     console.log(foreignCourse);
     
     //check if user has permission
-    var currentUserID = 0; //get these
+    var currentUserID = 0; //TODO: retrieve user
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "not an admin";
     if(localCourse.LockedBy != null && localCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
@@ -355,7 +358,7 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
   
   deleteEquivCourse(localCourse, foreignCourse) {
     //check if user has permission
-    var currentUserID = 0; //get these
+    var currentUserID = 0; //TODO: retrieve user
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "not an admin";
     if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
@@ -421,6 +424,8 @@ export class ForeignCourseComponent implements OnInit {
   
   courses: ForeignCourse3[];
   dialogCourse: ForeignCourse3;
+  isAdmin: boolean;
+  
   dialogInputs = {
 	  Mode: "Add Equivalency",
 	  ForeignCourseName: "",
@@ -494,6 +499,12 @@ export class ForeignCourseComponent implements OnInit {
     foreignCourseComponentGlobal = this;
     this.currentSchoolSearch = "";
     this.currentForeignCourseSearch = "";
+    
+    //check if user has permission
+    var currentUserID = 0; //TODO: retrieve user
+    var currentUserName = "Andrew Leonard";
+    var currentUserPosition = "Admin";
+    this.isAdmin = currentUserPosition === "Admin";
   }
   
   addForeignCourse(content){

@@ -46,6 +46,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
   dialogForeignCourse: ForeignCourse2;
   
   currentSchool: string;
+  isAdmin: boolean;
   
   dialogInputs = {
 	  Mode: "Add Equivalency",
@@ -79,6 +80,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     });
     
     this.currentSchool = '';
+    this.isAdmin = localCourseComponentGlobal.isAdmin;
   }
   
   addEquivCourse(content, course){
@@ -202,7 +204,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     console.log(foreignCourse);
     
     //check if user has permission
-    var currentUserID = 0; //get these
+    var currentUserID = 0; //TODO: retrieve user
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "not an admin";
     if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
@@ -273,7 +275,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
   
   deleteEquivCourse(localCourse, foreignCourse) {
     //check if user has permission
-    var currentUserID = 0; //get these
+    var currentUserID = 0; //TODO: retrieve user
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "not an admin";
     if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
@@ -295,7 +297,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     console.log(localCourse);
     
     //check if user has permission
-    var currentUserID = 0; //get these
+    var currentUserID = 0; //TODO: retrieve user
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "Admin";
     if(currentUserPosition !== "Admin"){
@@ -344,7 +346,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     console.log(localCourse);
     
     //check if user has permission
-    var currentUserID = 0; //get these
+    var currentUserID = 0; //TODO: retrieve user
     var currentUserName = "Andrew Leonard";
     var currentUserPosition = "Admin";
     if(currentUserPosition !== "Admin"){
@@ -406,6 +408,7 @@ export class LocalCoursesComponent implements OnInit {
   foreignCourses: string[]; //should be foreignCourse[]
   statuses: string[];
   currentLocalCourseSearch: string;
+  isAdmin: boolean;
   
   courses: LocalCourse2[];
   source: LocalDataSource;
@@ -484,6 +487,12 @@ export class LocalCoursesComponent implements OnInit {
     });
     
     localCourseComponentGlobal = this;
+    
+    //check if user has permission
+    var currentUserID = 0; //TODO: retrieve user
+    var currentUserName = "Andrew Leonard";
+    var currentUserPosition = "Admin";
+    this.isAdmin = currentUserPosition === "Admin";
   }
   
   //local courses typeahead

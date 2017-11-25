@@ -4,7 +4,7 @@
     <!-- title -->
     <ng-template ngbPanelTitle>
       {{course}}
-      <span class="foreign_course_modify_buttons">
+      <span class="foreign_course_modify_buttons" *ngIf="isAdmin">
         <i class="fa fa-pencil-square-o" aria-hidden="true" (click)="editForeignCourse($event, editForeignCourseContent, rowData)"></i>
         <i class="fa fa-trash-o" aria-hidden="true" (click)="deleteForeignCourse($event, rowData)"></i>
       </span>

@@ -17,4 +17,12 @@ export class UserService {
   addUser(user): Promise<any> {
     return this.http.post(environment.api + 'auth/add', user).toPromise();
   }
+  
+  editUser(user): Promise<any> {
+    return this.http.put(environment.api + 'users/'+user.UserID, user).toPromise();
+  }
+  
+  deleteUser(user): Promise<any> {
+    return this.http.delete(environment.api + 'users/'+user.UserID).toPromise();
+  }
 }

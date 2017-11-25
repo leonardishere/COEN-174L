@@ -13,4 +13,16 @@ export class SchoolService {
 	getSchools(): Promise<any> {
 		return this.http.get(environment.api + 'schools').toPromise();
 	}
+  
+  addSchool(school): Promise<any> {
+    return this.http.post(environment.api + 'schools', school).toPromise();
+  }
+  
+  editSchool(school): Promise<any> {
+    return this.http.put(environment.api + 'schools/'+school.SchoolID, school).toPromise();
+  }
+  
+  deleteSchool(school): Promise<any> {
+    return this.http.delete(environment.api + 'schools/'+school.SchoolID).toPromise();
+  }
 }
