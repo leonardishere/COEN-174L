@@ -5,6 +5,7 @@ import { NgbModal, NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { Subject } from 'rxjs/Subject';
 import { Ng2SmartTableModule, LocalDataSource, ViewCell } from 'ng2-smart-table';
 import { LocalCourseService } from './../services/local_courses';
+import { AuthService } from '../services/auth.service';
 import { subscribeChanges, contains } from '../utils';
 
 import {Observable} from 'rxjs/Observable';
@@ -69,7 +70,8 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
   };
   
   constructor(private localCourseService: LocalCourseService,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    private auth: AuthService) { }
     
   ngOnInit(){
     this.course = this.value;
@@ -204,10 +206,8 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     console.log(foreignCourse);
     
     //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "not an admin";
-    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
+    var currentUserID = this.auth.UserID;
+    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && !this.auth.isAdmin()){
       alert("You don't have permission to edit this equivalency. Contact " + foreignCourse.LockedByUser + " or an Admin to edit it.");
       return;
     }
@@ -275,10 +275,8 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
   
   deleteEquivCourse(localCourse, foreignCourse) {
     //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "not an admin";
-    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
+    var currentUserID = this.auth.UserID;
+    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && !this.auth.isAdmin()){
       alert("You don't have permission to delete this equivalency. Contact " + foreignCourse.LockedByUser + " or an Admin to delete it.");
       return;
     }
@@ -297,10 +295,8 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     console.log(localCourse);
     
     //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "Admin";
-    if(currentUserPosition !== "Admin"){
+    var currentUserID = this.auth.UserID;
+    if(!this.auth.isAdmin()){
       alert("You don't have permission to edit courses. Contact an Admin to edit it.");
       return;
     }
@@ -346,10 +342,8 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     console.log(localCourse);
     
     //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "Admin";
-    if(currentUserPosition !== "Admin"){
+    var currentUserID = this.auth.UserID;
+    if(!this.auth.isAdmin()){
       alert("You don't have permission to delete courses. Contact an Admin to delete it.");
       return;
     }
@@ -487,12 +481,6 @@ export class LocalCoursesComponent implements OnInit {
     });
     
     localCourseComponentGlobal = this;
-    
-    //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "Admin";
-    this.isAdmin = currentUserPosition === "Admin";
   }
   
   //local courses typeahead

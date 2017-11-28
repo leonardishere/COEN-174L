@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { AuthService } from './services/auth.service';
 
 @Component({
@@ -11,8 +10,7 @@ export class AppComponent implements OnInit {
   title = 'SCU Grad Checker';
   isAdvisor: boolean;
 
-  constructor(private router: Router,
-              private auth: AuthService) {
+  constructor(private auth: AuthService) {
     this.onLoginChanged();
   }
 
@@ -28,6 +26,5 @@ export class AppComponent implements OnInit {
 
   logout() {
     this.auth.logOut();
-    this.router.navigate(['/']);
   }
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { School } from './../models/school';
 import { SchoolService } from './../services/schools';
+import { AuthService } from '../services/auth.service';
 
 @Component({
 	selector: 'schools',
@@ -45,7 +46,8 @@ export class SchoolComponent implements OnInit {
       edit: false
     }
   };
-  constructor(private schoolService: SchoolService) { }
+  constructor(private schoolService: SchoolService,
+              private auth: AuthService) { }
 
   ngOnInit(): void {
     this.schoolService.getSchools().then(schools => {
@@ -53,11 +55,10 @@ export class SchoolComponent implements OnInit {
       this.source = new LocalDataSource(this.schools);
     });
     
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "Admin";//"not an admin";
+    //var currentUserID = this.auth.UserID;
+    //var currentUserName = this.auth.Name;
     
-    var isAdmin = currentUserPosition === "Admin";
+    var isAdmin = this.auth.isAdmin();
     this.settings.actions.add = isAdmin;
     this.settings.actions.delete = isAdmin;
     this.settings.actions.edit = isAdmin;

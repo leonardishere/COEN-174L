@@ -5,6 +5,7 @@ import { Ng2SmartTableModule, LocalDataSource, ViewCell } from 'ng2-smart-table'
 import { LocalCourse3 } from './../models/local_course3';
 import { ForeignCourse3 } from './../models/foreign_course3';
 import { ForeignCourseService } from './../services/foreign_courses';
+import { AuthService } from '../services/auth.service';
 import { subscribeChanges, contains } from '../utils';
 
 import {Observable} from 'rxjs/Observable';
@@ -70,7 +71,9 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
     SchoolName: "San Jose State University"
   };
   
-  constructor(private foreignCourseService: ForeignCourseService, private modalService: NgbModal){}
+  constructor(private foreignCourseService: ForeignCourseService,
+    private modalService: NgbModal,
+    private auth: AuthService) {}
   
   ngOnInit(){
     this.course = this.rowData.ForeignCourseName + " | " + this.rowData.SchoolName;
@@ -83,10 +86,8 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
     event.stopPropagation();
     
     //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "Admin";
-    if(currentUserPosition !== "Admin"){
+    var currentUserID = this.auth.UserID;
+    if(!this.auth.isAdmin()){
       alert("You don't have permission to edit courses. Contact an Admin to edit it.");
       return;
     }
@@ -172,10 +173,8 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
     event.stopPropagation();
     
     //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "Admin";
-    if(currentUserPosition !== "Admin"){
+    var currentUserID = this.auth.UserID;
+    if(!this.auth.isAdmin()){
       alert("You don't have permission to edit courses. Contact an Admin to edit it.");
       return;
     }
@@ -287,10 +286,8 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
     console.log(foreignCourse);
     
     //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "not an admin";
-    if(localCourse.LockedBy != null && localCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
+    var currentUserID = this.auth.UserID;
+    if(localCourse.LockedBy != null && localCourse.LockedBy !== currentUserID && !this.auth.isAdmin()){
       alert("You don't have permission to edit this equivalency. Contact " + localCourse.LockedByUser + " or an Admin to edit it.");
       return;
     }
@@ -358,10 +355,8 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
   
   deleteEquivCourse(localCourse, foreignCourse) {
     //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "not an admin";
-    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && currentUserPosition !== "Admin"){
+    var currentUserID = this.auth.UserID;
+    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && !this.auth.isAdmin){
       alert("You don't have permission to delete this equivalency. Contact " + foreignCourse.LockedByUser + " or an Admin to delete it.");
       return;
     }
@@ -424,7 +419,6 @@ export class ForeignCourseComponent implements OnInit {
   
   courses: ForeignCourse3[];
   dialogCourse: ForeignCourse3;
-  isAdmin: boolean;
   
   dialogInputs = {
 	  Mode: "Add Equivalency",
@@ -499,12 +493,6 @@ export class ForeignCourseComponent implements OnInit {
     foreignCourseComponentGlobal = this;
     this.currentSchoolSearch = "";
     this.currentForeignCourseSearch = "";
-    
-    //check if user has permission
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "Admin";
-    this.isAdmin = currentUserPosition === "Admin";
   }
   
   addForeignCourse(content){

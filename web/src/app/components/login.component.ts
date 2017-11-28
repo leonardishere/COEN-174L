@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../services/auth.service';
 import { environment } from '../../environments/environment'
+import 'rxjs/add/operator/toPromise';
 
 @Component({
 	selector: 'redirect',
@@ -19,20 +21,24 @@ export class LoginComponent implements OnInit {
 
   constructor(private router: Router,
               private route: ActivatedRoute,
-		          private auth: AuthService) { }
+              private auth: AuthService,
+              private http: HttpClient) { }
 
 	ngOnInit() {
+    let token = this.route.snapshot.queryParams.token;
     if (this.auth.isLoggedIn()) {
       console.log('Already logged in');
       this.router.navigate(['/']);
-    } else {
-      let token = this.route.snapshot.queryParams.token;
-      if (this.auth.logIn(token)) {
-        console.log('Logged in successfully');
-        if (this.auth.redirectUrl) {
-          this.router.navigate([this.auth.redirectUrl]);
-        }
-      }
+      return;
+    }
+
+    if (token) {
+      //Try logging in
+      this.auth.token = token;
+      return this.http.get(environment.api + 'auth/test').toPromise()
+      .then(user => {
+        return this.auth.logIn(user);
+      });
     }
 	}
 }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Ng2SmartTableModule, LocalDataSource } from 'ng2-smart-table';
 import { User } from './../models/users';
 import { UserService } from './../services/users';
+import { AuthService } from '../services/auth.service';
 import { contains } from '../utils';
 
 @Component({
@@ -48,7 +49,8 @@ export class UserComponent implements OnInit {
     }
   };
 
-  constructor(private userService: UserService) { }
+  constructor(private userService: UserService,
+              private auth: AuthService) { }
 
   ngOnInit(): void {
     this.userService.getUsers().then(users => {
@@ -56,11 +58,7 @@ export class UserComponent implements OnInit {
       this.source = new LocalDataSource(this.users);
     });
     
-    var currentUserID = 0; //TODO: retrieve user
-    var currentUserName = "Andrew Leonard";
-    var currentUserPosition = "Admin";//"not an admin";
-    
-    var isAdmin = currentUserPosition === "Admin";
+    var isAdmin = this.auth.isAdmin();
     this.settings.actions.add = isAdmin;
     this.settings.actions.delete = isAdmin;
     this.settings.actions.edit = isAdmin;
@@ -146,12 +144,16 @@ export class UserComponent implements OnInit {
         return;
       }
     }
-    
+
     this.userService.editUser(e.newData)
     .then(http => {
       e.confirm.resolve(e.newData);
-      //console.log(http);
       console.log(this.users);
+
+      //Update our permissions if we editted our own user
+      if (e.newData.UserID === this.auth.UserID) {
+        this.auth.logIn(e.newData);
+      }
     });
   }
   
@@ -174,6 +176,11 @@ export class UserComponent implements OnInit {
       this.users = this.users.filter(user => 
         user.UserID !== e.data.UserID
       );
+
+      //If we delete our own account then log us out
+      if (this.auth.UserID === e.data.UserID) {
+        this.auth.logOut();
+      }
     });
   }
 }
