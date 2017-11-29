@@ -27,19 +27,24 @@ export class AppComponent implements OnInit {
     );
 
     this.route.queryParams.subscribe(params => {
-      if (params.token) {
-        //Try logging in
-        this.auth.token = params.token;
-        return this.http.get(environment.api + 'auth/test').toPromise()
-        .then(user => {
-          return this.auth.logIn(user);
-        });
-      }
+      this.login(params.token);
     });
+    this.login(this.route.snapshot.queryParams.token);
   }
 
   onLoginChanged() {
       this.isAdvisor = this.auth.isLoggedIn();
+  }
+
+  login(token: string) {
+    if (token) {
+      //Try logging in
+      this.auth.token = token;
+      return this.http.get(environment.api + 'auth/test').toPromise()
+      .then(user => {
+        return this.auth.logIn(user);
+      });
+    }
   }
 
   logout() {
