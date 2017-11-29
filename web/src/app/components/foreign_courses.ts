@@ -356,8 +356,8 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
   deleteEquivCourse(localCourse, foreignCourse) {
     //check if user has permission
     var currentUserID = this.auth.UserID;
-    if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && !this.auth.isAdmin){
-      alert("You don't have permission to delete this equivalency. Contact " + foreignCourse.LockedByUser + " or an Admin to delete it.");
+    if(localCourse.LockedBy != null && localCourse.LockedBy !== currentUserID && !this.auth.isAdmin()){
+      alert("You don't have permission to delete this equivalency. Contact " + localCourse.LockedByUser + " or an Admin to delete it.");
       return;
     }
     

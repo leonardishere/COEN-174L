@@ -120,12 +120,12 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
           
           if(result.Lock){
             //get current user's userid, shove it into result3+4.LockedBy
-            result.LockedBy = 0;
-            result3.LockedBy = 0;
-            result3.LockedByUser = 'Andrew Leonard';
-            result4.LockedBy = 0;
+            result.LockedBy = this.auth.UserID;
+            result3.LockedBy = this.auth.UserID;
+            result3.LockedByUser = ""+this.auth.Name;
+            result4.LockedBy = this.auth.UserID;
           }else{
-            result.LockedBy = 0;
+            result.LockedBy = -1;
             result3.LockedBy = null;
             result3.LockedByUser = '';
             result4.LockedBy = null;
@@ -239,12 +239,20 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
 
           if(result.Lock){
             //get current user's userid, shove it into result3+4.LockedBy
-            result.LockedBy = 0;
-            lockedBy = 0;
-            lockedByUser = 'Andrew Leonard';
-            result4.LockedBy = 0;
+            //result.LockedBy = 0;
+            //lockedBy = 0;
+            //lockedByUser = 'Andrew Leonard';
+            //result4.LockedBy = 0;
+            result.LockedBy = this.auth.UserID;
+            lockedBy = this.auth.UserID;
+            lockedByUser = ""+this.auth.Name;
+            result4.LockedBy = this.auth.UserID;
           }else{
-            result.LockedBy = 0;
+            //result.LockedBy = 0;
+            //lockedBy = null;
+            //lockedByUser = '';
+            //result4.LockedBy = null;
+            result.LockedBy = -1;
             lockedBy = null;
             lockedByUser = '';
             result4.LockedBy = null;
@@ -483,6 +491,7 @@ export class LocalCoursesComponent implements OnInit {
     
     localCourseComponentGlobal = this;
 
+    console.log("user: ", this.auth.Name);
     this.isAdmin = this.auth.isAdmin();
   }
   
@@ -501,6 +510,7 @@ export class LocalCoursesComponent implements OnInit {
   addLocalCourse(content){
 	  this.dialogInputs2.Mode = "Add";
 	  this.modalService.open(content).result.then((result) => {
+      console.log(result);
       if(result === "Close"){
         console.log("Closed, don't add");
       }else{
