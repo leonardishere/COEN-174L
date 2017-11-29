@@ -481,6 +481,8 @@ export class LocalCoursesComponent implements OnInit {
     });
     
     localCourseComponentGlobal = this;
+
+    this.isAdmin = this.auth.isAdmin();
   }
   
   //local courses typeahead
