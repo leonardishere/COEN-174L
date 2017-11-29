@@ -215,12 +215,12 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
           
           if(result.Lock){
             //get current user's userid, shove it into result3+4.LockedBy
-            result.LockedBy = 0;
-            result3.LockedBy = 0;
-            result3.LockedByUser = 'Andrew Leonard';
-            result4.LockedBy = 0;
+            result.LockedBy = this.auth.UserID;
+            result3.LockedBy = this.auth.UserID;
+            result3.LockedByUser = ""+this.auth.Name;
+            result4.LockedBy = this.auth.UserID;
           }else{
-            result.LockedBy = 0;
+            result.LockedBy = -1;
             result3.LockedBy = null;
             result3.LockedByUser = '';
             result4.LockedBy = null;
@@ -314,17 +314,17 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
           result4.LocalCourseID = localCourse.LocalCourseID;
           result4.ForeignCourseID = foreignCourse.ForeignCourseID;
           
-          var lockedBy = 0;
+          var lockedBy = -1;
           var lockedByUser = '';
 
           if(result.Lock){
             //get current user's userid, shove it into result3+4.LockedBy
-            result.LockedBy = 0;
-            lockedBy = 0;
-            lockedByUser = 'Andrew Leonard';
-            result4.LockedBy = 0;
+            result.LockedBy = this.auth.UserID;
+            lockedBy = this.auth.UserID;
+            lockedByUser = ""+this.auth.Name;
+            result4.LockedBy = this.auth.UserID;
           }else{
-            result.LockedBy = 0;
+            result.LockedBy = -1;
             lockedBy = null;
             lockedByUser = '';
             result4.LockedBy = null;

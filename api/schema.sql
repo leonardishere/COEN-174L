@@ -7,9 +7,15 @@ CREATE TABLE IF NOT EXISTS `User` (
 	`Email`	TEXT NOT NULL
 );
 INSERT INTO `User` (UserID,Name,Position,Email) VALUES 
-(0,'Andrew Leonard','Admin','aleonard@scu.edu'),
+ (0,'Andrew Leonard','Admin','aleonard@scu.edu'),
  (1,'Rowan Decker','Admin','rdecker@scu.edu'),
- (2,'Chloe de Guzman','Admin','cdeguzman@scu.edu');
+ (2,'Chloe de Guzman','Admin','cdeguzman@scu.edu'),
+ (3,'Ronald Danielson','Admin','rdanielson@scu.edu'),
+ (4,'Addison Fattor','Admin','afattor@scu.edu'),
+ (5,'Yang Li','Admin','yli1@scu.edu'),
+ (6,'Not Andrew','Advisor','leonardishere@gmail.com'),
+ (7,'Not Rowan','Advisor','smasher?'),
+ (8,'Not Chloe','Advisor','idk');
 DROP TABLE IF EXISTS `School`;
 CREATE TABLE IF NOT EXISTS `School` (
 	`SchoolID`	INTEGER PRIMARY KEY AUTOINCREMENT,
