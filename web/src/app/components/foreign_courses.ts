@@ -419,6 +419,8 @@ export class ForeignCourseComponent implements OnInit {
   
   courses: ForeignCourse3[];
   dialogCourse: ForeignCourse3;
+
+  isAdmin: boolean;
   
   dialogInputs = {
 	  Mode: "Add Equivalency",
@@ -462,7 +464,9 @@ export class ForeignCourseComponent implements OnInit {
     },
     hideSubHeader: true
   };
-  constructor(private foreignCourseService: ForeignCourseService, private modalService: NgbModal){}
+  constructor(private foreignCourseService: ForeignCourseService,
+    private modalService: NgbModal,
+    private auth: AuthService) {}
 
   ngOnInit(): void {
     subscribeChanges(this.changes.ForeignCourseName, (search) => {
@@ -493,6 +497,8 @@ export class ForeignCourseComponent implements OnInit {
     foreignCourseComponentGlobal = this;
     this.currentSchoolSearch = "";
     this.currentForeignCourseSearch = "";
+
+    this.isAdmin = this.auth.isAdmin();
   }
   
   addForeignCourse(content){

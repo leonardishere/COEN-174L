@@ -450,7 +450,8 @@ export class LocalCoursesComponent implements OnInit {
   
   
   constructor(private localCourseService: LocalCourseService,
-    private modalService: NgbModal) { }
+    private modalService: NgbModal,
+    private auth: AuthService) { }
 
   ngOnInit(): void {
     this.localCourseService.getLocalCourses().then(courses => {

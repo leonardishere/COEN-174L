@@ -6,6 +6,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build-scu": "ng build --prod --base-href ''",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
