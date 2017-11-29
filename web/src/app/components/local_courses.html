@@ -7,38 +7,38 @@
       <p>{{r.LocalCourseName}}</p>
     </ng-template>
     <label for="typeahead-LocalCourse">Local Course:</label>
-    <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-left']"/>
+    <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-right']"/>
   </div>
 </form>
 
 <!-- Course Modal -->
 <ng-template #addLocalCoursecontent let-c="close" let-d="dismiss">
-  <div class="modal-header">
-<h4 class="modal-title">{{dialogInputs2.Mode}} Course</h4>
+<div class="modal-header">
+  <h4 class="modal-title">{{dialogInputs2.Mode}} Course</h4>
   <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
     <span aria-hidden="true">&times;</span>
   </button>
   </div>
   <div class="modal-body">
-<br/>
-<form>
-  <div class="form-group">
-    <label for="dept">Department:</label>
-    <input id="dept" name="dept" type="text" [(ngModel)]="dialogInputs2.Dept"/>
-  </div>
-  <div class="form-group">
-    <label for="courseNum">Number:</label>
-    <input id="courseNum" name="courseNum" type="text" [(ngModel)]="dialogInputs2.CourseNum"/>
-  </div>
-  <div class="form-group">
-    <label for="courseTitle">Title:</label>
-    <input id="courseTitle" name="courseTitle" type="text" [(ngModel)]="dialogInputs2.CourseTitle"/>
-  </div>
-</form>
-  </div>
-  <div class="modal-footer">
-  <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2, $event)">{{dialogInputs2.Mode}}</button>
-  <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+    <br/>
+    <form>
+      <div class="form-group">
+        <label for="dept">Department:</label>
+        <input id="dept" name="dept" type="text" [(ngModel)]="dialogInputs2.Dept"/>
+      </div>
+      <div class="form-group">
+        <label for="courseNum">Number:</label>
+        <input id="courseNum" name="courseNum" type="text" [(ngModel)]="dialogInputs2.CourseNum"/>
+      </div>
+      <div class="form-group">
+        <label for="courseTitle">Title:</label>
+        <input id="courseTitle" name="courseTitle" type="text" [(ngModel)]="dialogInputs2.CourseTitle"/>
+      </div>
+    </form>
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-outline-dark" (click)="addLocalCourseSubmit(dialogInputs2, 'add')">Add</button>
+    <button type="button" class="btn btn-outline-dark" (click)="addLocalCourseSubmit(dialogInputs2, 'cancel')">Cancel</button>
   </div>
 </ng-template>
 

@@ -7,14 +7,14 @@
       <p>{{r.Name}}</p>
     </ng-template>
     <label for="typeahead-School">School:</label>
-    <input #School id="typeahead-School" type="text" class="form-control" [ngbTypeahead]="searchSchool" [resultTemplate]="rtSchool" [inputFormatter]="formatterSchool" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)" placeholder="{{placeholders.SchoolName}}" [placement]="['bottom-left']"/>
+    <input #School id="typeahead-School" type="text" class="form-control" [ngbTypeahead]="searchSchool" [resultTemplate]="rtSchool" [inputFormatter]="formatterSchool" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)" placeholder="{{placeholders.SchoolName}}" [placement]="['bottom-right']"/>
   </div>
   <div class="form-group">
     <ng-template #rtForeignCourse let-r="result" let-t="term">
       <p>{{r.ForeignCourseName}}</p>
     </ng-template>
     <label for="typeahead-ForeignCourse">Foreign Course:</label>
-    <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" [ngbTypeahead]="searchForeignCourse" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse" (input)="changes.ForeignCourseName.next(ForeignCourse.value)" (selectItem)="changes.ForeignCourseName.next($event.item.ForeignCourseName)" placeholder="{{placeholders.ForeignCourseName}}" [placement]="['bottom-left']"/>
+    <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" [ngbTypeahead]="searchForeignCourse" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse" (input)="changes.ForeignCourseName.next(ForeignCourse.value)" (selectItem)="changes.ForeignCourseName.next($event.item.ForeignCourseName)" placeholder="{{placeholders.ForeignCourseName}}" [placement]="['bottom-right']"/>
   </div>
 </form>
 

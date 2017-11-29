@@ -87,8 +87,8 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">Add</button>
-    <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+    <button type="button" class="btn btn-outline-dark" (click)="addEquivCourseSubmit(dialogInputs, 'add')">Add</button>
+    <button type="button" class="btn btn-outline-dark" (click)="addEquivCourseSubmit(dialogInputs, 'cancel')">Cancel</button>
   </div>
 </ng-template>
 
@@ -125,8 +125,8 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs)">Edit</button>
-    <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+    <button type="button" class="btn btn-outline-dark" (click)="editEquivCourseSubmit(dialogInputs, 'edit')">Edit</button>
+    <button type="button" class="btn btn-outline-dark" (click)="editEquivCourseSubmit(dialogInputs, 'cancel')">Cancel</button>
   </div>
 </ng-template>
 
@@ -158,7 +158,9 @@
     </form>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2)">Edit</button>
-    <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+    <!--<button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2)">Edit</button>-->
+    <button type="button" class="btn btn-outline-dark" (click)="editLocalCourseSubmit(dialogInputs2, 'edit')">Edit</button>
+    <!--<button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>-->
+    <button type="button" class="btn btn-outline-dark" (click)="editLocalCourseSubmit(dialogInputs2, 'cancel')">Cancel</button>
   </div>
 </ng-template>

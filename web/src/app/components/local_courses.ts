@@ -24,6 +24,7 @@ var schoolsGlobal: School[];
 var foreignCoursesSchoolsGlobal: ForeignCourseSchool[];
 var statusesGlobal: Status[];
 var localCourseComponentGlobal: any;
+var openModalGlobal: any;
 
 //accordion component
 @Component({
@@ -85,126 +86,126 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     this.isAdmin = localCourseComponentGlobal.isAdmin;
   }
   
+  //open add equiv course modal
   addEquivCourse(content, course){
-    console.log("addEquivCourse()");
     this.dialogInputs.Mode = "Add";
     this.dialogCourse = course;
-    this.modalService.open(content).result.then((result) => {
-      result.LocalCourseID = course.LocalCourseID;
-      if(result === "Close"){
-        console.log("Closed, don't add");
+    openModalGlobal = this.modalService.open(content);
+    openModalGlobal.result.catch(err => {});
+  }
+  
+  //submit from add equiv course modal
+  addEquivCourseSubmit(result, status){    
+    if(status === "add"){
+      result.LocalCourseID = this.dialogCourse.LocalCourseID;
+      
+      //add to display
+      var result3: ForeignCourse2 = {EquivID: -1, ForeignCourseID: -1, ForeignCourseName:'',SchoolName:'',Status:'', LockedBy:-1, LockedByUser:'', Notes:''};
+      //add to database
+      var result4: EquivCourse = {EquivID: -1, LocalCourseID: -1, ForeignCourseID: -1, Status: '', LockedBy: -1, Notes: ''};
+      
+      result3.Notes = result.Notes.trim();
+      result4.Notes = result.Notes.trim();
+      result4.LocalCourseID = result.LocalCourseID;
+      
+      if(result.SchoolName.Name == null){
+        result3.SchoolName = result.SchoolName;
       }else{
-        if(result.Mode == null || result.SchoolName == null || result.ForeignCourseName == null || result.Status == null || result.Lock == null || result.Notes == null){
-          console.log("null check, don't add");
-        }else{
-          //display
-          var result3: ForeignCourse2 = {EquivID: -1, ForeignCourseID: -1, ForeignCourseName:'',SchoolName:'',Status:'', LockedBy:-1, LockedByUser:'', Notes:''};
-          //add to database
-          var result4: EquivCourse = {EquivID: -1, LocalCourseID: -1, ForeignCourseID: -1, Status: '', LockedBy: -1, Notes: ''};
-          
-          result3.Notes = result.Notes.trim();
-          result4.Notes = result.Notes.trim();
-          result4.LocalCourseID = result.LocalCourseID;
-          
-          if(result.SchoolName.Name == null){
-            result3.SchoolName = result.SchoolName;
-          }else{
-            result3.SchoolName = result.SchoolName.Name;
-          }
-          
-          if(result.ForeignCourseName.ForeignCourseName == null){
-            result3.ForeignCourseName = result.ForeignCourseName;
-          }else{
-            result3.ForeignCourseName = result.ForeignCourseName.ForeignCourseName;
-          }
-          
-          if(result.Lock){
-            //get current user's userid, shove it into result3+4.LockedBy
-            result.LockedBy = this.auth.UserID;
-            result3.LockedBy = this.auth.UserID;
-            result3.LockedByUser = ""+this.auth.Name;
-            result4.LockedBy = this.auth.UserID;
-          }else{
-            result.LockedBy = -1;
-            result3.LockedBy = null;
-            result3.LockedByUser = '';
-            result4.LockedBy = null;
-          }
-          
-          if(result.Status.Status == null){
-            result3.Status = result.Status;
-            result4.Status = result.Status;
-          }else{
-            result3.Status = result.Status.Status;
-            result4.Status = result.Status.Status;
-          }
-          
-          if(result.Mode === "" || result3.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
-            console.log("empty check, don't add");
-          }else{
-            var found = false;
-            for(var i = 0; i < foreignCoursesSchoolsGlobal.length && !found; ++i){
-              if(foreignCoursesSchoolsGlobal[i].SchoolName === result3.SchoolName && foreignCoursesSchoolsGlobal[i].ForeignCourseName === result3.ForeignCourseName){
-                found = true;
-                result4.ForeignCourseID = foreignCoursesSchoolsGlobal[i].ForeignCourseID;
-                result3.ForeignCourseID = foreignCoursesSchoolsGlobal[i].ForeignCourseID;
-                
-                if(result4.Status !== "Accepted" && result4.Status !== "Rejected"){
-                  alert("The status must be either \"Accepted\" or \"Rejected\". Try again.");
-                }else{
-                  var found2 = false;
-                  for(var j = 0; j < course.ForeignCourses.length && !found2; ++j){
-                    if(course.ForeignCourses[j].ForeignCourseID === result4.ForeignCourseID){
-                      found2 = true;
-                      alert("That equivalency already exists. Refresh and try again.");
-                    }
-                  }
-                  if(!found2){
-                    this.localCourseService.addEquivCourse(result4)
-                    .then(promise => {
-                      result4.EquivID = promise.row;
-                      result3.EquivID = promise.row;
-                      console.log(result3);
-                    })
-                    .catch(err => console.log(err));
-                    course.ForeignCourses.push(result3);
-                    course.ForeignCourses.sort((c1, c2) => {
-                      if(c1.SchoolName > c2.SchoolName) return 1;
-                      if(c1.SchoolName < c2.SchoolName) return -1;
-                        
-                      if(c1.ForeignCourseName > c2.ForeignCourseName) return 1;
-                      if(c1.ForeignCourseName < c2.ForeignCourseName) return -1;
-                      return 0;
-                    });
-                  }
+        result3.SchoolName = result.SchoolName.Name;
+      }
+      
+      if(result.ForeignCourseName.ForeignCourseName == null){
+        result3.ForeignCourseName = result.ForeignCourseName;
+      }else{
+        result3.ForeignCourseName = result.ForeignCourseName.ForeignCourseName;
+      }
+      
+      if(result.Lock){
+        result.LockedBy = this.auth.UserID;
+        result3.LockedBy = this.auth.UserID;
+        result3.LockedByUser = ""+this.auth.Name;
+        result4.LockedBy = this.auth.UserID;
+      }else{
+        result.LockedBy = -1;
+        result3.LockedBy = null;
+        result3.LockedByUser = '';
+        result4.LockedBy = null;
+      }
+      
+      if(result.Status.Status == null){
+        result3.Status = result.Status;
+        result4.Status = result.Status;
+      }else{
+        result3.Status = result.Status.Status;
+        result4.Status = result.Status.Status;
+      }
+      
+      if(result.Mode === "" || result3.SchoolName === "" || result.ForeignCourseName === "" || result.Status === ""){
+        alert("Values cannot be left empty. Try again.");
+      }else{
+        var found = false;
+        for(var i = 0; i < foreignCoursesSchoolsGlobal.length && !found; ++i){
+          if(foreignCoursesSchoolsGlobal[i].SchoolName === result3.SchoolName && foreignCoursesSchoolsGlobal[i].ForeignCourseName === result3.ForeignCourseName){
+            found = true;
+            result4.ForeignCourseID = foreignCoursesSchoolsGlobal[i].ForeignCourseID;
+            result3.ForeignCourseID = foreignCoursesSchoolsGlobal[i].ForeignCourseID;
+            
+            if(result4.Status !== "Accepted" && result4.Status !== "Rejected"){
+              alert("The status must be either \"Accepted\" or \"Rejected\". Try again.");
+            }else{
+              var found2 = false;
+              for(var j = 0; j < this.dialogCourse.ForeignCourses.length && !found2; ++j){
+                if(this.dialogCourse.ForeignCourses[j].ForeignCourseID === result4.ForeignCourseID){
+                  found2 = true;
+                  alert("That equivalency already exists. Refresh and try again.");
                 }
               }
-            }
-            if(!found){
-              alert("School (" + result3.SchoolName + ") and foreign course (" + result3.ForeignCourseName + ") combination was not found. If you believe that this is an error, refresh and try again.");
+              if(!found2){
+                this.localCourseService.addEquivCourse(result4)
+                .then(promise => {
+                  result4.EquivID = promise.row;
+                  result3.EquivID = promise.row;
+                  console.log(result3);
+                })
+                .catch(err => console.log(err));
+                this.dialogCourse.ForeignCourses.push(result3);
+                this.dialogCourse.ForeignCourses.sort((c1, c2) => {
+                  if(c1.SchoolName > c2.SchoolName) return 1;
+                  if(c1.SchoolName < c2.SchoolName) return -1;
+                    
+                  if(c1.ForeignCourseName > c2.ForeignCourseName) return 1;
+                  if(c1.ForeignCourseName < c2.ForeignCourseName) return -1;
+                  return 0;
+                });
+                openModalGlobal.close();
+                openModalGlobal = null;
+                result.SchoolName = "";
+                result.ForeignCourseName= "";
+                result.Status = "";
+                result.Lock = false;
+                result.Notes = "";
+              }
             }
           }
         }
-        
-        result.Mode = "";
-        result.SchoolName = "";
-        result.ForeignCourseName = "";
-        result.Status = "";
-        result.Lock = false;
-        result.Notes = "";
+        if(!found){
+          alert("School (" + result3.SchoolName + ") and foreign course (" + result3.ForeignCourseName + ") combination was not found. Refresh and try again.");
+        }
       }
-    })
-    .catch(err => {
-      console.log("Closed via cross click");
-    });
+          
+    }else{
+      openModalGlobal.close();
+      openModalGlobal = null;
+      result.SchoolName = "";
+      result.ForeignCourseName= "";
+      result.Status = "";
+      result.Lock = false;
+      result.Notes = "";
+    }
   }
-    
+  
+  //open edit equiv course modal
   editEquivCourse(content, localCourse, foreignCourse){
-    console.log("editEquivCourse()");
-    console.log(content);
-    console.log(localCourse);
-    console.log(foreignCourse);
-    
     //check if user has permission
     var currentUserID = this.auth.UserID;
     if(foreignCourse.LockedBy != null && foreignCourse.LockedBy !== currentUserID && !this.auth.isAdmin()){
@@ -218,69 +219,74 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     this.dialogInputs.Lock = foreignCourse.LockedBy != null;
     this.dialogInputs.Notes = foreignCourse.Notes;
     
-    this.modalService.open(content).result.then((result) => {
-      if(result === "Close"){
-        console.log("Closed, don't edit");
-      }else{
-        if(result.Status == null || result.Lock == null || result.Notes == null){
-          console.log("null check, don't add");
-        }else{
-          //add to database
-          var result4: EquivCourse = {EquivID: -1, LocalCourseID: -1, ForeignCourseID: -1, Status: '', LockedBy: -1, Notes: ''};
-          result4.Notes = result.Notes.trim();
-          result4.LocalCourseID = result.LocalCourseID;
-          
-          result4.EquivID = foreignCourse.EquivID;
-          result4.LocalCourseID = localCourse.LocalCourseID;
-          result4.ForeignCourseID = foreignCourse.ForeignCourseID;
-          
-          var lockedBy = 0;
-          var lockedByUser = '';
-
-          if(result.Lock){
-            //get current user's userid, shove it into result3+4.LockedBy
-            //result.LockedBy = 0;
-            //lockedBy = 0;
-            //lockedByUser = 'Andrew Leonard';
-            //result4.LockedBy = 0;
-            result.LockedBy = this.auth.UserID;
-            lockedBy = this.auth.UserID;
-            lockedByUser = ""+this.auth.Name;
-            result4.LockedBy = this.auth.UserID;
-          }else{
-            //result.LockedBy = 0;
-            //lockedBy = null;
-            //lockedByUser = '';
-            //result4.LockedBy = null;
-            result.LockedBy = -1;
-            lockedBy = null;
-            lockedByUser = '';
-            result4.LockedBy = null;
-          }
-          
-          if(result.Status.Status == null){
-            result4.Status = result.Status;
-          }else{
-            result4.Status = result.Status.Status;
-          }
-          
-          if(result4.Status !== "Accepted" && result4.Status !== "Rejected"){
-            alert("The status must be either \"Accepted\" or \"Rejected\". Try again.");
-          }else{
-            foreignCourse.Status = result4.Status;
-            foreignCourse.LockedBy = lockedBy;
-            foreignCourse.LockedByUser = lockedByUser;
-            foreignCourse.Notes = result4.Notes;
-            this.localCourseService.editEquivCourse(result4);
-          }
-        }
-      }
-    })
-    .catch(err => {
-      console.log("Closed via cross click");
-    });
+    openModalGlobal = this.modalService.open(content);
+    openModalGlobal.result.catch(err => {});
   }
   
+  //submit from edit equiv course modal
+  editEquivCourseSubmit(result, status){
+    if(status === "edit"){
+      //add to database
+      var result4: EquivCourse = {EquivID: -1, LocalCourseID: -1, ForeignCourseID: -1, Status: '', LockedBy: -1, Notes: ''};
+      result4.Notes = result.Notes.trim();
+      result4.LocalCourseID = result.LocalCourseID;
+      
+      result4.EquivID = this.dialogForeignCourse.EquivID;
+      result4.LocalCourseID = this.dialogCourse.LocalCourseID;
+      result4.ForeignCourseID = this.dialogForeignCourse.ForeignCourseID;
+      
+      var lockedBy = -1;
+      var lockedByUser = '';
+
+      if(result.Lock){
+        result.LockedBy = this.auth.UserID;
+        lockedBy = this.auth.UserID;
+        lockedByUser = ""+this.auth.Name;
+        result4.LockedBy = this.auth.UserID;
+      }else{
+        result.LockedBy = -1;
+        lockedBy = null;
+        lockedByUser = '';
+        result4.LockedBy = null;
+      }
+      
+      if(result.Status.Status == null){
+        result4.Status = result.Status;
+      }else{
+        result4.Status = result.Status.Status;
+      }
+      
+      if(result4.Status !== "Accepted" && result4.Status !== "Rejected"){
+        alert("The status must be either \"Accepted\" or \"Rejected\". Try again.");
+      }else{
+        this.dialogForeignCourse.Status = result4.Status;
+        this.dialogForeignCourse.LockedBy = lockedBy;
+        this.dialogForeignCourse.LockedByUser = lockedByUser;
+        this.dialogForeignCourse.Notes = result4.Notes;
+        this.localCourseService.editEquivCourse(result4)
+        .then(http => {
+          openModalGlobal.close();
+          openModalGlobal = null;
+          result.SchoolName = "";
+          result.ForeignCourseName= "";
+          result.Status = "";
+          result.Lock = false;
+          result.Notes = "";
+        })
+        .catch(err => console.log(err));
+      }
+    }else{
+      openModalGlobal.close();
+      openModalGlobal = null;
+      result.SchoolName = "";
+      result.ForeignCourseName= "";
+      result.Status = "";
+      result.Lock = false;
+      result.Notes = "";
+    }
+  }
+  
+  //delete the equiv course
   deleteEquivCourse(localCourse, foreignCourse) {
     //check if user has permission
     var currentUserID = this.auth.UserID;
@@ -296,6 +302,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     this.localCourseService.deleteEquivCourse(foreignCourse);
   }
    
+  //open edit local course modal
   editLocalCourse(event, content, localCourse){
     event.preventDefault();
     event.stopPropagation();
@@ -315,6 +322,9 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     this.dialogInputs2.CourseNum = localCourse.LocalCourseNum;
     this.dialogInputs2.CourseTitle = localCourse.LocalCourseTitle;
     
+    openModalGlobal = this.modalService.open(content);
+    openModalGlobal.result.catch(err => {});
+    /*
     this.modalService.open(content).result.then((result) => {
       console.log(result);
       if(result === "Close"){
@@ -341,13 +351,82 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
       }
     })
     .catch(err => {console.log("closed via cross click");});
+    */
   }
   
+  //submit from edit local course modal
+  editLocalCourseSubmit(result, status){
+    console.log("editLocalCourseSubmit()");
+    console.log(result);
+    console.log(status);
+    
+    if(status === "edit"){
+      result.Dept = result.Dept.trim().toUpperCase();
+      result.CourseNum = result.CourseNum.trim();
+      result.CourseTitle = result.CourseTitle.trim();
+      
+      if(result.Dept === "" || result.CourseNum === "" || result.CourseTitle === ""){
+        alert("Values cannot be left empty. Try again.");
+      }else{
+        var courseName = result.Dept + " " + result.CourseNum + " - " + result.CourseTitle;
+        var found = false;
+        for(var i = 0; i < localCoursesGlobal.length && !found; ++i){
+          if(localCoursesGlobal[i].LocalCourseName === courseName && localCoursesGlobal[i].LocalCourseID !== result.LocalCourseID){
+            found = true;
+            alert("That course exists already. Refresh and try again.");
+          }
+        }
+        if(!found){
+          var result2 = {LocalCourseID: this.dialogCourse.LocalCourseID, Dept: result.Dept, CourseNum: result.CourseNum, CourseTitle: result.CourseTitle};
+          this.localCourseService.editLocalCourse(result2)
+          .then(http => {
+            this.dialogCourse.LocalCourseDept = result2.Dept;
+            this.dialogCourse.LocalCourseNum = result2.CourseNum;
+            this.dialogCourse.LocalCourseTitle = result2.CourseTitle;
+            this.dialogCourse.LocalCourseName = courseName;
+            console.log(this.dialogCourse);
+            
+            var found1 = false;
+            for(var i = 0; i < localCoursesGlobal.length && !found1; ++i){
+              if(localCoursesGlobal[i].LocalCourseID === result2.LocalCourseID){
+                found1 = true;
+                localCoursesGlobal[i].LocalCourseName = courseName
+              }
+            }
+            localCoursesGlobal.sort((c1, c2) => {
+              if(c1.LocalCourseName > c2.LocalCourseName) return 1;
+              if(c1.LocalCourseName < c2.LocalCourseName) return -1;
+              return 0;
+            });
+            localCourseComponentGlobal.editLocalCourse(result2);
+          })
+          .catch(err => {
+            console.log(err);
+          });
+          openModalGlobal.close();
+          openModalGlobal = null;
+          result.Name = "";
+          result.Dept = "";
+          result.CourseNum = "";
+          result.CourseTitle = "";
+          result.LocalCourseID = -1;
+        }
+      }
+    }else{
+      openModalGlobal.close();
+      openModalGlobal = null;
+      result.Name = "";
+      result.Dept = "";
+      result.CourseNum = "";
+      result.CourseTitle = "";
+      result.LocalCourseID = -1;
+    }
+  }
+  
+  //delete the local course
   deleteLocalCourse(event, localCourse){
     event.preventDefault();
     event.stopPropagation();
-    console.log("deleteLocalCourse()");
-    console.log(localCourse);
     
     //check if user has permission
     var currentUserID = this.auth.UserID;
@@ -363,7 +442,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     );      
   }
   
-  //typeaheads
+  //school typeahead
   searchSchool = (text$: Observable<string>) =>
     text$
       .debounceTime(100)
@@ -373,6 +452,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
   
   formatterSchool = (x: School) => x.Name;
   
+  //foreign course typeahead
   searchForeignCourse = (text$: Observable<string>) =>
     text$
       .debounceTime(100)
@@ -382,6 +462,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
         
   formatterForeignCourse = (x: ForeignCourseSchool) => x.ForeignCourseName;
   
+  //status typeahead
   searchStatus = (text$: Observable<string>) =>
     text$
       .debounceTime(100)
@@ -491,8 +572,9 @@ export class LocalCoursesComponent implements OnInit {
     
     localCourseComponentGlobal = this;
 
-    console.log("user: ", this.auth.Name);
     this.isAdmin = this.auth.isAdmin();
+    
+    openModalGlobal = null;
   }
   
   //local courses typeahead
@@ -506,79 +588,114 @@ export class LocalCoursesComponent implements OnInit {
   
   formatterLocalCourse = (x: LocalCoursePlain) => x.LocalCourseName;
 
-  //add new course
+  //open add local course modal
   addLocalCourse(content){
 	  this.dialogInputs2.Mode = "Add";
-	  this.modalService.open(content).result.then((result) => {
-      console.log(result);
-      if(result === "Close"){
-        console.log("Closed, don't add");
+    openModalGlobal = this.modalService.open(content);
+    openModalGlobal.result.catch(err => {});
+  }
+
+  //submit from add local course modal
+  addLocalCourseSubmit(result, status){
+    if(status === "add"){
+      result.Dept = result.Dept.trim().toUpperCase();
+      result.CourseNum = result.CourseNum.trim();
+      result.CourseTitle = result.CourseTitle.trim();
+      if(result.Dept === "" || result.CourseNum === "" || result.CourseTitle === ""){
+        alert("Values cannot be left empty. Try again.");
       }else{
-        if(result.Dept == null || result.CourseNum == null || result.CourseTitle == null){
-          console.log("null check, don't add");
-        }else{
-          result.Dept = result.Dept.trim().toUpperCase();
-          result.CourseNum = result.CourseNum.trim();
-          result.CourseTitle = result.CourseTitle.trim();
-          if(result.Dept === "" || result.CourseNum === "" || result.CourseTitle === ""){
-            console.log("empty check, don't add");
-          }else{
-            var courseName = result.Dept + " " + result.CourseNum + " - " + result.CourseTitle;
-            var found = false;
-            for(var i = 0; i < localCoursesGlobal.length && !found; ++i){
-              if(localCoursesGlobal[i].LocalCourseName === courseName){
-                found = true;
-                alert("That course exists already. Refresh and try again.");
-              }
-            }
-            if(!found){
-              this.localCourseService.addLocalCourse(result)
-              .then(http => {
-                var newLocalCourse: LocalCourse2 = {
-                  LocalCourseID: http.stmt.lastID,
-                  LocalCourseDept: result.Dept,
-                  LocalCourseNum: result.CourseNum,
-                  LocalCourseTitle: result.CourseTitle,
-                  LocalCourseName: result.Dept + " " + result.CourseNum + " - " + result.CourseTitle,
-                  ForeignCourses: new Array<ForeignCourse2>()
-                };
-                this.courses.push(newLocalCourse);
-                this.courses.sort((c1, c2) => {
-                  if(c1.LocalCourseName > c2.LocalCourseName) return 1;
-                  if(c1.LocalCourseName < c2.LocalCourseName) return -1;
-                  return 0;
-                });
-                
-                this.source = new LocalDataSource(this.courses);
-                this.source.addFilter({field: 'LocalCourseName', search: this.currentLocalCourseSearch});
-                
-                var newLocalCoursePlain: LocalCoursePlain = {
-                  LocalCourseID: http.stmt.lastID,
-                  LocalCourseName: result.Dept + " " + result.CourseNum + " - " + result.CourseTitle
-                };
-                localCoursesGlobal.push(newLocalCoursePlain);
-                localCoursesGlobal.sort((c1, c2) => {
-                  if(c1.LocalCourseName > c2.LocalCourseName) return 1;
-                  if(c1.LocalCourseName < c2.LocalCourseName) return -1;
-                  return 0;
-                });
-              })
-              .catch(err => console.log(err));
-            }
+        var courseName = result.Dept + " " + result.CourseNum + " - " + result.CourseTitle;
+        var found = false;
+        for(var i = 0; i < localCoursesGlobal.length && !found; ++i){
+          if(localCoursesGlobal[i].LocalCourseName === courseName){
+            found = true;
+            alert("That course exists already. Refresh and try again.");
           }
         }
+        if(!found){
+          this.localCourseService.addLocalCourse(result)
+          .then(http => {
+            var newLocalCourse: LocalCourse2 = {
+              LocalCourseID: http.stmt.lastID,
+              LocalCourseDept: result.Dept,
+              LocalCourseNum: result.CourseNum,
+              LocalCourseTitle: result.CourseTitle,
+              LocalCourseName: result.Dept + " " + result.CourseNum + " - " + result.CourseTitle,
+              ForeignCourses: new Array<ForeignCourse2>()
+            };
+            this.courses.push(newLocalCourse);
+            this.courses.sort((c1, c2) => {
+              if(c1.LocalCourseName > c2.LocalCourseName) return 1;
+              if(c1.LocalCourseName < c2.LocalCourseName) return -1;
+              return 0;
+            });
+            
+            this.source = new LocalDataSource(this.courses);
+            this.source.addFilter({field: 'LocalCourseName', search: this.currentLocalCourseSearch});
+            
+            var newLocalCoursePlain: LocalCoursePlain = {
+              LocalCourseID: http.stmt.lastID,
+              LocalCourseName: result.Dept + " " + result.CourseNum + " - " + result.CourseTitle
+            };
+            localCoursesGlobal.push(newLocalCoursePlain);
+            localCoursesGlobal.sort((c1, c2) => {
+              if(c1.LocalCourseName > c2.LocalCourseName) return 1;
+              if(c1.LocalCourseName < c2.LocalCourseName) return -1;
+              return 0;
+            });
+            result.Dept = "";
+            result.CourseNum = "";
+            result.CourseTitle = "";
+          })
+          .catch(err => console.log(err));
+          
+          openModalGlobal.close();
+          openModalGlobal = null;
+        }
       }
-	  });
+    }else{
+      openModalGlobal.close();
+      openModalGlobal = null;
+      result.Dept = "";
+      result.CourseNum = "";
+      result.CourseTitle = "";
+    }
   }
   
+  //edit the local course
+  editLocalCourse(course){
+    var found = false;
+    for(var i = 0; i < this.courses.length && !found; ++i){
+      if(this.courses[i].LocalCourseID === course.LocalCourseID){
+        found = true;
+        this.courses[i].LocalCourseDept = course.Dept;
+        this.courses[i].LocalCourseNum = course.CourseNum;
+        this.courses[i].LocalCourseTitle = course.CourseTitle;
+        this.courses[i].LocalCourseName = course.Dept + " " + course.CourseNum + " - " + course.CourseTitle;
+      }
+    }
+    if(found){
+      this.courses.sort((c1, c2) => {
+        if(c1.LocalCourseName > c2.LocalCourseName) return 1;
+        if(c1.LocalCourseName < c2.LocalCourseName) return -1;
+        return 0;
+      });
+      this.source = new LocalDataSource(this.courses);
+      this.source.addFilter({field: 'LocalCourseName', search: this.currentLocalCourseSearch});
+    }
+  }
+  
+  //delete the local course
   deleteLocalCourse(course){
     this.courses = this.courses.filter(lc =>
       lc.LocalCourseName !== course.LocalCourseName
     );
-    this.source = new LocalDataSource(this.courses);
-    subscribeChanges(this.changes.LocalCourseName, (search) => {
-      this.source.addFilter({field: 'LocalCourseName', search: search});
-      this.currentLocalCourseSearch = search;
+    this.courses.sort((c1, c2) => {
+      if(c1.LocalCourseName > c2.LocalCourseName) return 1;
+      if(c1.LocalCourseName < c2.LocalCourseName) return -1;
+      return 0;
     });
+    this.source = new LocalDataSource(this.courses);
+    this.source.addFilter({field: 'LocalCourseName', search: this.currentLocalCourseSearch});
   }
 }
