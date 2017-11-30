@@ -12,18 +12,18 @@
     
     <!-- inner content -->
     <ng-template ngbPanelContent>
-      <button class="btn btn-success" (click)="addEquivCourse(addEquivCourseContent, rowData)">Add Equivalency</button>
+      <button class="btn btn-success buttonFix" type="button" (click)="addEquivCourse(addEquivCourseContent, rowData)">Add Equivalency</button>
       <div *ngIf="rowData.ForeignCourses.length <= 0">
         No equivalent courses
       </div>
       <table *ngIf="rowData.ForeignCourses.length > 0">
         <tr>
-          <th>Foreign Course</th>
-          <th>School</th>
-          <th>Status</th>
-          <th>Locked By</th>
-          <th>Notes</th>
-          <th></th>
+          <th class="col1">Foreign Course</th>
+          <th class="col2">School</th>
+          <th class="col3">Status</th>
+          <th class="col4">Locked By</th>
+          <th class="col5">Notes</th>
+          <th class="col6"></th>
         </tr>
         <tr *ngFor="let foreignCourse of rowData.ForeignCourses">
           <td>{{foreignCourse.ForeignCourseName}}</td>
@@ -45,44 +45,46 @@
 <ng-template #addEquivCourseContent let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Add Equivalency</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="addEquivCourseSubmit(dialogInputs, 'cancel')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    SCU Course: {{dialogCourse.LocalCourseName}}<br/>
-    <br/>
-    Foreign Course:
-    <hr/>
+    <div class="modalDescription">
+      SCU Course: {{dialogCourse.LocalCourseName}}<br/>
+      <br/>
+      Foreign Course:
+      <hr/>
+    </div>
     <form>
       <div class="form-group">
         <ng-template #rtSchool let-r="result" let-t="term">
           <p>{{r.Name}}</p>
         </ng-template>
-        <label for="typeahead-School">School:</label>
-        <input #School id="typeahead-School" type="text" class="form-control" [(ngModel)]="dialogInputs.SchoolName" [ngbTypeahead]="searchSchool" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtSchool" [inputFormatter]="formatterSchool" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)"/>
+        <label for="typeahead-School" class="modalLabel">School:</label>
+        <input #School id="typeahead-School" type="text" class="form-control" placeholder="{{placeholders.School}}" [(ngModel)]="dialogInputs.SchoolName" [ngbTypeahead]="searchSchool" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtSchool" [inputFormatter]="formatterSchool" (input)="changes.SchoolName.next(School.value)" (selectItem)="changes.SchoolName.next($event.item.Name)" class="form-control ng-pristine ng-valid"/>
       </div>
       <div class="form-group">
         <ng-template #rtForeignCourse let-r="result" let-t="term">
           <p>{{r.ForeignCourseName}}</p>
         </ng-template>
-        <label for="typeahead-ForeignCourse">Course Title:</label>
-        <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" [(ngModel)]="dialogInputs.ForeignCourseName" [ngbTypeahead]="searchForeignCourse" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse"/>
+        <label for="typeahead-ForeignCourse" class="modalLabel">Course Title:</label>
+        <input #ForeignCourse id="typeahead-ForeignCourse" type="text" class="form-control" placeholder="{{placeholders.ForeignCourseName}}" [(ngModel)]="dialogInputs.ForeignCourseName" [ngbTypeahead]="searchForeignCourse" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtForeignCourse" [inputFormatter]="formatterForeignCourse" class="form-control ng-pristine ng-valid"/>
       </div>
       <div class="form-group">
         <ng-template #rtStatus let-r="result" let-t="term">
           <p>{{r.Status}}</p>
         </ng-template>
-        <label for="typeahead-Status">Status:</label>
-        <input id="typeahead-Status" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="searchStatus" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus"/>
+        <label for="typeahead-Status" class="modalLabel">Status:</label>
+        <input id="typeahead-Status" type="text" class="form-control" placeholder="{{placeholders.Status}}" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="searchStatus" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus" class="form-control ng-pristine ng-valid"/>
       </div>
       <div class="form-group">
-        <label for="lock">Lock future modification?:</label>
+        <label for="lock" class="modalLabel">Lock future modification?:</label>
         <input id="lock" name="lock" type="checkbox" [(ngModel)]="dialogInputs.Lock"/>
       </div>
       <div class="form-group">
-        <label for="notes">Notes:</label>
-        <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
+        <label for="notes" class="modalLabel">Notes:</label>
+        <textarea id="notes" name="notes" placeholder="{{placeholders.Notes}}" [(ngModel)]="dialogInputs.Notes" class="form-control ng-pristine ng-valid"></textarea>
       </div>
     </form>
   </div>
@@ -96,14 +98,16 @@
 <ng-template #editEquivCourseContent let-c="close" let-d="dismiss">
   <div class="modal-header">
     <h4 class="modal-title">Edit Equivalency</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="editEquivCourseSubmit(dialogInputs, 'cancel')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
   <div class="modal-body">
-    <p>SCU Course: {{dialogCourse.LocalCourseName}}</p>
-    <p>Foreign Course: {{dialogForeignCourse.ForeignCourseName}}</p>
-    <p>School: {{dialogForeignCourse.SchoolName}}</p>
+    <div class="modalDescription">
+      <p>SCU Course: {{dialogCourse.LocalCourseName}}</p>
+      <p>Foreign Course: {{dialogForeignCourse.ForeignCourseName}}</p>
+      <p>School: {{dialogForeignCourse.SchoolName}}</p>
+    </div>
     
     <hr/>
     <form>
@@ -111,16 +115,16 @@
         <ng-template #rtStatus let-r="result" let-t="term">
           <p>{{r.Status}}</p>
         </ng-template>
-        <label for="typeaheadStatus2">Status:</label>
-        <input id="typeaheadStatus2" type="text" class="form-control" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="searchStatus" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus"/>
+        <label for="typeaheadStatus2" class="modalLabel">Status:</label>
+        <input id="typeaheadStatus2" type="text" class="form-control" placeholder="{{placeholders.Status}}" [(ngModel)]="dialogInputs.Status" [ngbTypeahead]="searchStatus" [ngModelOptions]="{standalone: true}" [resultTemplate]="rtStatus" [inputFormatter]="formatterStatus" class="form-control ng-pristine ng-valid"/>
       </div>
       <div class="form-group">
-        <label for="lock">Lock future modification?:</label>
+        <label for="lock" class="modalLabel">Lock future modification?:</label>
         <input id="lock" name="lock" type="checkbox" [(ngModel)]="dialogInputs.Lock"/>
       </div>
       <div class="form-group">
-        <label for="notes">Notes:</label>
-        <textarea id="notes" name="notes" [(ngModel)]="dialogInputs.Notes"></textarea>
+        <label for="notes" class="modalLabel">Notes:</label>
+        <textarea id="notes" name="notes" placeholder="{{placeholders.Notes}}" [(ngModel)]="dialogInputs.Notes" class="form-control ng-pristine ng-valid"></textarea>
       </div>
     </form>
   </div>
@@ -131,10 +135,10 @@
 </ng-template>
 
 <!-- Edit local course modal -->
-<ng-template #editLocalCourseContent let-c="close" let-d="dismiss">
+<ng-template #editLocalCourseContent let-c="editLocalCourseSubmit(dialogInputs2, 'cancel')" let-d="editLocalCourseSubmit(dialogInputs2, 'cancel')">
   <div class="modal-header">
     <h4 class="modal-title">Edit Local Course</h4>
-    <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
+    <button type="button" class="close" aria-label="Close" (click)="editLocalCourseSubmit(dialogInputs2, 'cancel')">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
@@ -144,29 +148,21 @@
     <hr/>
     <form>
       <div class="form-group">
-        <label for="dept">Department:</label>
-        <input id="dept" name="dept" type="text" [(ngModel)]="dialogInputs2.Dept"/>
+        <label for="dept" class="modalLabel">Department:</label>
+        <input id="dept" name="dept" type="text" placeholder="{{placeholders.Dept}}" [(ngModel)]="dialogInputs2.Dept" class="form-control ng-pristine ng-valid"/>
       </div>
       <div class="form-group">
-        <label for="courseNum">Number:</label>
-        <input id="courseNum" name="courseNum" type="text" [(ngModel)]="dialogInputs2.CourseNum"/>
+        <label for="courseNum" class="modalLabel">Number:</label>
+        <input id="courseNum" name="courseNum" type="text" placeholder="{{placeholders.CourseNum}}" [(ngModel)]="dialogInputs2.CourseNum" class="form-control ng-pristine ng-valid"/>
       </div>
       <div class="form-group">
-        <label for="courseTitle">Title:</label>
-        <input id="courseTitle" name="courseTitle" type="text" [(ngModel)]="dialogInputs2.CourseTitle"/>
+        <label for="courseTitle" class="modalLabel">Title:</label>
+        <input id="courseTitle" name="courseTitle" type="text" placeholder="{{placeholders.CourseTitle}}" [(ngModel)]="dialogInputs2.CourseTitle" class="form-control ng-pristine ng-valid"/>
       </div>
     </form>
   </div>
   <div class="modal-footer">
-    <!--<button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2)">Edit</button>-->
     <button type="button" class="btn btn-outline-dark" (click)="editLocalCourseSubmit(dialogInputs2, 'edit')">Edit</button>
-    <!--<button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>-->
     <button type="button" class="btn btn-outline-dark" (click)="editLocalCourseSubmit(dialogInputs2, 'cancel')">Cancel</button>
   </div>
 </ng-template>
-
-<style>
-table tr td{
-  width:70px;
-}
-</style>

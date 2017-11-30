@@ -31,14 +31,7 @@ var openModalGlobal: any;
 @Component({
   selector: 'accordion-view',
   templateUrl: './foreign_courses_accordion.html',
-  styles: [`
-    table { width: 100%; }
-    .foreign_course_modify_buttons {
-      float: right;
-      display: inline-block;
-      color: #111;
-    }
-  `]
+  styleUrls: ['./foreign_courses_accordion.css']
 })
 export class ForeignAccordionViewComponent implements ViewCell, OnInit {
   @Input() rowData: any;
@@ -68,8 +61,13 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
   }
   
   placeholders = {
-    //ForeignCourseName: "CMPE 200 - Computer Architecture",
-    SchoolName: "San Jose State University"
+    SchoolName: "San Jose State University",
+    LocalCourseName: "COEN 200 - Logic Analysis & Synthesis",
+    Status: "Accepted",
+    Notes: "paste link here",
+    Dept: "CMPE",
+    CourseNum: "200",
+    CourseTitle: "Computer Architecture"
   };
   
   constructor(private foreignCourseService: ForeignCourseService,
@@ -453,9 +451,7 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
 @Component({
 	selector: 'foreign-courses',
 	templateUrl: './foreign_courses.html',
-  styles: [`
-    table { width: 100%; }
-  `],
+  styleUrls: ['./foreign_courses.css'],
   entryComponents: [ForeignAccordionViewComponent]
 })
 @NgModule({
@@ -479,8 +475,10 @@ export class ForeignCourseComponent implements OnInit {
   }
 	source: LocalDataSource;
   placeholders = {
-    ForeignCourseName: "CMPE 200 - Computer Architecture",
-    SchoolName: "San Jose State University"
+    SchoolName: "San Jose State University",
+    Dept: "CMPE",
+    CourseNum: "200",
+    CourseTitle: "Computer Architecture"
   };
   changes = {
     ForeignCourseName: new Subject<string>(),

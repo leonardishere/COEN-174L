@@ -1,0 +1,39 @@
+table {
+  width: 100%;
+}
+
+.local_course_modify_buttons {
+  float: right;
+  display: inline-block;
+  color: #111;
+}
+
+.col1 {
+  width: 20%;
+}
+
+.col2 {
+  width: 20%;
+}
+
+.col3 {
+  width: 18%;
+}
+
+.col4 {
+  width: 18%;
+}
+
+.col5 {
+  width: 18%;
+}
+
+.col6 {
+  width: 6%;
+}
+
+.modalLabel {
+  float: left;
+  margin-left: 0%;
+  margin-right: 10px;
+}

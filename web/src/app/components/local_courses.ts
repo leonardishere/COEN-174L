@@ -30,14 +30,7 @@ var openModalGlobal: any;
 @Component({
   selector: 'accordion-view',
   templateUrl: './local_courses_accordion.html',
-  styles: [`
-    table { width: 100%; }
-    .local_course_modify_buttons {
-      float: right;
-      display: inline-block;
-      color: #111;
-    }
-  `]
+  styleUrls: ['./local_courses_accordion.css']
 })
 export class LocalAccordionViewComponent implements ViewCell, OnInit {
   @Input() rowData: any;
@@ -68,6 +61,17 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
   
   changes = {
     SchoolName: new Subject<string>()
+  };
+  
+  placeholders = {
+    LocalCourseName: "COEN 210 - Computer Architecture",
+    Dept: "COEN",
+    CourseNum: "200",
+    CourseTitle: "Logic Analysis & Synthesis",
+    School: "San Jose State University",
+    ForeignCourseName: "CMPE 200 - Computer Architecture",
+    Status: "Accepted",
+    Notes: "paste link here"
   };
   
   constructor(private localCourseService: LocalCourseService,
@@ -441,9 +445,7 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
 @Component({
   selector: 'local-courses',
   templateUrl: './local_courses.html',
-  styles: [`
-    table { width: 100%; }
-  `],
+  styleUrls: ['./local_courses.css'],
   entryComponents: [LocalAccordionViewComponent]
 })
 @NgModule({
@@ -460,7 +462,10 @@ export class LocalCoursesComponent implements OnInit {
   courses: LocalCourse2[];
   source: LocalDataSource;
   placeholders = {
-    LocalCourseName: "COEN 210 - Computer Architecture"
+    LocalCourseName: "COEN 210 - Computer Architecture",
+    Dept: "COEN",
+    CourseNum: "200",
+    CourseTitle: "Logic Analysis & Synthesis"
   };
   changes = {
     LocalCourseName: new Subject<string>()

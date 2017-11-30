@@ -1,38 +1,51 @@
-<h1>Local Courses</h1>
-<button type="button" class="btn btn-success" (click)="addLocalCourse(addLocalCoursecontent)" *ngIf="isAdmin">Add Course</button>
-<br><br>
-<form>
-  <div class="form-group">
-    <ng-template #rtLocalCourse let-r="result" let-t="term">
-      <p>{{r.LocalCourseName}}</p>
-    </ng-template>
-    <label for="typeahead-LocalCourse">Local Course:</label>
-    <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-right']"/>
-  </div>
-</form>
+<h1 align="center">Local Courses</h1>
+<br>
 
+<div class = "container">
+  <div class="row">
+    <div class="col-sm-8">
+      <div align="center">
+        <button type="button" class="btn btn-success" (click)="addLocalCourse(addLocalCoursecontent)" *ngIf="isAdmin">Add Course</button>
+      </div>
+      <form role="form">
+        <div class="form-group float-label-control">
+          <ng-template #rtLocalCourse let-r="result" let-t="term">
+            <p class="form-control-static">{{r.LocalCourseName}}</p>
+          </ng-template>
+          <label for="typeahead-LocalCourse">Local Course:</label>
+          <input #LocalCourse id="typeahead-LocalCourse" type="text" class="form-control" [ngbTypeahead]="searchLocalCourse" [resultTemplate]="rtLocalCourse" [inputFormatter]="formatterLocalCourse" (input)="changes.LocalCourseName.next(LocalCourse.value)" (selectItem)="changes.LocalCourseName.next($event.item.LocalCourseName)" placeholder="{{placeholders.LocalCourseName}}" [placement]="['bottom-right']"/>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<ng2-smart-table
+  [settings]="settings"
+  [source]="source">
+</ng2-smart-table>
+    
 <!-- Add Local Course Modal -->
 <ng-template #addLocalCoursecontent let-c="close" let-d="dismiss">
-<div class="modal-header">
-  <h4 class="modal-title">{{dialogInputs2.Mode}} Course</h4>
-  <button type="button" class="close" aria-label="Close" (click)="d('Cross click')">
-    <span aria-hidden="true">&times;</span>
-  </button>
+  <div class="modal-header">
+    <h4 class="modal-title">{{dialogInputs2.Mode}} Course</h4>
+    <button type="button" class="close" aria-label="Close" (click)="addLocalCourseSubmit(dialogInputs2, 'cancel')">
+      <span aria-hidden="true">&times;</span>
+    </button>
   </div>
   <div class="modal-body">
-    <br/>
     <form>
       <div class="form-group">
-        <label for="dept">Department:</label>
-        <input id="dept" name="dept" type="text" [(ngModel)]="dialogInputs2.Dept"/>
+        <label for="dept" class="modalLabel">Department:</label>
+        <input id="dept" name="dept" type="text" placeholder="{{placeholders.Dept}}" [(ngModel)]="dialogInputs2.Dept" class="form-control ng-pristine ng-valid"/>
       </div>
       <div class="form-group">
-        <label for="courseNum">Number:</label>
-        <input id="courseNum" name="courseNum" type="text" [(ngModel)]="dialogInputs2.CourseNum"/>
+        <label for="courseNum" class="modalLabel">Number:</label>
+        <input id="courseNum" name="courseNum" type="text" placeholder="{{placeholders.CourseNum}}" [(ngModel)]="dialogInputs2.CourseNum" class="form-control ng-pristine ng-valid"/>
       </div>
       <div class="form-group">
-        <label for="courseTitle">Title:</label>
-        <input id="courseTitle" name="courseTitle" type="text" [(ngModel)]="dialogInputs2.CourseTitle"/>
+        <label for="courseTitle" class="modalLabel">Title:</label>
+        <input id="courseTitle" name="courseTitle" type="text" placeholder="{{placeholders.CourseTitle}}" [(ngModel)]="dialogInputs2.CourseTitle" class="form-control ng-pristine ng-valid"/>
       </div>
     </form>
     </div>
@@ -41,8 +54,3 @@
     <button type="button" class="btn btn-outline-dark" (click)="addLocalCourseSubmit(dialogInputs2, 'cancel')">Cancel</button>
   </div>
 </ng-template>
-
-<ng2-smart-table
-  [settings]="settings"
-  [source]="source">
-</ng2-smart-table>

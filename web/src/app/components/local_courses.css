@@ -1,5 +1,5 @@
-input {
-  /*width: 500px;*/
+table { 
+  width: 100%; 
 }
 
 form{
@@ -11,13 +11,6 @@ form{
   right:0;
   margin: auto;
 }
-
-:host /deep/ tr,th{
-  border: 1px solid black;
-  width: 100%;
-  height: 50px;
-}
-
 
 
 
@@ -84,4 +77,10 @@ form{
 .col-sm-8 {
   flex: 0 0 100%;
   max-width: 100%;
+}
+
+.modalLabel {
+  float: left;
+  margin-left: 0%;
+  margin-right: 10px;
 }

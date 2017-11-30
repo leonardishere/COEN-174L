@@ -4,7 +4,7 @@ import 'rxjs/add/operator/distinctUntilChanged';
 
 export function subscribeChanges(subject: Subject<any>, callback: (any) => any) {
   subject
-    .debounceTime(300)
+    .debounceTime(100)
     .distinctUntilChanged()
     .subscribe(item => callback(item));
 }

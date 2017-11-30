@@ -8,7 +8,7 @@ import { contains } from '../utils';
 @Component({
   selector: 'users',
   template: `
-    <h1>Users</h1>
+    <h1 align="center">Users</h1>
     <ng2-smart-table
       [settings]="settings"
       [source]="source"

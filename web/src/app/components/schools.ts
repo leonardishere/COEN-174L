@@ -7,7 +7,7 @@ import { AuthService } from '../services/auth.service';
 @Component({
 	selector: 'schools',
 	template: `
-		<h1>Schools</h1>
+    <h1 align="center">Schools</h1>
 		<ng2-smart-table
       [settings]="settings"
       [source]="source"
@@ -17,7 +17,7 @@ import { AuthService } from '../services/auth.service';
     >
 		</ng2-smart-table>
 	`,
-	styles: [``]
+	styles: []
 })
 export class SchoolComponent implements OnInit {
   schools: School[];
