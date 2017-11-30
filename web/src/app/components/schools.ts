@@ -7,7 +7,7 @@ import { AuthService } from '../services/auth.service';
 @Component({
 	selector: 'schools',
 	template: `
-    <h1 align="center">Schools</h1>
+    <h2 align="center">Schools</h2>
 		<ng2-smart-table
       [settings]="settings"
       [source]="source"
