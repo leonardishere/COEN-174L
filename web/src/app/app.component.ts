@@ -14,6 +14,8 @@ export class AppComponent implements OnInit {
   title = 'SCU Grad Checker';
   loginUrl = environment.loginUrl;
   isAdvisor: boolean;
+  name: string;
+  email: string;
 
   constructor(private auth: AuthService,
               private route: ActivatedRoute,
@@ -33,7 +35,9 @@ export class AppComponent implements OnInit {
   }
 
   onLoginChanged() {
-      this.isAdvisor = this.auth.isLoggedIn();
+    this.isAdvisor = this.auth.isLoggedIn();
+    this.name = ""+this.auth.Name;
+    this.email = this.auth.Email;
   }
 
   login(token: string) {

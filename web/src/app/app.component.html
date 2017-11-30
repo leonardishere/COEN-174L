@@ -2,49 +2,54 @@
   <h1>Welcome to {{title}}!</h1>
 </div>
 
-<!-- comment -->
+<p class="user" *ngIf="isAdvisor">Logged in as {{name}} ({{email}})</p>
+<nav class="navbar navbar-inverse" display="block">
+  <div class="container-fluid">
+    <ul class="nav justify-content-left">
+      <li class="nav-item">
+         <a class="nav-link" routerLink="/equiv_courses">Equivalent Courses</a>
+      </li>
+    </ul>
 
-<nav class="navbar navbar-inverse">
-<div class="container-fluid">
-
-<ul class="nav justify-content-left">
-  <li class="nav-item">
-	   <a class="nav-link" routerLink="/equiv_courses">Equivalent Courses</a>
-  </li>
-</ul>
-
-<ul class="nav justify-content-right" *ngIf="isAdvisor">
-  <li class="nav-item">
-	   <a class="nav-link" routerLink="/local_courses">Local Courses</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" routerLink="/foreign_courses">Foreign Courses</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" routerLink="/schools">Schools</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" routerLink="/users">Users</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="javascript:void(0)" (click)="logout()">Logout</a>
-  </li>
-</ul>
-<ul class="nav justify-content-right" *ngIf="!isAdvisor">
-  <li class="nav-item">
-    <a class="nav-link" href="{{loginUrl}}">Login</a>
-  </li>
-</ul>
-
-
-</div>
+    <ul class="nav justify-content-right" *ngIf="isAdvisor">
+      <li class="nav-item">
+         <a class="nav-link" routerLink="/local_courses">Local Courses</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/foreign_courses">Foreign Courses</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/schools">Schools</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" routerLink="/users">Users</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="javascript:void(0)" (click)="logout()">Logout</a>
+      </li>
+    </ul>
+    <ul class="nav justify-content-right" *ngIf="!isAdvisor">
+      <li class="nav-item">
+        <a class="nav-link" href="{{loginUrl}}">Login</a>
+      </li>
+    </ul>
+  </div>
 </nav>
-
 
 <style>
 	p {
 		margin-left: 20px;
 		display: inline;
 	}
+  
+  .user {
+    float: right;
+    display: block;
+    margin: 0 45px 0 0;
+  }
+  
+  .navbar {
+    display: block;
+  }
 </style>
 <router-outlet></router-outlet>
