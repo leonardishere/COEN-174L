@@ -6,8 +6,8 @@ import * as expressJwt from 'express-jwt';
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 var jwtSecret = 'SECRET';
-//var redirectUrl = 'http://students.engr.scu.edu/~rdecker/coen174/#/login';
-var redirectUrl = 'http://localhost:4200/#/login';
+var redirectUrl = 'http://students.engr.scu.edu/~rdecker/coen174/#/login';
+//var redirectUrl = 'http://localhost:4200/#/login';
 
 var db = new Database();
 passport.use(new GoogleStrategy({

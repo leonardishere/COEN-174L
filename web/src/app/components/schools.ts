@@ -69,8 +69,6 @@ export class SchoolComponent implements OnInit {
   }
   
   add(e: any) {
-    console.log('Add', e.newData);
-    
     e.newData.Name = e.newData.Name.trim();
     if(e.newData.Name === ""){
       alert("School name cannot be empty. Try again.");
@@ -86,17 +84,12 @@ export class SchoolComponent implements OnInit {
     
     this.schoolService.addSchool(e.newData)
     .then(http => {
-      //console.log(http);
-      e.newData.SchoolID = http.stmt.lastID;
-      //console.log(e.newData);
+      e.newData.SchoolID = http.stmt.lastID
       e.confirm.resolve(e.newData);
-      console.log(this.schools);
     });
   }
   
   edit(e: any){
-    console.log('Edit', e.newData);
-    
     e.newData.Name = e.newData.Name.trim();
     if(e.newData.Name === ""){
       alert("School name cannot be empty. Try again.");
@@ -112,25 +105,17 @@ export class SchoolComponent implements OnInit {
     
     this.schoolService.editSchool(e.newData)
     .then(http => {
-      console.log(http);
-      //e.newData.SchoolID = http.stmt.lastID;
-      //console.log(e.newData);
       e.confirm.resolve(e.newData);
-      console.log(this.schools);
     });
   }
   
   delete(e: any){
-    console.log('Delete', e.data);
-    
     this.schoolService.deleteSchool(e.data)
     .then(http => {
-      console.log(http);
       e.confirm.resolve(e.data);
       this.schools = this.schools.filter(school => 
         school.SchoolID !== e.data.SchoolID
       );
-      console.log(this.schools);
     });
   }
 }

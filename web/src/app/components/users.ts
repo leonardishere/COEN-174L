@@ -69,8 +69,6 @@ export class UserComponent implements OnInit {
   }
 
   add(e: any) {
-    console.log('Add', e.newData);
-    
     e.newData.Name = e.newData.Name.trim();
     if(e.newData.Name === ""){
       alert("The user name cannot be empty. Try again.");
@@ -99,16 +97,11 @@ export class UserComponent implements OnInit {
     this.userService.addUser(e.newData)
     .then(http => {
       e.newData.UserID = http.row;
-      console.log(e.newData);
       e.confirm.resolve(e.newData);
-      //console.log(http);
-      console.log(this.users);
     });
   }
   
   edit(e: any){
-    console.log('Edit', e.newData);
-    
     e.newData.Name = e.newData.Name.trim();
     if(e.newData.Name === ""){
       alert("The user name cannot be empty. Try again.");
@@ -148,8 +141,6 @@ export class UserComponent implements OnInit {
     this.userService.editUser(e.newData)
     .then(http => {
       e.confirm.resolve(e.newData);
-      console.log(this.users);
-
       //Update our permissions if we editted our own user
       if (e.newData.UserID === this.auth.UserID) {
         this.auth.logIn(e.newData);
@@ -158,8 +149,6 @@ export class UserComponent implements OnInit {
   }
   
   delete(e: any){
-    console.log('Delete', e.data);
-    
     var adminsLeft = 0;
     for(var i = 0; i < this.users.length && adminsLeft === 0; ++i){
       if(this.users[i].Position === 'Admin' && this.users[i].UserID !== e.data.UserID) ++adminsLeft;
@@ -172,7 +161,6 @@ export class UserComponent implements OnInit {
     this.userService.deleteUser(e.data)
     .then(http => {
       e.confirm.resolve(e.data);
-      console.log(this.users);
       this.users = this.users.filter(user => 
         user.UserID !== e.data.UserID
       );

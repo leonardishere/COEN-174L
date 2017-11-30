@@ -18,7 +18,7 @@
   </div>
 </form>
 
-<!-- Course Modal -->
+<!-- Add Foreign Course Modal -->
 <ng-template #addForeignCoursecontent let-c="close" let-d="dismiss">
   <div class="modal-header">
 <h4 class="modal-title">Add Course</h4>
@@ -51,8 +51,10 @@
 </form>
   </div>
   <div class="modal-footer">
-  <button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2)">{{dialogInputs2.Mode}}</button>
-  <button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>
+  <!--<button type="button" class="btn btn-outline-dark" (click)="c(dialogInputs2)">{{dialogInputs2.Mode}}</button>-->
+  <button type="button" class="btn btn-outline-dark" (click)="addForeignCourseSubmit(dialogInputs2, 'add')">Add</button>
+  <!--<button type="button" class="btn btn-outline-dark" (click)="c('Close')">Cancel</button>-->
+  <button type="button" class="btn btn-outline-dark" (click)="addForeignCourseSubmit(dialogInputs2, 'cancel')">Cancel</button>
   </div>
 </ng-template>
 
