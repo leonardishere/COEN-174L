@@ -64,10 +64,6 @@ export class UserComponent implements OnInit {
     this.settings.actions.edit = isAdmin;
   }
 
-  onSelect(user: User): void {
-    console.log('Selected', user);
-  }
-
   add(e: any) {
     e.newData.Name = e.newData.Name.trim();
     if(e.newData.Name === ""){

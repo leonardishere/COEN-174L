@@ -165,7 +165,6 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
                 .then(promise => {
                   result4.EquivID = promise.row;
                   result3.EquivID = promise.row;
-                  console.log(result3);
                 })
                 .catch(err => console.log(err));
                 this.dialogCourse.ForeignCourses.push(result3);
@@ -306,8 +305,6 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
   editLocalCourse(event, content, localCourse){
     event.preventDefault();
     event.stopPropagation();
-    console.log("editLocalCourse()");
-    console.log(localCourse);
     
     //check if user has permission
     var currentUserID = this.auth.UserID;
@@ -324,42 +321,10 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
     
     openModalGlobal = this.modalService.open(content);
     openModalGlobal.result.catch(err => {});
-    /*
-    this.modalService.open(content).result.then((result) => {
-      console.log(result);
-      if(result === "Close"){
-        console.log("Closed, don't edit");
-      }else{
-        if(result.Dept == null || result.CourseNum == null || result.CourseTitle == null){
-          console.log("null check, don't add");
-        }else{
-          var result2 = {LocalCourseID: localCourse.LocalCourseID, Dept: result.Dept.toUpperCase(), CourseNum: result.CourseNum, CourseTitle: result.CourseTitle};
-          console.log(result2);
-          this.localCourseService.editLocalCourse(result2)
-          .catch(err => {
-            console.log(err);
-          });
-          
-          localCourse.LocalCourseDept = result.Dept.toUpperCase();
-          localCourse.LocalCourseNum = result.CourseNum;
-          localCourse.LocalCourseTitle = result.CourseTitle;
-          localCourse.LocalCourseName = result.Dept.toUpperCase() + " " + result.CourseNum + " - " + result.CourseTitle;
-          
-          this.course = result.Dept.toUpperCase() + " " + result.CourseNum + " - " + result.CourseTitle;
-          console.log(this.course);
-        }
-      }
-    })
-    .catch(err => {console.log("closed via cross click");});
-    */
   }
   
   //submit from edit local course modal
   editLocalCourseSubmit(result, status){
-    console.log("editLocalCourseSubmit()");
-    console.log(result);
-    console.log(status);
-    
     if(status === "edit"){
       result.Dept = result.Dept.trim().toUpperCase();
       result.CourseNum = result.CourseNum.trim();
@@ -384,7 +349,6 @@ export class LocalAccordionViewComponent implements ViewCell, OnInit {
             this.dialogCourse.LocalCourseNum = result2.CourseNum;
             this.dialogCourse.LocalCourseTitle = result2.CourseTitle;
             this.dialogCourse.LocalCourseName = courseName;
-            console.log(this.dialogCourse);
             
             var found1 = false;
             for(var i = 0; i < localCoursesGlobal.length && !found1; ++i){

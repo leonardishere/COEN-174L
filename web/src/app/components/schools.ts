@@ -55,17 +55,10 @@ export class SchoolComponent implements OnInit {
       this.source = new LocalDataSource(this.schools);
     });
     
-    //var currentUserID = this.auth.UserID;
-    //var currentUserName = this.auth.Name;
-    
     var isAdmin = this.auth.isAdmin();
     this.settings.actions.add = isAdmin;
     this.settings.actions.delete = isAdmin;
     this.settings.actions.edit = isAdmin;
-  }
-
-  onSelect(school: School): void {
-    console.log('Selected', school);
   }
   
   add(e: any) {

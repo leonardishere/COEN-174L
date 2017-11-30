@@ -83,7 +83,6 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
   
   //open edit foreign course modal
   editForeignCourse(event, content, foreignCourse){
-    console.log("editForeignCourse()");
     event.preventDefault();
     event.stopPropagation();
     
@@ -207,7 +206,6 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
   
   //delete the foreign course
   deleteForeignCourse(event, foreignCourse){
-    console.log("editLocalCourse()");
     event.preventDefault();
     event.stopPropagation();
     
@@ -289,7 +287,6 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
               .then(promise => {
                 result4.EquivID = promise.row;
                 result3.EquivID = promise.row;
-                console.log(result3);
               })
               .catch(err => console.log(err));
               this.dialogCourse.LocalCourses.push(result3);
@@ -323,8 +320,6 @@ export class ForeignAccordionViewComponent implements ViewCell, OnInit {
       result.Status = {Status: ""};
       result.LocalCourseName = {LocalCourseID: -1, LocalCourseName: ""};
     }
-    
-    console.log(localCoursesGlobal);
   }
   
   //open edit equiv course modal
@@ -686,9 +681,6 @@ export class ForeignCourseComponent implements OnInit {
         this.source.addFilter({field: 'SchoolName', search: this.currentSchoolSearch});
       }
     }
-    if(!found1){
-      console.log("error. didnt find course to edit");
-    }
     
     var found2 = false;
     for(var i = 0; i < foreignCoursesSchoolsGlobal.length && !found2; ++i){
@@ -706,9 +698,6 @@ export class ForeignCourseComponent implements OnInit {
           return 0;
         });
       }
-    }
-    if(!found2){
-      console.log("error. didnt find foreignCourse/school combo");
     }
   }
   
