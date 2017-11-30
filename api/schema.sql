@@ -7,15 +7,12 @@ CREATE TABLE IF NOT EXISTS `User` (
 	`Email`	TEXT NOT NULL
 );
 INSERT INTO `User` (UserID,Name,Position,Email) VALUES 
- (0,'Andrew Leonard','Admin','aleonard@scu.edu'),
- (1,'Rowan Decker','Admin','rdecker@scu.edu'),
- (2,'Chloe de Guzman','Admin','cdeguzman@scu.edu'),
- (3,'Ronald Danielson','Admin','rdanielson@scu.edu'),
- (4,'Addison Fattor','Admin','afattor@scu.edu'),
- (5,'Yang Li','Admin','yli1@scu.edu'),
- (6,'Not Andrew','Advisor','leonardishere@gmail.com'),
- (7,'Not Rowan','Advisor','smasher?'),
- (8,'Not Chloe','Advisor','idk');
+ (1,'Andrew Leonard','Admin','aleonard@scu.edu'),
+ (2,'Rowan Decker','Admin','rdecker@scu.edu'),
+ (3,'Chloe de Guzman','Admin','cdeguzman@scu.edu'),
+ (4,'Ronald Danielson','Admin','rdanielson@scu.edu'),
+ (5,'Addison Fattor','Admin','afattor@scu.edu'),
+ (6,'Yang Li','Admin','yli1@scu.edu');
 DROP TABLE IF EXISTS `School`;
 CREATE TABLE IF NOT EXISTS `School` (
 	`SchoolID`	INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -269,25 +266,25 @@ CREATE TABLE IF NOT EXISTS `EquivCourse` (
 	`Notes`	TEXT
 );
 INSERT INTO `EquivCourse` (EquivID,LocalCourseID,ForeignCourseID,Status,LockedBy,Notes) VALUES
- (1,9,1,'Accepted',2,''),
- (2,42,17,'Accepted',1,''),
- (3,29,93,'Accepted',2,''),
+ (1,9,1,'Accepted',3,''),
+ (2,42,17,'Accepted',2,''),
+ (3,29,93,'Accepted',3,''),
  (4,27,94,'Accepted',NULL,''),
- (5,22,19,'Rejected',1,''),
- (6,26,99,'Accepted',1,''),
- (7,53,99,'Rejected',2,''),
+ (5,22,19,'Rejected',2,''),
+ (6,26,99,'Accepted',2,''),
+ (7,53,99,'Rejected',3,''),
  (8,9,115,'Accepted',NULL,''),
- (36,11,95,'Accepted',0,''),
- (37,14,30,'Accepted',1,''),
- (38,26,77,'Accepted',2,''),
+ (36,11,95,'Accepted',1,''),
+ (37,14,30,'Accepted',2,''),
+ (38,26,77,'Accepted',3,''),
  (39,27,16,'Accepted',NULL,''),
- (40,30,112,'Accepted',0,''),
- (41,31,50,'Accepted',1,''),
- (42,40,70,'Accepted',2,''),
+ (40,30,112,'Accepted',1,''),
+ (41,31,50,'Accepted',2,''),
+ (42,40,70,'Accepted',3,''),
  (43,40,115,'Accepted',NULL,''),
- (44,42,105,'Accepted',0,''),
- (45,51,7,'Accepted',1,''),
- (46,54,94,'Accepted',2,''),
+ (44,42,105,'Accepted',1,''),
+ (45,51,7,'Accepted',2,''),
+ (46,54,94,'Accepted',3,''),
  (47,55,93,'Accepted',NULL,''),
  (48,63,131,'Rejected',NULL,'');
 COMMIT;
