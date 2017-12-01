@@ -16,6 +16,7 @@ export class AppComponent implements OnInit {
   isAdvisor: boolean;
   name: string;
   email: string;
+  isValid: boolean;
 
   constructor(private auth: AuthService,
               private route: ActivatedRoute,
@@ -31,6 +32,7 @@ export class AppComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.login(params.token);
     });
+    this.isValid = false;
     this.login(this.route.snapshot.queryParams.token);
   }
 
@@ -38,6 +40,7 @@ export class AppComponent implements OnInit {
     this.isAdvisor = this.auth.isLoggedIn();
     this.name = ""+this.auth.Name;
     this.email = this.auth.Email;
+    this.isValid = this.isAdvisor && this.name != null;
   }
 
   login(token: string) {

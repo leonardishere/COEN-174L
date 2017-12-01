@@ -2,7 +2,7 @@
   <h1>{{title}}</h1>
 </div>
 
-<p class="user" *ngIf="isAdvisor">Logged in as {{name}} ({{email}})</p>
+<p class="user" *ngIf="isValid">Logged in as {{name}} ({{email}})</p>
 <nav class="navbar navbar-inverse" display="block">
   <div class="container-fluid">
     <ul class="nav justify-content-left">
@@ -11,7 +11,7 @@
       </li>
     </ul>
 
-    <ul class="nav justify-content-right" *ngIf="isAdvisor">
+    <ul class="nav justify-content-right" *ngIf="isValid">
       <li class="nav-item">
          <a class="nav-link" routerLink="/local_courses">Local Courses</a>
       </li>
@@ -28,7 +28,7 @@
         <a class="nav-link" href="javascript:void(0)" (click)="logout()">Logout</a>
       </li>
     </ul>
-    <ul class="nav justify-content-right" *ngIf="!isAdvisor">
+    <ul class="nav justify-content-right" *ngIf="!isValid">
       <li class="nav-item">
         <a class="nav-link" href="{{loginUrl}}">Login</a>
       </li>
