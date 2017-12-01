@@ -6,14 +6,13 @@ import * as expressJwt from 'express-jwt';
 var GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 var jwtSecret = 'SECRET';
-//var redirectUrl = 'http://students.engr.scu.edu/~rdecker/coen174/#/login';
-var redirectUrl = 'http://localhost:4200/#/login';
+var redirectUrl = 'http://students.engr.scu.edu/~rdecker/coen174/#/login'; //REPLACE ME
 
 var db = new Database();
 passport.use(new GoogleStrategy({
-		clientID: '771057891701-b3ouu6epu8hnrgpmdafrvaf7r2bctrbr.apps.googleusercontent.com',
-		clientSecret: 'Q1bkDNj2HvWamByHX2SAUGD-',
-		callbackURL: "http://localhost:3000/auth/callback"
+    clientID: '771057891701-b3ouu6epu8hnrgpmdafrvaf7r2bctrbr.apps.googleusercontent.com', //REPLACE ME
+    clientSecret: 'Q1bkDNj2HvWamByHX2SAUGD-', //REPLACE ME
+    callbackURL: "http://rowandecker.com:3000/auth/callback" //REPLACE ME
 	},
 	(accessToken, refreshToken, profile, cb) => {
 		let email = profile.emails[0].value;
